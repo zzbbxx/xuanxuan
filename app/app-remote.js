@@ -42,7 +42,7 @@ class AppRemote extends ReadyNotifier {
             }
         }
 
-        this.dataPath = Path.join(ElectronApp.getPath('userData'), 'xuanxuan');
+        this.dataPath = ElectronApp.getPath('userData');
         this.appRoot  = __dirname;
     }
 

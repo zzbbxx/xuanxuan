@@ -54,19 +54,18 @@ class App extends ReadyNotifier {
         this.lang          = Lang;
         this.browserWindow = Remote.getCurrentWindow();
         this.desktopPath   = Remote.app.getPath('desktop');
+        this.userDataPath  = Remote.app.getPath('userData');
         
         this.remote('appRoot').then(appRoot => {
             this.appRoot = appRoot;
-        });
-        this.remote('dataPath').then(userDataPath => {
-            this.userDataPath = userDataPath;
-            config.load(userDataPath);
         });
 
         config.ready(() => {
             this.resetUser(this.config.user);
             this._checkReady();
         });
+
+        config.load(this.userDataPath);
 
         this.$ = {
             chat: new ChatApp(this)

@@ -1,7 +1,4 @@
-// import Colors from './material-colors';
-
-// const DEBUG = process.env.NODE_ENV === 'development';
-const DEBUG = true;
+const DEBUG = process.env.NODE_ENV === 'development';
 global.DEBUG = DEBUG;
 
 if(DEBUG) {
