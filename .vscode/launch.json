@@ -11,7 +11,7 @@
             "cwd": "${workspaceRoot}",
             "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
             "env": {
-                "HOT": 1,
+                "HOT": "1",
                 "NODE_ENV": "development"
             },
             "runtimeArgs": [
