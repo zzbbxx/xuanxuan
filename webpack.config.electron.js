@@ -20,7 +20,7 @@ export default validate(merge(baseConfig, {
   },
 
   plugins: [
-    new BabiliPlugin(),
+    // new BabiliPlugin(),
     // Add source map support for stack traces in node
     // https://github.com/evanw/node-source-map-support
     // new webpack.BannerPlugin(
