@@ -128,7 +128,7 @@
     "noAvaliablePublicGroup": "没有找到可以加入的公共频道。普通讨论组可以设置为公共频道。",
     "choosedContacts": "已选择 {0} 个联系人",
     "startChat": "创建会话",
-    "startOne2OneChat": "创建一对一会话",
+    "startOne2OneChat": "开始一对一会话",
     "startGroupChat": "创建 {0} 人讨论组",
     "someoneChangeChatNameTo": "{0} 将会话名称更改为 {1}",
     "uploadingFile": "正在上传文件...",
