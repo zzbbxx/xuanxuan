@@ -1,0 +1,99 @@
+audio,
+canvas,
+img,
+video
+{
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+svg {
+  max-width: 100%;
+}
+
+a
+{
+  color: @primary1Color;
+  text-decoration: none;
+  transition: all @animate-time-normal @animate-type;
+  cursor: pointer;
+
+  &:hover,
+  &:focus
+  {
+    color: @primary2Color;
+    text-decoration: underline;
+  }
+
+  &:focus
+  {
+    outline: 5px auto -webkit-focus-ring-color;
+    outline-offset: -2px;
+  }
+
+  &.disabled,
+  &.disabled:hover,
+  &.disabled:focus,
+  &[disabled],
+  &[disabled]:hover,
+  &[disabled]:focus
+  {
+    text-decoration: none;
+    color: @disabledColor;
+    cursor: default;
+  }
+}
+
+a.negative {
+  color: @negativeColor;
+
+  &:hover,
+  &:focus {
+    color: lighten(@negativeColor, 7%);
+  }
+}
+
+.link-app {
+  cursor: pointer;
+}
+
+.hover-bg-light {
+  &:hover {
+    background-color: fade(@color-text, 10%);
+  }
+}
+
+.rotate-90 {
+  -webkit-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+
+.rotate-180 {
+  -webkit-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+
+.rotate-270 {
+  -webkit-transform: rotate(270deg);
+  transform: rotate(270deg);
+}
+
+.rotate-360 {
+  -webkit-transform: rotate(360deg);
+  transform: rotate(360deg);
+}
+
+.flip-horizontal {
+  -webkit-transform: scale(-1, 1);
+  transform: scale(-1, 1);
+}
+
+.flip-vertical {
+  -webkit-transform: scale(1, -1);
+  transform: scale(1, -1);
+}
+
+.grayscale {
+  -webkit-filter: grayscale(1)!important;
+  filter: grayscale(1)!important;
+}

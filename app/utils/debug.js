@@ -1,0 +1,18 @@
+// import Colors from './material-colors';
+
+// const DEBUG = process.env.NODE_ENV === 'development';
+const DEBUG = true;
+global.DEBUG = DEBUG;
+
+if(DEBUG) {
+    // Mute react warning.
+    console._error = console.error;
+    console.error = (errMessage, ...args) => {
+        if(errMessage && errMessage.indexOf('Warning: Unknown prop') === 0) {
+            return;
+        }
+        return console._error(errMessage, ...args);
+    };
+}
+
+export default DEBUG;

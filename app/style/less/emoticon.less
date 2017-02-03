@@ -1,0 +1,16 @@
+.emoticon-list {
+  .emoticon-item {
+    transition: border @animate-type @animate-time-normal, transform @animate-type @animate-time-normal;
+    cursor: pointer;
+  }
+
+  .emojione, .emojione:hover, .emoticon-item:hover, .emojione svg {
+    cursor: pointer;
+  }
+
+  .emoticon-item:hover {
+    background: @canvasColor;
+    border-color: @accent3Color!important;
+    transform: scale(1.5);
+  }
+}

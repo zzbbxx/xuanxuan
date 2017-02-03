@@ -1,0 +1,23 @@
+.message-time-dot {
+    transition: all @animate-time-normal @animate-type 1.5s;
+    line-height: 16px;
+    cursor: default;
+
+    &:hover {
+      transition-delay: 0;
+      left: -3px !important;
+      top: 0px !important;
+      width: 36px !important;
+      height: 16px !important;
+      color: @accent3Color !important;
+    }
+}
+
+.message .emojione {max-width: 20px; max-height: 20px; vertical-align: bottom}
+.message .emojione-hd .emojione {max-width: 64px; max-height: 64px;}
+
+@media (max-width: 800px) {
+  .message {padding-left: 0!important;}
+  .message-avatar, .message-time-dot, .message-time-side {display: none!important}
+  .message-title {color: @primary1Color!important}
+}

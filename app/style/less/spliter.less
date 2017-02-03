@@ -1,0 +1,58 @@
+.gutter {
+  background-color: @borderColor;
+  background-repeat: no-repeat;
+  background-position: 50%;
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+
+  &.gutter-horizontal {cursor: ew-resize;}
+
+  &.gutter-vertical {
+    transition: border @animate-time-normal @animate-type;
+    cursor: ns-resize;
+    border: 1px solid @borderColor;
+    border-width: 1px 0 0 0;
+    background-color: #fff;
+    position: relative;
+
+    &:before,
+    &:after {
+      position: absolute;
+      content: ' ';
+      display: block;
+      width: 2px;
+      height: 2px;
+      border-left: 2px solid darken(@borderColor, 15%);
+      border-right: 2px solid darken(@borderColor, 15%);
+      left: 50%;
+      top: 0;
+      transition: border @animate-time-normal @animate-type;
+      z-index: 1;
+      visibility: hidden;
+    }
+
+    &:before {
+      margin-left: -4px;
+    }
+
+    &:after {
+      margin-left: 4px;
+    }
+
+    &:hover {
+      border-top-width: 4px;
+
+      &:before,
+      &:after {
+        visibility: visible;
+        top: -3px;
+      }
+    }
+  }
+}
+
+.split {
+  position: relative;
+  box-sizing: border-box;
+}

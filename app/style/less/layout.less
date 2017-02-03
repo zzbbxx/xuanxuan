@@ -1,0 +1,152 @@
+body {
+  position: relative;
+  background-color: @accent2Color;
+  font-size: 13px;
+  font-family: Roboto, 'Helvetica Neue', Helvetica, 'Microsoft Yahei', 'PingFang SC', 'Hiragino Sans GB', 'WenQuanYi Micro Hei', sans-serif;
+  -webkit-user-select:none;
+  user-select:none;
+}
+
+.user-selectable {
+  -webkit-user-select: initial;
+  user-select: initial;
+}
+
+.user-app-dragable {
+  -webkit-app-region: drag;
+}
+
+.user-app-no-dragable {
+  -webkit-app-region: no-drag;
+}
+
+.clearfix() {
+  &:before,
+  &:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+    font-size: 0;
+    line-height: 0;
+  }
+  &:after {
+    clear: both;
+  }
+}
+
+.clearfix
+{
+  .clearfix();
+}
+.pull-right
+{
+  float: right !important;
+}
+.pull-left
+{
+  float: left !important;
+}
+
+.fixed {
+  position: fixed;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.relative {
+  position: relative;
+}
+
+.fix-full {
+  .fixed();
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.dock-full {
+  .absolute();
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.dock-left {
+  .absolute();
+  left: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.dock-right {
+  .absolute();
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.dock-top {
+  .absolute();
+  left: 0;
+  top: 0;
+  right: 0;
+}
+
+.dock-bottom {
+  .absolute();
+  right: 0;
+  left: 0;
+  bottom: 0;
+}
+
+.center-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.box {
+  box-sizing: border-box;
+}
+
+.hide
+{
+  display: none;
+}
+.hidden
+{
+  display: none!important;
+}
+.show
+{
+  display: block;
+}
+.showing
+{
+  display: block!important;
+}
+.invisible
+{
+  visibility: hidden;
+}
+
+.scroll-y {
+  overflow-y: auto;
+}
+
+.table-row {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+
+  &.dock-full {
+    height: 100%;
+  }
+}
+
+.table-col {
+  display: table-cell;
+}

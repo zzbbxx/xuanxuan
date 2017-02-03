@@ -1,0 +1,35 @@
+.nobr()
+{
+  white-space:nowrap;
+  overflow:hidden;
+}
+
+// Alignment
+.text-left          { text-align: left; }
+.text-right         { text-align: right; }
+.text-center        { text-align: center; }
+
+// text wrap
+.text-nowrap, .nobr
+{
+  .nobr();
+}
+
+// text ellipsis
+.text-ellipsis
+{
+  .text-nowrap();
+  text-overflow: ellipsis;
+}
+
+small, .text-small {
+  font-size: 12px;
+}
+
+.text-large {
+  font-size: 16px;
+}
+
+.text-muted {
+  color: @disabledColor;
+}

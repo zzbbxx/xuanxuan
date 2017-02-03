@@ -1,0 +1,34 @@
+.navbar {
+  @color-dim-text: fade(@color-inverse-text, 70%);
+  @color-hover-color: rgba(255,255,255,.1);
+
+  .list {
+    .item {
+      color: @color-dim-text !important;
+
+      .icon {
+        color: @color-dim-text !important;
+        fill: @color-dim-text !important;
+      }
+
+      &:hover, &:focus, &:active, &.active {
+        color: @color-inverse-text !important;
+
+        .icon {
+          color: @color-inverse-text !important;
+          fill: @color-inverse-text !important;
+        }
+      }
+
+      &.active {
+        background-color: @color-hover-color !important;
+      }
+    }
+
+    &.navbar-header {
+      .item {
+        color: @color-inverse-text !important;
+      }
+    }
+  }
+}

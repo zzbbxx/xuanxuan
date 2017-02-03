@@ -1,0 +1,264 @@
+{
+  "title": "喧喧",
+
+  "common": {
+    "exit": "退出",
+    "confirm": "确认",
+    "cancel": "取消",
+    "loading": "正在加载…",
+    "delete": "删除",
+    "edit": "编辑",
+    "create": "创建",
+    "add": "新增",
+    "open": "打开",
+    "openFolder": "打开文件夹",
+    "download": "下载",
+    "upload": "上传",
+    "save": "保存",
+    "saved": "已保存",
+    "savedAs": "另存为",
+    "saving": "保存中…",
+    "submit": "提交",
+    "selected": "已选择",
+    "selectAll": "全选",
+    "selectInverse": "反选",
+    "rename": "重命名",
+    "refresh": "刷新",
+    "about": "关于",
+    "view": "查看",
+    "completing": "即将完成",
+    "later": "稍后",
+    "nextTime": "下次提醒我"
+  },
+
+  "debug": {
+    "inspectElement": "检查元素"
+  },
+
+  "errors": {
+    "UNSUPPORT_VERSION": "此禅道版本不受支持，需要禅道专业版4.5及以上。",
+    "WRONG_CONNECT": "无法连接到禅道服务器，请检查网络连接是否通畅。",
+    "LOGIN_FAILED": "暂时无法登录到禅道服务器。",
+    "WRONG_ACCOUNT": "账号或密码错误。",
+    "WRONG_DATA": "服务器返回的数据不正确。",
+    "WRONG_STATUS": "服务器操作失败。",
+    "SOCKET_CLOSE": "服务器连接已断开，请重新登录。",
+    "KICKOFF": "当前账号已在其他地方登录。如果不是本人操作，请及时修改密码",
+    "USER_DATA_PATH_DENY": "系统错误，无法使用用户目录",
+    "USER_DENY_ATTACT_UPLOAD": "你没有权限上传文件到服务器，请联系管理员。"
+  },
+
+  "navbar": {
+    "expand": "展开菜单",
+    "collapse": "折叠菜单"
+  },
+
+  "chat": {
+    "renameChat": "重命名会话",
+    "resend": "重新发送",
+    "newChat": "新的会话",
+    "contacts": "联系人",
+    "systemGroup": "系统",
+    "searchContacts": "搜索联系人",
+    "favsList": "收藏的会话",
+    "invite": "邀请",
+    "star": "收藏",
+    "history": "消息记录",
+    "chatsManager": "会话管理器",
+    "sendHDEmoticon": "直接发送高清表情",
+    "removeStar": "取消收藏",
+    "inviteMember": "邀请",
+    "recentsList": "最近的会话",
+    "hiddensList": "已隐藏",
+    "sendboxPlaceholder": "发送消息",
+    "sendboxPlaceholderForNewChat": "发送 $$name=新名字 来更改会话名称",
+    "sendEmoticon": "发送表情",
+    "sendImage": "发送图片",
+    "sendFile": "发送文件",
+    "captureScreen": "截取屏幕",
+    "hideCurrentWindowAndCaptureScreen": "隐藏当前窗口并截图",
+    "messageTip": "小技巧",    
+    "sendMessageTooltip": "发送消息 (Enter)",
+    "sendMessage": "发送消息",
+    "openSidebar": "打开侧边栏",
+    "closeSidebar": "关闭侧边栏",
+    "chatGroup": "讨论组",
+    "tempChat": "临时",
+    "exitChat": "退出会话",
+    "exitChatConfirm": "确定退出会话 【{0}】?",
+    "setPublic": "设为公共频道",
+    "publicGroup": "公共频道",
+    "groupNameFormat": "{0}（{1}人）",
+    "cancelSetPublic": "取消设为公共频道",
+    "pinnedInList": "在列表上显示",
+    "removeFromList": "从列表上移除",
+    "imageError": "无法显示图片",
+    "someoneJoinChat": "{0} 加入了会话",
+    "chatMustInclueYourself": "会话必须包含自己。",
+    "userOfflineTipForChat": "{0} 当前不在线，{0}会在下次上线时看到你的消息。",
+    "noMessages": "此会话没有消息。",
+    "showHiddenChats": "显示隐藏的会话",
+    "hideHiddenChats": "不显示隐藏的会话",
+    "sidebar": {
+      "tabs": {
+        "members": "成员",
+        "files": "文件"
+      }
+    },
+    "chooseChatType": "选择一种会话类型",
+    "createChatTypes": {
+      "group": "联系人或多人会话",
+      "project": "项目讨论组",
+      "product": "产品讨论组",
+      "public": "公共频道"
+    },
+    "chatTypes": {
+      "one2one": "联系人",
+      "group": "讨论组",
+      "project": "项目",
+      "product": "产品",
+      "system": "系统"
+    },
+    "chooseContacts": "选择参与会话的联系人",
+    "choosePublicGroup": "选择一个公共频道",
+    "join": "加入",
+    "avaliablePublicGroup": "{} 个公开频道可以加入",
+    "searchPublicGroup": "搜索频道",
+    "numberOfMembers": "{} 个成员",
+    "noAvaliablePublicGroup": "没有找到可以加入的公共频道。普通讨论组可以设置为公共频道。",
+    "choosedContacts": "已选择 {0} 个联系人",
+    "startChat": "创建会话",
+    "startOne2OneChat": "创建一对一会话",
+    "startGroupChat": "创建 {0} 人讨论组",
+    "someoneChangeChatNameTo": "{0} 将会话名称更改为 {1}",
+    "uploadingFile": "正在上传文件...",
+    "downloadingFile": "正在下载文件...",
+    "uploadFail": "上传失败",
+    "uploadFailAndResend": "上传失败，请重试",
+    "brokenImage": "无法加载图片",
+    "imageSaveAs": "图片已保存至 {0}",
+    "fileSaveAs": "文件已保存至 {0}",
+    "cannotSaveAs": "无法保存文件 {0}",
+    "someNewMessages": "{0} 条新消息",
+    "emptyFileList": "还没有人分享文件",
+    "downloadChatHistory": "获取云端消息记录",
+    "downloadingChatHistory": "正在从云端获取消息记录...",
+    "drapNDropFileMessage": "拖放文件或图片到此处来发送"
+  },
+
+  "main": {
+    "askOnCloseWindow": {
+      "title": "你想做什么？",
+      "options": {
+        "minimize": "最小化窗口到通知栏",
+        "close": "关闭窗口并退出应用"
+      },
+      "remember": "记住我的选择，不再提醒我"
+    },
+    "reload": "重新载入",
+    "updateThenReload": "更新并重新载入",
+    "newVersionTip": "检查到新版本{latest}, 是否立即更新并重新载入。当前版本{current}。",
+    "devToolWindow": "开发者工具",
+    "databaseUpdateTip": "本地数据库已完成升级，需要重新载入启动客户端。是否现在立即重新载入？",
+    "drapNDropMessage": "将文件拖放到此处",
+    "confirmToReloadWindow": "要重新载入窗口吗？"
+  },
+
+  "time": {
+    "today": "今天",
+    "yestoday": "昨天",
+    "format": {
+      "fullDate": "YYYY年M月D日",
+      "monthDay": "M月D日"
+    }
+  },
+
+  "pager": {
+    "prev": "上一页",
+    "next": "下一页"
+  },
+
+  "login": {
+    "login": "登  录",
+    "address": "然之地址",
+    "addressHint": "pro.demo.ranzhi.org",
+    "account": "账号",
+    "accountHint": "用户名/邮箱",
+    "password": "密码",
+    "logining": "正在登录...",
+    "autoLogining": "正在自动登录...",
+    "loginSuccess": "登录成功",
+    "loginTimeout": "登录超时，请稍后重试。"
+  },
+
+  "user": {
+    "swapUser": "切换用户",
+    "profile": "个人资料",
+    "viewProfile": "查看资料",
+    "status": {
+      "unverified": "需要验证",
+      "online": "在线",
+      "offline":"离线",
+      "disconnect":"离线",
+      "away":  "离开",
+      "busy":   "忙碌"
+    },
+    "roles": {
+      "dev": "开发人员",
+      "po": "产品经理",
+      "pm": "项目经理",
+      "qa": "测试人员",
+      "qd": "测试经理"
+    },
+    "genders": {
+      "f": "女",
+      "m": "男"
+    },
+    "gendersPronouns": {
+      "f": "她",
+      "m": "他",
+      "default": "他"
+    },
+    "contact": {
+      "info": "联系方式",
+      "projects": "参与的项目"
+    }
+  },
+
+  "menu": {
+    "about": "关于",
+    "hideCurrentWindow": "隐藏当前窗口",
+    "hideOtherWindows": "隐藏其他窗口",
+    "showAllWindows": "显示所有窗口",
+    "quit": "退出",
+    "help": "帮助",
+    "issues": "问题反馈",
+    "website": "官方网站",
+    "project": "项目",
+    "community": "社区讨论",
+    "edit": "编辑",
+    "undo": "撤销",
+    "redo": "重做",
+    "cut": "剪切",
+    "copy": "复制",
+    "copyImage": "复制图片",
+    "paste": "粘贴",
+    "selectAll": "选择所有",
+    "view": "查看",
+    "reload": "刷新",
+    "toggleFullscreen": "切换全屏",
+    "toggleDeveloperTool": "切换开发者工具",
+    "window": "窗口",
+    "minimize": "最小化",
+    "close": "关闭",
+    "bringAllToFront": "全部置于顶层"
+  },
+
+  "dialog": {
+    "imageSaveTo": "将图片保存为...",
+    "fileSaveTo": "将文件保存到...",
+    "openFile": "打开文件...",
+    "filterImage": "图片",
+    "filterAllFiles": "所有文件"
+  }
+}

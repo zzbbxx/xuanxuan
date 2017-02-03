@@ -1,0 +1,43 @@
+.drag-n-drop-message {
+  display: none;
+}
+
+.drag-n-drop-over {
+  .drag-n-drop-message {
+    display: flex;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    left: 8px;
+    bottom: 8px;
+    box-shadow: 0 0 8px rgba(255,255,255,0.7);
+    border: 4px dashed rgba(0,0,0,0.3);
+    background-color: rgba(255,255,255,0.7);
+    z-index: 2000;
+    color: @iconColor;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: background @animate-time-normal @animate-type, border @animate-time-normal @animate-type, opacity @animate-time-normal @animate-type, transform @animate-time-fast @animate-type;
+
+    > * {
+      pointer-events: none;
+    }
+
+    .dnd-hover {
+      display: none;
+    }
+
+    &:hover, &.hover {
+      border-color: @accent1Color;
+      background-color: rgba(255,255,255,0.9);
+      box-shadow: 0 0 8px rgba(255,255,255,0.9);
+      .dnd-hover { display: block; }
+      .dnd-over  { display: none; }
+    }
+  }
+
+  &.drag-n-drop-over-in .drag-n-drop-message {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
