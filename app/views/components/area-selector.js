@@ -326,7 +326,7 @@ const AreaSelector = React.createClass({
         }
 
         toolbarStyle = Object.assign({position: 'absolute', right: 0}, toolbarStyle);
-        if(this.contianer && (this.state.select.top + this.state.select.height + toolbarHeight) < this.contianer.clientHeight) {
+        if(this.state.select && this.contianer && (this.state.select.top + this.state.select.height + toolbarHeight) < this.contianer.clientHeight) {
             toolbarStyle.top = '100%';
         } else {
             toolbarStyle.bottom = 0;
