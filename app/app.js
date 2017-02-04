@@ -330,7 +330,7 @@ class App extends ReadyNotifier {
                     this.user.changeStatus(serverStatus || 'online')
                     this.socket.user = user;
                     this.emit(R.event.user_login_finish, {user: user, result: true});
-                }, 500);
+                }, 1000);
             }).catch(err => {
                 this.user = user;
                 let error = new Error('Cant not init user data path.');
