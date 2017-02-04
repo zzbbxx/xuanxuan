@@ -1,4 +1,5 @@
 import AppCore                           from '../app-core';
+import React                             from 'react';
 import {User, Member, Chat, ChatMessage} from '../entities';
 import fs                                from 'fs';
 import ZentaoAPI                         from '../api';
@@ -8,6 +9,7 @@ import Path                              from 'path';
 import PKG                               from '../../package.json';
 import Moment                            from 'moment';
 import Modal                             from 'Components/modal';
+import TextField                         from 'material-ui/TextField';
 
 const Helper = global.Helper;
 
@@ -316,8 +318,7 @@ class ChatApp extends AppCore {
             menu.push({
                 label: this.lang.common.rename,
                 click: () => {
-                    let newName = window.prompt(this.lang.chat.renameChat, chat.name);
-                    if(newName !== null && newName !== undefined) this.rename(chat, newName);
+                    this.renamePrompt(chat);
                 }
             });
         }
@@ -337,21 +338,59 @@ class ChatApp extends AppCore {
             },{
                 label: this.lang.chat.exitChat,
                 click: () => {
-                    Modal.show({
-                        modal: true,
-                        closeButton: false,
-                        content: this.lang.chat.exitChatConfirm.format(chat.getDisplayName(this.$app)),
-                        width: 360,
-                        actions: [{type: 'cancel'}, {type: 'submit'}],
-                        onSubmit: () => {
-                            this.exit(chat);
-                        }
-                    });
+                    this.exitConfirm(chat);
                 }
             });
         }
 
         return this.$app.createContextMenu(menu);
+    }
+
+    /**
+     * Open a confirm window ask user to exit chat
+     */
+    exitConfirm(chat) {
+        Modal.show({
+            modal: true,
+            closeButton: false,
+            content: this.lang.chat.exitChatConfirm.format(chat.getDisplayName(this.$app)),
+            width: 360,
+            actions: [{type: 'cancel'}, {type: 'submit'}],
+            onSubmit: () => {
+                this.exit(chat);
+            }
+        });
+    }
+
+    /**
+     * Open a prompt window for user rename a chat
+     */
+    renamePrompt(chat) {
+        let newName = null;
+        let content = <div>
+            <p>{this.lang.chat.renameTheChat.format(chat.getDisplayName(this.$app))}</p>
+            <TextField
+              ref={(e) => setTimeout(() => {
+                  e.focus();
+              }, 400)}
+              hintText={this.lang.chat.inputChatNewName}
+              onChange={e => {newName = e.target.value}}
+              defaultValue={chat.name}
+              fullWidth={true}
+            />
+        </div>;
+        Modal.show({
+            modal: true,
+            closeButton: false,
+            content: content,
+            width: 360,
+            actions: [{type: 'cancel'}, {type: 'submit', label: this.lang.common.rename}],
+            onSubmit: () => {
+                if(Helper.isNotEmptyString(newName) && newName !== chat.name) {
+                    this.rename(chat, newName);
+                }
+            }
+        });
     }
 
     /**

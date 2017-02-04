@@ -28,7 +28,8 @@
     "view": "查看",
     "completing": "即将完成",
     "later": "稍后",
-    "nextTime": "下次提醒我"
+    "nextTime": "下次提醒我",
+    "more": "更多"
   },
 
   "debug": {
@@ -55,6 +56,8 @@
 
   "chat": {
     "renameChat": "重命名会话",
+    "renameTheChat": "重命名会话 【{0}】",
+    "inputChatNewName": "输入新的会话名称",
     "resend": "重新发送",
     "newChat": "新的会话",
     "contacts": "联系人",
@@ -86,6 +89,7 @@
     "tempChat": "临时",
     "exitChat": "退出会话",
     "exitChatConfirm": "确定退出会话 【{0}】?",
+    "changeFontSize": "设置字体大小",
     "setPublic": "设为公共频道",
     "publicGroup": "公共频道",
     "groupNameFormat": "{0}（{1}人）",

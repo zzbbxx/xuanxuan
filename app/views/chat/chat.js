@@ -29,6 +29,11 @@ import Spinner             from 'Components/spinner';
 import Messager            from 'Components/messager';
 import Emojione            from 'Components/emojione';
 import Modal               from 'Components/modal';
+import IconMenu            from 'material-ui/IconMenu';
+import MenuItem            from 'material-ui/MenuItem';
+import MoreVertIcon        from 'material-ui/svg-icons/navigation/more-vert';
+import Divider             from 'material-ui/Divider';
+
 
 // display app component
 const ChatPage = React.createClass({
@@ -136,6 +141,22 @@ const ChatPage = React.createClass({
         App.chat.toggleStar(this.state.chat);
     },
 
+    _handleMakePublicMenuItemClick() {
+        App.chat.togglePublic(this.state.chat);
+    },
+
+    _handleExitChatMenuItemClick() {
+        App.chat.exitConfirm(this.state.chat);
+    },
+
+    _handleRenameChatMenuItemClick() {
+        App.chat.renamePrompt(this.state.chat);
+    },
+
+    _handleChangeFontSizeMenuItemClick() {
+
+    },
+
     onWindowResize(windowWidth) {
         this.setState({smallWindow: windowWidth < 900});
     },
@@ -185,17 +206,11 @@ const ChatPage = React.createClass({
             id: 'chat-history',
             removeAfterHide: true,
             header: Lang.chat.chatsManager,
-            content:  (win) => {
-                return <ChatsManager currentWindow={window} chat={this.state.chat}/>;
+            content:  () => {
+                return <ChatsManager chat={this.state.chat}/>;
             },
-            style: {width: '100%', height: '100%'},
-            actions: false,
-            onShow: () => {
-                document.title = Lang.chat.history + ' - ' + Lang.title;
-            },
-            onHide: () => {
-                document.title = Lang.title;
-            }
+            style: {left: 20, top: 20, right: 20, bottom: 0, position: 'absolute'},
+            actions: false
         });
     },
 
@@ -224,7 +239,7 @@ const ChatPage = React.createClass({
             main: {},
             header: {
               borderBottom: '1px solid ' + Theme.color.border, 
-              padding: '10px 15px 10px 50px',
+              padding: '10px 0 10px 50px',
               lineHeight: '28px',
               backgroundColor: Theme.color.pale2,
               zIndex: 9
@@ -249,7 +264,7 @@ const ChatPage = React.createClass({
               fontSize: '14px'
             },
             headerActions: {
-              right: 10
+              right: 0
             },
             messageList: {
               top: 49,
@@ -274,6 +289,9 @@ const ChatPage = React.createClass({
                 padding: '1px 3px',
                 borderRadius: 2,
             },
+            menuItem: {
+                fontSize: '13px'
+            }
         };
         
         let {
@@ -295,25 +313,30 @@ const ChatPage = React.createClass({
 
         let sidebarIconButton = null, sidebarStyle = STYLE.sidebar;
         if(!this.state.sidebar || this.state.smallWindow) {
-            if(!this.state.smallWindow) sidebarIconButton = <IconButton className="hint--bottom-left" data-hint={Lang.chat.openSidebar} onClick={() => this.setState({sidebar: true})}><SidebarIcon color={Theme.color.icon} hoverColor={Theme.color.primary1}/></IconButton>;
+            if(!this.state.smallWindow) sidebarIconButton = <IconButton className="hint--bottom" data-hint={Lang.chat.openSidebar} onClick={() => this.setState({sidebar: true})}><SidebarIcon color={Theme.color.icon} hoverColor={Theme.color.primary1}/></IconButton>;
             sidebarStyle = Object.assign({}, sidebarStyle, STYLE.sidebarHide);
         }
 
         let ChatStarIcon = chat.star ? StarIcon : StarBorderIcon;
         let chatIcon = chat.isOne2One ? <UserAvatar size={20} user={chat.getTheOtherOne(App.user)} style={STYLE.headAvatar}/> : chat.public ? <ChatsIcon style={STYLE.headerIcon}/> : <PersonOutlineIcon style={STYLE.headerIcon}/>;
         
-        // let offlineTip = null;
-        // if(chat.isOne2One) {
-        //     let theOtherOne = chat.getTheOtherOne(App.user);
-        //     if(theOtherOne && theOtherOne.isOffline) {
-        //         offlineTip = Lang.chat.userOfflineTipForChat
-        //             .replace('{0}', theOtherOne.displayName)
-        //             .replace('{1}', Lang.user.gendersPronouns[theOtherOne.gender] || Lang.user.gendersPronouns.default);
-        //     }
-        // }
-        
         let theOtherOne = chat.getTheOtherOne(App.user);
         let chatTitle = theOtherOne ? <div><UserStatus status={theOtherOne ? theOtherOne.status : null} />{chat.getDisplayName(App)}</div> : chat.getDisplayName(App);
+
+        let canMakePublic = chat.canMakePublic(App.user);
+        let chatMenu = <IconMenu
+            desktop={true}
+            iconButtonElement={<IconButton className="hint--bottom" data-hint={Lang.common.more}><MoreVertIcon color={Theme.color.icon} hoverColor={Theme.color.primary1} style={STYLE.icon} /></IconButton>}
+            anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+            targetOrigin={{horizontal: 'right', vertical: 'top'}}
+            listStyle={{paddingTop: 8, paddingBottom: 8}}
+            >
+            {canMakePublic ? <MenuItem onClick={this._handleMakePublicMenuItemClick} style={STYLE.menuItem} primaryText={chat.public ? Lang.chat.cancelSetPublic : Lang.chat.setPublic} /> : null}
+            {chat.canRename ? <MenuItem onClick={this._handleRenameChatMenuItemClick} style={STYLE.menuItem} primaryText={Lang.common.rename} />: null}
+            {chat.canExit ? <MenuItem onClick={this._handleExitChatMenuItemClick} style={STYLE.menuItem} primaryText={Lang.chat.exitChat} /> : null}
+            {canMakePublic || chat.canRename || chat.canExit ? <Divider /> : null}
+            <MenuItem onClick={this._handleChangeFontSizeMenuItemClick} style={STYLE.menuItem} primaryText={Lang.chat.changeFontSize} />
+        </IconMenu>;
 
         return <div {...other} style={style}>
           <div className='dock-full table-row'>
@@ -325,6 +348,7 @@ const ChatPage = React.createClass({
                   {chat.canInvite ? <div ref={(e) => this.inviteBtnWrapper = e} style={{display: 'inline-block'}}><IconButton className="hint--bottom" onClick={this._handleOnInviteBtnClick} data-hint={Lang.chat.inviteMember}><PersonAddIcon color={Theme.color.icon} hoverColor={Theme.color.primary1} style={STYLE.icon}/></IconButton></div> : null}
                   {<IconButton className="hint--bottom" onClick={this._handleHistoryBtnClick} data-hint={Lang.chat.history}><HistoryIcon color={Theme.color.icon} hoverColor={Theme.color.primary1} style={STYLE.icon}/></IconButton>}
                   {sidebarIconButton}
+                  {chatMenu}
                 </div>
               </header>
               <div className='dock-full' style={messageListStyle} ref='chatMessageBox'>
