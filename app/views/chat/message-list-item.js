@@ -148,6 +148,7 @@ const MessageListItem = React.createClass({
 
         let {
             message,
+            lastMessage,
             hideAvatar,
             hideTime,
             style,
@@ -167,6 +168,9 @@ const MessageListItem = React.createClass({
         let timeStr = date.format('HH:mm');
 
         if(message.isBroadcast) {
+            if(lastMessage && lastMessage.isBroadcast) {
+                style.marginTop = -18;
+            }
             return <div {...other} style={style}><span title={dateStr}>{timeStr}</span> &nbsp; {message.content}</div>
         }
 

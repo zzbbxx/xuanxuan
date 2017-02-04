@@ -45,7 +45,6 @@ const MessageList = React.createClass({
         let list = [];
         if(messages) {
             let lastMessage, lastMomentMessageDate;
-            
             messages.forEach(message => {
                     let isSameUser = lastMessage && lastMessage.user == message.user;
                 let date = Moment(message.date);
@@ -63,7 +62,7 @@ const MessageList = React.createClass({
                     list.push(<MessageListDivider key={message.id + '-date'} text={timeText} />);
                 }
 
-                list.push(<MessageListItem className='message' key={message.gid} message={message} hideAvatar={isSameUser && !isDiffDate} hideTime={isSameUser && isAMomentTime} />);
+                list.push(<MessageListItem className={'message message-t-' + message.type} key={message.gid} lastMessage={lastMessage} message={message} hideAvatar={isSameUser && !isDiffDate} hideTime={isSameUser && isAMomentTime} />);
 
                 lastMessage = message;
             });
