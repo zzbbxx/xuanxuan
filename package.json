@@ -1,6 +1,6 @@
 {
   "name": "xuanxuan",
-  "productName": "喧喧",
+  "productName": "Xuanxuan",
   "version": "0.1.0",
   "description": "企业即时通讯平台",
   "main": "main.js",
@@ -26,7 +26,7 @@
     "cleanup": "mop -v"
   },
   "build": {
-    "productName": "花花",
+    "productName": "喧喧",
     "appId": "com.cnezsoft.xuanxuan",
     "category": "public.app-category.tools",
     "dmg": {
