@@ -4,7 +4,6 @@ import './utils/helper';
 import './utils/input-context-menu';
 import React                  from 'react';
 import ReactDOM               from 'react-dom';
-import electron               from 'electron';
 import R                      from './resource';
 import AppContainer           from './views/app-container';
 import {ThemeProvider}        from 'Theme';

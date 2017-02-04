@@ -277,7 +277,9 @@ class AppRemote extends ReadyNotifier {
     }
 
     dockBounce(type = 'informational') {
-        ElectronApp.dock.bounce(type);
+        if(Helper.isOSX) {
+            ElectronApp.dock.bounce(type);
+        }
     }
 }
 
