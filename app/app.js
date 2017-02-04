@@ -654,16 +654,28 @@ class App extends ReadyNotifier {
         if(!filePath) {
             filePath = this.user.makeFilePath(UUID.v4() + '.png');
         }
-        if(hideCurrentWindow) {
-            this.browserWindow.hide();
-        }
-        return takeScreenshot({}).then(base64Image => {
+        let processImage = base64Image => {
             if(hideCurrentWindow) {
-            this.browserWindow.show();
-        }
+                this.browserWindow.show();
+            }
             if(onlyBase64) return Promise.resolve(base64Image);
             return Helper.saveImage(base64Image, filePath);
-        });
+        };
+        if(hideCurrentWindow) {
+            if(Helper.isWindowsOS) {
+                let hideWindowTask = () => {
+                    this.browserWindow.hide();
+                    return new Promise((resolve, reject) => {
+                        setTimeout(resolve, 600);
+                    });
+                };
+                return hideWindowTask().then(() => {
+                    return takeScreenshot({});
+                }).then(processImage);
+            }
+            this.browserWindow.hide();
+        }
+        return takeScreenshot({}).then(processImage);
     }
 
     /**

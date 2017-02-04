@@ -53,7 +53,9 @@ const createWindow = () => {
     let mainWindowOptions = {
         show: false,
         width: 1024,
-        height: 728
+        height: 728,
+        autoHideMenuBar: process.platform !== 'darwin',
+        backgroundColor: '#FFF'
     };
     if(DEBUG) {
         let display = electron.screen.getPrimaryDisplay();
@@ -314,12 +316,14 @@ app.on('activate', () => {
     if(DEBUG) console.info('Electron app activate.');
 });
 
-app.setAboutPanelOptions({
-    applicationName: lang.title,
-    applicationVersion: PKG.version,
-    copyright: 'Copyright (C) 2017 cnezsoft.com',
-    credits: 'Licence: ' + PKG.license,
-    version: DEBUG ? '[debug]' : ''
-});
+if(typeof app.setAboutPanelOptions === 'function') {
+    app.setAboutPanelOptions({
+        applicationName: lang.title,
+        applicationVersion: PKG.version,
+        copyright: 'Copyright (C) 2017 cnezsoft.com',
+        credits: 'Licence: ' + PKG.license,
+        version: DEBUG ? '[debug]' : ''
+    });
+}
 
 if(DEBUG) console.info('Electron main process finish.');

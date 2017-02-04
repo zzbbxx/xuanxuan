@@ -3,7 +3,6 @@ import RequestProgress  from 'request-progress';
 import ZentaoConfig     from './zentao-config';
 import Member           from './member';
 import FS               from 'fs';
-import FormData         from 'form-data';
 
 const ZENTAO_CONFIG_URL_SURFFIX = 'index.php?mode=getconfig';
 
@@ -97,7 +96,7 @@ function concalUrl(params, user) {
                 + `&${sessionName}=${sessionID}`;
             return url;
         }
-        
+
         url += `${moduleName}-${methodName}-`;
 
         if(moduleNameIdentifier === 'api') {
@@ -123,7 +122,7 @@ function concalUrl(params, user) {
                 }
             }
         }
-        
+
         if(url.endsWith('-')) {
             url = url.substr(0, url.length - 1)
         }
@@ -139,9 +138,9 @@ function concalUrl(params, user) {
             url += `&t=${viewType}`;
             return url;
         }
-        
+
         url += `m=${moduleName}&f=${methodName}`;
-        
+
         if(moduleNameIdentifier === 'api') {
             if(methodNameIdentifier === 'mobilegetlist') {
                 url += '&type=' + (params['type'] || 'full');
@@ -165,11 +164,11 @@ function concalUrl(params, user) {
                 }
             }
         }
-        
+
         if(!params['type']) {
             url += '&type=' + viewType;
         }
-        
+
         url += `&${sessionName}=${sessionID}`;
     }
 
