@@ -11,6 +11,9 @@ import Messager               from 'Components/messager';
 import lang                   from './lang';
 import EventCenter            from './event-center';
 import App                    from './app';
+import injectTapEventPlugin   from 'react-tap-event-plugin';
+
+injectTapEventPlugin();
 
 // prevent default behavior from changing page on dropped file
 let dragLeaveTask;
