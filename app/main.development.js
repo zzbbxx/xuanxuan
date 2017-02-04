@@ -326,4 +326,7 @@ if(typeof app.setAboutPanelOptions === 'function') {
     });
 }
 
-if(DEBUG) console.info('Electron main process finish.');
+if(DEBUG) {
+    global.mainWindow = mainWindow;
+    console.info('Electron main process finish.');
+}

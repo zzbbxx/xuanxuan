@@ -732,12 +732,8 @@ class App extends ReadyNotifier {
                 if(image) {
                     let filePath = this.user.makeFilePath(UUID.v4() + '.png');
                     Helper.saveImage(image.data, filePath).then(resolve).catch(reject);
-                    // delete temp files
-                    // Helper.deleteFile(file.path).catch(err => {
-                    //     if(DEBUG) console.warn('Delete file failed.', err);
-                    // });
                 } else {
-                    reject();
+                    if(DEBUG) console.log('No capture image.');
                 }
             });
             let takeScreenshots = () => {

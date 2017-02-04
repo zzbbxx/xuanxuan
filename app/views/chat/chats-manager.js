@@ -116,7 +116,6 @@ const ChatsManager = React.createClass({
                 id: 'loadingHistoryMessager',
                 closeButton: false,
                 content: Lang.chat.downloadingChatHistory,
-                contextDocument: this.props.currentWindow.document,
                 autoHide: false,
                 removeAfterHide: true
             });
