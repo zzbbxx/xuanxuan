@@ -149,7 +149,7 @@ class Modal extends Component {
                 transition: Theme.transition.normal('visibility', 'opacity'),
             },
             modal: {
-                transform: 'scale(.9)',
+                transform: 'scale(.9) translate(0, -100px)',
                 position: 'relative',
                 opacity: 0,
                 visibility: 'hidden',
@@ -157,7 +157,7 @@ class Modal extends Component {
                 zIndex: 1010,
                 maxWidth: '100%',
                 maxHeight: '100%',
-                top: -100,
+                top: 0,
             },
             closeButton: {
                 cursor: 'pointer',
@@ -206,15 +206,13 @@ class Modal extends Component {
                     transition: Theme.transition.normal('visibility', 'top', 'opacity', 'transform'),
                     opacity: 1,
                     visibility: 'visible',
-                    transform: 'scale(1)',
-                    top: 0,
+                    transform: 'scale(1) translate(0, 0)'
                 },
                 hide: {
                     transition: Theme.transition.normal('visibility', 'top', 'opacity', 'transform'),
-                    transform: 'scale(.9)',
+                    transform: 'scale(.9) translate(0, -100px)',
                     opacity: 0,
-                    visibility: 'visible',
-                    top: -60
+                    visibility: 'visible'
                 }
             }
         };
