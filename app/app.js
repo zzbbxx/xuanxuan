@@ -1,8 +1,8 @@
 import 'ion-sound';
 import {
-    app as ElectronApp,
     shell,
-    remote as Remote
+    remote as Remote,
+    screen as Screen
 }                         from 'electron';
 import Path               from 'path';
 import React              from 'react';
@@ -650,9 +650,12 @@ class App extends ReadyNotifier {
      * 
      * @param string filePath optional
      */
-    captureScreen(filePath, hideCurrentWindow, onlyBase64) {
+    captureScreen(options, filePath, hideCurrentWindow, onlyBase64) {
         if(!filePath) {
             filePath = this.user.makeFilePath(UUID.v4() + '.png');
+        }
+        if(!options) {
+            options = {};
         }
         let processImage = base64Image => {
             if(hideCurrentWindow) {
@@ -661,7 +664,7 @@ class App extends ReadyNotifier {
             if(onlyBase64) return Promise.resolve(base64Image);
             return Helper.saveImage(base64Image, filePath);
         };
-        if(hideCurrentWindow) {
+        if(hideCurrentWindow && this.browserWindow.isVisible()) {
             if(Helper.isWindowsOS) {
                 let hideWindowTask = () => {
                     this.browserWindow.hide();
@@ -670,19 +673,97 @@ class App extends ReadyNotifier {
                     });
                 };
                 return hideWindowTask().then(() => {
-                    return takeScreenshot({});
+                    return takeScreenshot(options);
                 }).then(processImage);
             }
             this.browserWindow.hide();
         }
-        return takeScreenshot({}).then(processImage);
+        return takeScreenshot(options).then(processImage);
     }
 
     /**
      * Open capture screen window
      */
-    openCaptureScreen(hideCurrentWindow) {
-        return this.captureScreen('', hideCurrentWindow).then(file => {
+    openCaptureScreen(screenSources = 0, hideCurrentWindow = false) {
+        let openCaptureScreenWindow = (file, display) => {
+            return new Promise((resolve, reject) => {
+                let captureWindow = new BrowserWindow({
+                    x: display ? display.bounds.x : 0,
+                    y: display ? display.bounds.y : 0,
+                    width: display ? display.bounds.width : screen.width,
+                    height: display ? display.bounds.height : screen.height,
+                    alwaysOnTop: !DEBUG,
+                    fullscreen: true,
+                    frame: true,
+                    show: false,
+                    title: Lang.chat.captureScreen + ' - ' + display.id,
+                    titleBarStyle: 'hidden',
+                    resizable: false,
+                });
+                if (DEBUG) {
+                    captureWindow.openDevTools();
+                }
+                captureWindow.loadURL(`file://${this.appRoot}/capture-screen.html#` + encodeURIComponent(file.path));
+                captureWindow.webContents.on('did-finish-load', () => {
+                    captureWindow.show();
+                    captureWindow.focus();
+                    resolve(captureWindow);
+                });
+            });
+        };
+        if(screenSources === 'all') {
+            let displays = Screen.getAllDisplays();
+            screenSources = displays.map(display => {
+                display.sourceId = display.id;
+                return display;
+            });
+        }
+        if(!Array.isArray(screenSources)) {
+            screenSources = [screenSources];
+        }
+        return new Promise((resolve, reject) => {
+            let captureScreenWindows = [];
+            Event.ipc.once(EVENT.capture_screen, (e, image) => {
+                if(captureScreenWindows) {
+                    captureScreenWindows.forEach(captureWindow => {
+                        captureWindow.close();
+                    });
+                }
+                if(image) {
+                    let filePath = this.user.makeFilePath(UUID.v4() + '.png');
+                    Helper.saveImage(image.data, filePath).then(resolve).catch(reject);
+                    // delete temp files
+                    // Helper.deleteFile(file.path).catch(err => {
+                    //     if(DEBUG) console.warn('Delete file failed.', err);
+                    // });
+                } else {
+                    reject();
+                }
+            });
+            let takeScreenshots = () => {
+                return Promise.all(screenSources.map(screenSource => {
+                    return this.captureScreen(screenSource, '').then(file => {
+                        return openCaptureScreenWindow(file, screenSource).then(captureWindow => {
+                            captureScreenWindows.push(captureWindow);
+                        });
+                    });
+                }));
+            };
+            hideCurrentWindow = hideCurrentWindow && this.browserWindow.isVisible();
+            if(hideCurrentWindow) {
+                this.browserWindow.hide();
+                setTimeout(() => {
+                    takeScreenshots().then(results => {
+                        if(hideCurrentWindow) {
+                            this.browserWindow.show();
+                        }
+                    });
+                }, Helper.isWindowsOS ? 600 : 0);
+            } else {
+                takeScreenshots();
+            }
+        });
+        return this.captureScreen({sourceId: screenSource}, '', hideCurrentWindow).then(file => {
             return new Promise((resolve, reject) => {
                 let captureWindow = new BrowserWindow({
                     x: 0,
@@ -697,18 +778,7 @@ class App extends ReadyNotifier {
                     titleBarStyle: 'hidden',
                     resizable: false,
                 });
-                Event.ipc.once(EVENT.capture_screen, (e, image) => {
-                    captureWindow.close();
-                    if(image) {
-                        let filePath = this.user.makeFilePath(UUID.v4() + '.png');
-                        Helper.saveImage(image.data, filePath).then(resolve).catch(reject);
-                        Helper.deleteFile(file.path).catch(err => {
-                            if(DEBUG) console.warn('Delete file failed.', err);
-                        });
-                    } else {
-                        reject();
-                    }
-                });
+
                 if (DEBUG) {
                     captureWindow.openDevTools();
                 }
@@ -773,6 +843,7 @@ class App extends ReadyNotifier {
 }
 
 const app = new App();
+
 global.App = app;
 
 export {config as Config, app as App, Lang}

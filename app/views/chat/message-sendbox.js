@@ -147,7 +147,7 @@ const MessageSendbox = React.createClass({
     },
 
     _handleCaptureScreen(e) {
-        App.openCaptureScreen().then(image => {
+        App.openCaptureScreen('all').then(image => {
             this.editbox.appendImage(image);
             this.editbox.focus();
         });
@@ -161,7 +161,7 @@ const MessageSendbox = React.createClass({
         }, {
             label: Lang.chat.hideCurrentWindowAndCaptureScreen,
             click: () => {
-                App.openCaptureScreen(true).then(image => {
+                App.openCaptureScreen('all', true).then(image => {
                     this.editbox.appendImage(image);
                     this.editbox.focus();
                 });

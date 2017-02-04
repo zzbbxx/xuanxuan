@@ -20,6 +20,7 @@ const onFinishCutImage = (image) => {
 let appElement = document.getElementById('appContainer');
 ReactDOM.render(<ThemeProvider>
   <ImageCutter 
+    hideAreaSelectorOnBlur={true}
     onFinish={onFinishCutImage} 
     sourceImage={sourceImageFile} />
 </ThemeProvider>, appElement);

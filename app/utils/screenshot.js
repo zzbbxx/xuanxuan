@@ -120,6 +120,27 @@ const takeScreenshot = ({ x = 0, y = 0, width = 0, height = 0, sourceId = 0 }) =
         });
 };
 
+const takeAllScreenshots = (options) => {
+    if(!options) {
+        options = electron.screen.getAllDisplays().map(item => {
+            return {
+                x: 0,
+                y: 0,
+                width: item.bounds.width,
+                height: item.bounds.height,
+                sourceId: item.id
+            };
+        });
+    }
+    if(Array.isArray(options)) {
+        return Promise.all(options.map(option => {
+            return takeScreenshot(option);
+        }));
+    } else {
+        return takeScreenshot(options);
+    }
+};
+
 const captureVideo = ({ x, y, width, height, sourceId }) => {
     let display = getDisplay(sourceId);
     const availTop = screen.availTop - display.bounds.y;
@@ -132,5 +153,5 @@ const captureVideo = ({ x, y, width, height, sourceId }) => {
         });
 };
 
-export { takeScreenshot, captureVideo };
+export { takeScreenshot, captureVideo, takeAllScreenshots };
 export default takeScreenshot;

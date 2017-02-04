@@ -12,6 +12,11 @@ import Helper              from 'Helper';
 
 const ImageCutter = React.createClass({
     mixins: [Hotkey],
+    getInitialState() {
+        return {
+            hover: true
+        };
+    },
     onHotkeyPress(e) {
         console.log('onHotkeyPress', e);
         if(e) {
@@ -57,6 +62,7 @@ const ImageCutter = React.createClass({
             style,
             onFinish,
             onCancel,
+            hideAreaSelectorOnBlur,
             ...other
         } = this.props;
 
@@ -87,8 +93,8 @@ const ImageCutter = React.createClass({
 
         let toolbar = <Paper zDepth={4} style={{minWidth: 90, backgroundColor: Theme.color.pale1, padding: '0 5px', marginTop: 5, marginBottom: 5}}><CloseIcon style={toolbarIconStyle} color={Theme.color.negative} hoverColor={ColorManipulator.darken(Theme.color.negative, 0.1)} onClick={this._handleCloseButtonClick} /><CheckIcon style={toolbarIconStyle} color={Theme.color.positive} hoverColor={ColorManipulator.darken(Theme.color.positive, 0.1)}  onClick={this._handleOkButtonClick} /></Paper>;
 
-        return <div {...other} className='fix-full user-app-no-dragable' style={style}>
-            <AreaSelector onSelectArea={this._handleSelectArea} style={{zIndex: 2}} className='dock-full' img={imageUrl} toolbarHeight={50} toolbar={toolbar} />
+        return <div {...other} className='fix-full user-app-no-dragable' style={style} onMouseEnter={e => {this.setState({hover: true})}} onMouseLeave={e => {this.setState({hover: false})}}>
+            <AreaSelector onSelectArea={this._handleSelectArea} style={{zIndex: 2, display: this.state.hover ? 'block' : 'none'}} className='dock-full' img={imageUrl} toolbarHeight={50} toolbar={toolbar} />
             <CloseIcon style={closeIconStyle} color={Theme.color.canvas} hoverColor={ColorManipulator.darken(Theme.color.canvas, 0.1)} onClick={this._handleCloseButtonClick} />
         </div>
     }
