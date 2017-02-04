@@ -1,4 +1,3 @@
-import StringFormat from 'string-format';
 import fs           from 'fs';
 import os           from 'os';
 import Marked       from 'marked';
@@ -19,14 +18,32 @@ Marked.setOptions({
 const OS_PLATFORM = os.platform();
 let _guid = 0;
 
-StringFormat.extend(String.prototype, {
-    escape: function(s) {
-        return s.replace(/[&<>"'`]/g, function(c) {
-            return '&#' + c.charCodeAt(0) + ';';
-        })
-    },
-    // upper: function(s) { return s.toUpperCase(); }
-});
+// String format prototype method
+if (!String.prototype.format) {
+    String.prototype.format = function (args) {
+        var result = this;
+        if (arguments.length > 0) {
+            var reg;
+            if (arguments.length == 1 && typeof (args) == "object") {
+                for (var key in args) {
+                    if (args[key] !== undefined) {
+                        reg = new RegExp("({" + key + "})", "g");
+                        result = result.replace(reg, args[key]);
+                    }
+                }
+            } else {
+                for (var i = 0; i < arguments.length; i++) {
+                    if (arguments[i] !== undefined) {
+                        reg = new RegExp("({[" + i + "]})", "g");
+                        result = result.replace(reg, arguments[i]);
+                    }
+                }
+            }
+        }
+        return result;
+    };
+}
+
 
 // set global variables
 // global.document = window.document;
