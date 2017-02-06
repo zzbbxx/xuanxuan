@@ -27,7 +27,8 @@ const MessageListItem = React.createClass({
     _checkResendMessage() {
         let message = this.props.message;
         if(message.needCheckResend) {
-            setTimeout(() => {
+            clearTimeout(this.checkResendTask);
+            this.checkResendTask = setTimeout(() => {
                 if(message.needResend) {
                     this.forceUpdate();
                 }
@@ -41,6 +42,10 @@ const MessageListItem = React.createClass({
 
     componentDidMount() {
         this._checkResendMessage();
+    },
+
+    componentWillUnmount() {
+        clearTimeout(this.checkResendTask);
     },
 
     _handleResendBtnClick() {
