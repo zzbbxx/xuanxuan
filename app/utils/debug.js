@@ -5,7 +5,7 @@ if(DEBUG) {
     // Mute react warning.
     console._error = console.error;
     console.error = (errMessage, ...args) => {
-        if(errMessage && errMessage.indexOf('Warning: Unknown prop') === 0) {
+        if(typeof errMessage === 'string' && errMessage.indexOf('Warning: Unknown prop') === 0) {
             return;
         }
         return console._error(errMessage, ...args);
