@@ -79,8 +79,7 @@ const MessageListItem = React.createClass({
                 backgroundColor: Theme.color.pale3,
                 padding: 8,
                 color: Theme.color.accent3,
-                textAlign: 'center',
-                fontSize: fontSize.title
+                textAlign: 'center'
             },
             normal: {
                 paddingLeft: 40,
@@ -177,7 +176,7 @@ const MessageListItem = React.createClass({
             if(lastMessage && lastMessage.isBroadcast) {
                 style.marginTop = -18;
             }
-            return <div {...other} style={style}><small><span title={dateStr}>{timeStr}</span> &nbsp; {message.content}</small></div>
+            return <div {...other} style={style}><div style={{fontSize: fontSize.title}}><span title={dateStr}>{timeStr}</span> &nbsp; {message.content}</div></div>
         }
 
         let avatarElement = null, headerElement;
@@ -192,7 +191,7 @@ const MessageListItem = React.createClass({
             if(!message.sender) message.findSender(App.dao);
             let target = message.sender ? 'Member/' + message.sender.id : '#';
             avatarElement = <UserAvatar size={30} className='link-app message-avatar' data-target={target} user={message.sender} style={STYLE.avatar}/>;
-            headerElement = <div style={STYLE.title}><strong className='link-app message-title' data-target={message.sender ? '@Member/' + message.sender.account : '#'}>{message.sender ? message.sender.displayName : ('用户<' + message.user + '>')}</strong> &nbsp; <small style={STYLE.time} title={dateStr}>{timeStr}</small></div>;
+            headerElement = <div style={STYLE.title}><strong title={'@' + message.sender.account} style={{color: Theme.color.primary1}} className='link-app message-title' data-target={message.sender ? '@Member/' + message.sender.account : '#'}>{message.sender ? message.sender.displayName : ('用户<' + message.user + '>')}</strong> &nbsp; <small style={STYLE.time} title={dateStr}>{timeStr}</small></div>;
         }
 
         let messageContent = null;
