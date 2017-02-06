@@ -3,7 +3,6 @@ import React, {
     PropTypes
 }                             from 'react';
 import ReactDOM               from 'react-dom';
-import PureRenderMixin        from 'react-addons-pure-render-mixin';
 import ColorManipulator       from 'Utils/color-helper';
 import Colors                 from 'Utils/material-colors';
 import CloseIcon              from 'material-ui/svg-icons/navigation/close';
