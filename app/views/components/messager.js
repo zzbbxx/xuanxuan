@@ -7,6 +7,7 @@ import ColorManipulator         from 'Utils/color-helper';
 import CloseIcon                from 'material-ui/svg-icons/navigation/close';
 import Spinner                  from './spinner';
 import Theme, {ThemeProvider}   from '../../theme';
+import Helper                   from 'Helper';
 
 const STAGE = {
     init: 0,
@@ -29,6 +30,7 @@ const Messager = React.createClass({
 
     getDefaultProps() {
         return {
+            removeAfterHide: true,
             color: Colors.darkBlack,
             closeButton: true,
             autoHide: 6000,
@@ -276,10 +278,19 @@ Messager.update = function(content, id = 'globalMessager') {
  * @param  {String}  id
  * @return {Void}
  */
-Messager.hide = function(id = 'globalMessager') {
-    let messager = Messager.global[id];
-    if(messager) {
-        messager.hide();
+Messager.hide = function(id = '!all') {
+    if(id == '!all') {
+        Object.keys(Messager.global).forEach(msgId => {
+            let messager = Messager.global[msgId];
+            if(messager) {
+                messager.hide();
+            }
+        });
+    } else {
+        let messager = Messager.global[id];
+        if(messager) {
+            messager.hide();
+        }
     }
 };
 

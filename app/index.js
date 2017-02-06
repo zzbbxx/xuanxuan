@@ -66,6 +66,11 @@ App.ready(() => {
     loadingElement.parentNode.removeChild(loadingElement);
 });
 
-EventCenter.on(R.event.ui_messager, options => {
-    Messager.show(options);
+EventCenter.on(R.event.ui_messager, (options, ...args) => {
+    if(typeof option === 'string') {
+        Messager[option].call(...args);
+    } else {
+        Messager.hide();
+        Messager.show(options);
+    }
 });
