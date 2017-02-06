@@ -86,6 +86,7 @@ const ImageMessage = React.createClass({
         let image = message.imageContent;
 
         if(image.type === 'base64' || image.type === 'emoji') return;
+        if(!App.user.dataPath) return;
 
         let iAmSender = message.user === App.user.id;
         let imageState = this.state.imageState; // the old state
@@ -159,7 +160,7 @@ const ImageMessage = React.createClass({
             return <img src={image.content} />;
         } else if(image.type === 'emoji') {
             return <div className="emojione-hd" dangerouslySetInnerHTML={{__html: Emojione.toImage(image.content)}}/>;
-        } else {
+        } else if(App.user.dataPath) {
             let imagePath = Path.join(App.user.imagesPath, image.name).replace(/\\/g, '/');
             let imageState = this.state.imageState;
 
@@ -249,6 +250,8 @@ const ImageMessage = React.createClass({
             } else {
                 return <img style={{margin: '4px 0 8px'}} src={'file://' + imagePath + '?v=' + Helper.guid}/>;
             }
+        } else {
+            return <ImageBrokenIcon color={Theme.color.file.image} style={{display: 'block'}} />;
         }
     }
 });
