@@ -50,6 +50,8 @@ class ListGroup extends Component {
             children,
             expand,
             heading,
+            headingStyle,
+            headingIcon,
             items,
             ...other
         } = this.props;
@@ -70,7 +72,14 @@ class ListGroup extends Component {
         };
 
         return <List {...other}>
-            <ListItem key={'group-header-' + Helper.guid} onClick={this.toggle.bind(this)} primaryText={heading} leftIcon={<ArrowDownIcon className={expand ? 'rotate-360' : 'rotate-270'} color={Theme.color.primary1} style={STYLE.headingIcon} />} style={STYLE.heading}/>
+            <ListItem
+                key={'group-header-' + Helper.guid}
+                onClick={this.toggle.bind(this)}
+                primaryText={heading}
+                open={headingIcon !== undefined ? expand : null}
+                leftIcon={headingIcon !== undefined ? headingIcon : <ArrowDownIcon className={expand ? 'rotate-360' : 'rotate-270'} color={Theme.color.primary1} style={STYLE.headingIcon} />}
+                style={Object.assign({}, STYLE.heading, headingStyle)}
+            />
             {expand ? (items || children) : null}
         </List>
     }
