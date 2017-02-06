@@ -13,6 +13,7 @@ import EventListener          from 'react-event-listener';
 import Lang                   from '../../lang';
 import Theme, {ThemeProvider} from '../../theme';
 import Spinner                from './spinner';
+import Helper                 from 'Helper';
 
 const STAGE = {
     init: 0,
@@ -21,7 +22,7 @@ const STAGE = {
     hidden: 3
 };
 
-class Modal extends Component {
+class ModalView extends Component {
 
     state = {
         stage: STAGE.init,
@@ -43,13 +44,15 @@ class Modal extends Component {
         footer: PropTypes.any,
         animated: PropTypes.bool,
         actions: PropTypes.any,
-        removeAfterHide: PropTypes.any
+        removeAfterHide: PropTypes.any,
+        show: PropTypes.bool
     };
 
     static defaultProps = {
         closeButton: true,
         animated: true,
         modal: false,
+        show: true,
         actions: [
             {type: 'cancel'},
             {type: 'submit'},
@@ -71,7 +74,7 @@ class Modal extends Component {
         }
     }
 
-    hide() {
+    hide(callback) {
         this.setState({stage: STAGE.hide});
 
         this.props.onHide && this.props.onHide(this);
@@ -79,6 +82,9 @@ class Modal extends Component {
         this.setStateTimeout = setTimeout(() => {
             this.setState({stage: STAGE.hidden});
             this.props.afterHide && this.props.afterHide(this);
+            if(typeof callback === 'function') {
+                callback(this);
+            }
         }, 320);
     }
 
@@ -112,7 +118,9 @@ class Modal extends Component {
     }
 
     componentDidMount() {
-        this.show();
+        if(this.props.show) {
+            this.show();
+        }
         this._resetContentSize();
     }
 
@@ -221,6 +229,7 @@ class Modal extends Component {
             children,
             content,
             style,
+            contentStyle,
             header,
             footer,
             modal,
@@ -239,8 +248,8 @@ class Modal extends Component {
                 if(action.label === undefined) {
                     action.label = action.type === 'submit' ? Lang.common.confirm : action.type === 'cancel' ? Lang.common.cancel : 'SUBMIT';
                 }
-                action.primary = action.type === 'primary';
-                action.secondary = action.type === 'submit' || action.type === 'secondary';
+                action.primary = action.type === 'primary' || action.type === 'submit';
+                action.secondary = action.type === 'secondary';
                 action.onClick = this._handleActionButtonClick.bind(this, action.type, action.click);
                 action.key = buttonsIndex++;
                 return <FlatButton {...action} />
@@ -267,7 +276,7 @@ class Modal extends Component {
               <Paper ref={(e) => this.modal = e} style={style} zDepth={4}>
                 {closeButton ? <CloseIcon onClick={this.hide.bind(this)} color={ColorManipulator.fade(Theme.color.icon, 0.5)} hoverColor={Theme.color.icon} style={STYLE.closeButton} /> : null}
                 {header !== undefined ? <header ref={e => this.modalHeader = e} style={STYLE.header}>{header}</header> : null}
-                <div style={STYLE.content} ref={e => this.modalContent = e}>
+                <div style={Object.assign({}, STYLE.content, contentStyle)} ref={e => this.modalContent = e}>
                   {typeof(content) === 'function' ? content() : content || <Spinner />}
                   {children ? <div>{children}</div> : null}
                 </div>
@@ -280,6 +289,43 @@ class Modal extends Component {
               />
             </div>
         </ThemeProvider>
+    }
+}
+
+class Modal extends Component {
+
+    show(options) {
+        this.setState({options});
+    }
+
+    hide(remove) {
+        Modal.hide(this.id, remove);
+    }
+
+    isShow() {
+        return Modal.isShow(this.id);
+    }
+
+    toggle(options) {
+        options = Object.assign({}, options, {id: this.id});
+        return Modal.toggle(options);
+    }
+
+    render() {
+        let options = Object.assign({
+            id: (this.id || 'modal-' + Helper.guid),
+            show: false,
+            removeAfterHide: false
+        }, this.state.options || this.props);
+        if(options.children) {
+            options.content = options.children;
+            delete options.children;
+        }
+        if(!this.id) {
+            this.id = options.id;
+        }
+        Modal.show(options);
+        return <div data-desc={'Modal keeper ' + this.id}></div>;
     }
 }
 
@@ -324,7 +370,14 @@ Modal.show = function(options) {
         }
     };
 
-    ReactDOM.render(<Modal {...options} afterHide={afterHide} afterShow={afterShow} />, container);
+    ReactDOM.render(<ModalView {...options} afterHide={afterHide} afterShow={afterShow} />, container);
+};
+
+Modal.remove = (id = 'globalModal') => {
+    let containerElement = document.getElementById(id + 'Container');
+    ReactDOM.unmountComponentAtNode(containerElement);
+    containerElement.parentNode.removeChild(containerElement);
+    delete Modal.global[id];
 };
 
 /**
@@ -332,9 +385,13 @@ Modal.show = function(options) {
  * @param  {String}  id
  * @return {Void}
  */
-Modal.hide = function(id = 'globalModal') {
+Modal.hide = function(id = 'globalModal', remove = false) {
     let modal = Modal.global[id];
-    if(modal) modal.hide(); 
+    if(modal) modal.hide(() => {
+        if(remove) {
+            Modal.remove(id);
+        }
+    }); 
 };
 
 /**
@@ -365,4 +422,5 @@ Modal.toggle = function(options) {
 Modal.open = Modal.show;
 Modal.dismiss = Modal.close = Modal.hide;
 
+export {ModalView};
 export default Modal;
