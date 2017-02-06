@@ -1,14 +1,14 @@
-import Net              from 'net';
-import SocketMessage    from './socket-message';
-import FileReadTask     from './file-read-task';
-import R, {EVENT}       from '../resource';
+import Net                 from 'net';
+import SocketMessage       from './socket-message';
+import FileReadTask        from './file-read-task';
+import R, {EVENT}          from '../resource';
 import {
     Member,
     Entity,
     Chat,
     ChatMessage
-}                       from './entities';
-import ReadyNotifier    from './ready-notifier';
+}                          from './entities';
+import ReadyNotifier       from './ready-notifier';
 
 if(DEBUG && process.type !== 'renderer') {
     console.error('Socket must run in renderer process.');
@@ -31,7 +31,7 @@ class Socket extends ReadyNotifier {
         this.pingInterval = 1000 * 60 * 10;
         this.app    = app;
         this.user   = user;
-        this.emiter = app.event;
+        this.emiter = app;
         this.host   = this.user.host || '127.0.0.1';
         this.port   = this.user.port;
         this.lastHandTime = 0;
@@ -388,9 +388,9 @@ class Socket extends ReadyNotifier {
      * @return {Void}
      */
     _handleClose(e) {
+        if(this._markDestroy) return;
         if(DEBUG) console.log('%cSOCKET CLOSE', 'color: purple', e);
         this._emit(EVENT.socket_close, e);
-        this.user.status = 'offline';
     }
 
     /**
@@ -398,6 +398,7 @@ class Socket extends ReadyNotifier {
      * @return {Void}
      */
     _handleError(e) {
+        if(this._markDestroy) return;
         if(DEBUG) console.error('SOCKET ERROR', e);
         this._emit(EVENT.socket_error, e);
     }
@@ -407,9 +408,9 @@ class Socket extends ReadyNotifier {
      * @return {Void}
      */
     _handleTimeout(e) {
+        if(this._markDestroy) return;
         if(DEBUG) console.error('SOCKET TIMEOUT', e);
         this._emit(EVENT.socket_timeout, e);
-        this.user.status = 'offline';
     }
 
     /**
@@ -418,6 +419,7 @@ class Socket extends ReadyNotifier {
      */
     destroy() {
         this.stopPing();
+        this._markDestroy = true;
         this.client.destroy();
     }
 }

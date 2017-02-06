@@ -41,6 +41,7 @@ const Page = React.createClass({
             status,
             dotStyle,
             textStyle,
+            text,
             type,
             ...other
         } = this.props;
@@ -51,7 +52,7 @@ const Page = React.createClass({
 
         return <span {...other}>
             {type !== 'text' ? <span style={dotStyle}></span> : null}
-            {type !== 'dot' ? <span style={textStyle}>{Lang.user.status[status]}</span> : null}
+            {type !== 'dot' ? <span style={textStyle}>{text !== undefined ? text : Lang.user.status[status]}</span> : null}
         </span>
     }
 });

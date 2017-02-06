@@ -23,6 +23,7 @@ import ContactView        from './views/contacts/contact';
 import ConfirmCloseWindow from './views/windows/confirm-close-window';
 import Modal              from 'Components/modal';
 import Lang               from 'Lang';
+import Theme              from 'Theme';
 import takeScreenshot     from 'Utils/screenshot';
 
 if(DEBUG && process.type !== 'renderer') {
@@ -134,24 +135,44 @@ class App extends ReadyNotifier {
             });
         });
 
+        let onSocketChange = 
+
         this.on(R.event.socket_close, e => {
-            this.user.changeStatus(this.user.isOnline ? USER_STATUS.disconnect : USER_STATUS.unverified, Lang.errors.SOCKET_CLOSE);
+            this.user.changeStatus(this.user.isOnline ? USER_STATUS.disconnect : USER_STATUS.unverified, Lang.errors.SOCKET_CLOSE, 'socket_error');
+        });
+        this.on(R.event.socket_error, e => {
+            this.user.changeStatus(this.user.isOnline ? USER_STATUS.disconnect : USER_STATUS.unverified, Lang.errors.SOCKET_ERROR, 'socket_error');
+        });
+        this.on(R.event.socket_timeout, e => {
+            this.user.changeStatus(this.user.isOnline ? USER_STATUS.disconnect : USER_STATUS.unverified, Lang.errors.SOCKET_TIMEOUT, 'socket_error');
         });
 
         this.on(R.event.net_online, () => {
             if(this.user.isDisconnect) {
                 this.emit(R.event.ui_messager, {
+                    id: 'autoLoginingMessager',
                     clickAway: false,
                     autoHide: false,
-                    content: Lang.login.autoLogining,
-                    color: Theme.color.negative
+                    content: Lang.login.autoLogining
                 });
                 this.login();
             }
         });
 
+        this.on(R.event.net_offline, () => {
+            if(this.user.isOnline) {
+                this.user.changeStatus(USER_STATUS.disconnect, Lang.errors.NET_OFFLINE, 'net_offline');
+                this.emit(R.event.ui_messager, {
+                    clickAway: false,
+                    autoHide: false,
+                    content: Lang.errors.NET_OFFLINE,
+                    color: Theme.color.negative
+                });
+            }
+        });
+
         this.on(R.event.user_kickoff, e => {
-            this.user.changeStatus(USER_STATUS.unverified, Lang.errors.KICKOFF);
+            this.user.changeStatus(USER_STATUS.unverified, Lang.errors.KICKOFF, 'kickoff');
         });
 
         this.browserWindow.on('focus', () => {
@@ -264,6 +285,7 @@ class App extends ReadyNotifier {
         if(!user) user = this.user;
         else user = this.resetUser(user);
 
+        this.isUserLogining = true;
         this.emit(EVENT.user_login_begin, user);
 
         this.event.once(EVENT.user_login_message, (serverUser, error) => {
@@ -339,12 +361,14 @@ class App extends ReadyNotifier {
                     this.user = user;
                     this.user.changeStatus(serverStatus || 'online')
                     this.socket.user = user;
+                    this.isUserLogining = false;
                     this.emit(R.event.user_login_finish, {user: user, result: true});
-                }, 1000);
+                }, 2000);
             }).catch(err => {
                 this.user = user;
                 let error = new Error('Cant not init user data path.');
                 error.code = 'USER_DATA_PATH_DENY';
+                this.isUserLogining = false;
                 this.emit(R.event.user_login_finish, {user: user, result: false, error});
                 if(DEBUG) console.error(error);
             });
@@ -353,6 +377,7 @@ class App extends ReadyNotifier {
                 this.socket.destroy();
             }
             this.user = user;
+            this.isUserLogining = false;
             this.emit(R.event.user_login_finish, {user: user, result: false, error});
         }
     }

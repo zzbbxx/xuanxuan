@@ -350,7 +350,7 @@ class User extends Member {
     /**
      * Change user status
      */
-    changeStatus(status, msg) {
+    changeStatus(status, msg, type) {
         if(typeof status === 'string') {
             status = USER_STATUS[status.toLowerCase()];
         }
@@ -361,7 +361,7 @@ class User extends Member {
                 let newUserStatusIdentify = this.identify + '$' + status;
                 if(lastUserStatusIdentify !== newUserStatusIdentify) {
                     Events._lastStatusIdentify = newUserStatusIdentify;
-                    Events.emit(R.event.user_status_change, this, msg);
+                    Events.emit(R.event.user_status_change, this, msg, type);
                 }
             }
         }

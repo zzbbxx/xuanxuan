@@ -47,7 +47,7 @@ const AppContainer = React.createClass({
             return this.setState({login: App.user.isUnverified});
         });
 
-        this._handleUserStatusChangeEvent = App.on(R.event.user_status_change, (user, message) => {
+        this._handleUserStatusChangeEvent = App.on(R.event.user_status_change, (user, message, type) => {
             let isUnverified = App.user.isUnverified;
             this.setState({login: isUnverified});
             if(message && !isUnverified) {

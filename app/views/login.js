@@ -91,7 +91,7 @@ const STYLE = {
     }
 }
 
-const LOGIN_TIME_OUT = 10000;
+const LOGIN_TIME_OUT = 15000;
 
 /**
  * React component SwapUser
@@ -180,7 +180,7 @@ const Login = React.createClass({
     },
 
     handleSubmitClick() {
-        this.setState({message: ''});
+        this.setState({message: '', logining: true});
         App.login(this.user);
         clearTimeout(this.loginTimeoutCheck);
         this.loginTimeoutCheck = setTimeout(() => {
@@ -258,7 +258,6 @@ const Login = React.createClass({
 
         this._handleUserLoginFinishEvent = App.on(R.event.user_login_finish, e => {
             clearTimeout(this.loginTimeoutCheck);
-
             if(!e.result) {
                 this.state.message = e.error.reason || Lang.errors[e.error.code] || e.error.message;
                 this.state.messageColor = Colors.red500;
@@ -268,20 +267,18 @@ const Login = React.createClass({
             this.setState({logining: false});
         });
 
-        this._handleUserStatusChangeEvent = App.on(R.event.user_status_change, (user, message) => {
-            let isUnverified = App.user.isUnverified;
-            this.setState({logining: isUnverified});
+        this._handleUserStatusChangeEvent = App.on(R.event.user_status_change, (user, message, type) => {
             if(message) {
                 this.setState({message});
             }
-            if(isUnverified) {
+            if(App.user.isUnverified) {
                 this.granim.play();
             } else this.granim.pause();
         });
 
         this._handleSocketCloseEvent = App.on(R.event.socket_close, () => {
-            if(this.state.logining) {
-                this.setState({logining: false, message: Lang.errors.WRONG_CONNECT});
+            if(!this.state.logining) {
+                this.setState({logining: true, message: Lang.errors.WRONG_CONNECT});
             }
         });
 
@@ -329,7 +326,7 @@ const Login = React.createClass({
             <Paper zDepth={2} style={STYLE.paper}>
                 <Message content={this.state.message} color={this.state.messageColor} style={STYLE.message} />
                 <form id="loginForm">
-                  <div className='relative'>
+                  <div className="relative">
                     <TextField
                       name="address"
                       ref="address"

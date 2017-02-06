@@ -46,6 +46,9 @@
     "WRONG_DATA": "服务器返回的数据不正确。",
     "WRONG_STATUS": "服务器操作失败。",
     "SOCKET_CLOSE": "服务器连接已断开，请重新登录。",
+    "SOCKET_ERROR": "服务器连接失败，发生了未知错误。",
+    "SOCKET_TIMEOUT": "服务器连接超时。",
+    "NET_OFFLINE": "互联网连接已断开。",
     "KICKOFF": "当前账号已在其他地方登录。如果不是本人操作，请及时修改密码",
     "USER_DATA_PATH_DENY": "系统错误，无法使用用户目录",
     "USER_DENY_ATTACT_UPLOAD": "你没有权限上传文件到服务器，请联系管理员。"
@@ -94,6 +97,7 @@
     "changeFontSize": "设置字体大小",
     "setPublic": "设为公共频道",
     "publicGroup": "公共频道",
+    "publicGroupTip": "公共频道是可以被所有人搜索到并且允许自由加入的讨论组。",
     "groupNameFormat": "{0}（{1}人）",
     "cancelSetPublic": "取消设为公共频道",
     "pinnedInList": "在列表上显示",

@@ -30,7 +30,7 @@ const userStatus = [
     USER_STATUS.online,
     USER_STATUS.busy,
     USER_STATUS.away,
-    USER_STATUS.disconnect,
+    USER_STATUS.offline,
 ];
 
 const UserMenu = React.createClass({
@@ -47,7 +47,11 @@ const UserMenu = React.createClass({
     },
 
     handleStatusItemClick(status) {
-        App.changeUserStatus(status);
+        if(status === 'offline' || status === 'unverified') {
+            App.user.changeStatus(USER_STATUS.unverified);
+        } else {
+            App.changeUserStatus(status);
+        }
         this.componentClickAway();
     },
 
@@ -111,7 +115,7 @@ const UserMenu = React.createClass({
                         if(statusValue === thisStatus) {
                             rightIcon = <CheckIcon style={{margin: 0}} />
                         }
-                        return <MenuItem key={statusName} primaryText={<UserStatus textStyle={STYLE.status.inmenu.text} dotStyle={STYLE.status.inmenu.dot} type='dot-text' status={statusName} />} rightIcon={rightIcon} onClick={that.handleStatusItemClick.bind(null, statusName)}/>
+                        return <MenuItem key={statusName} primaryText={<UserStatus textStyle={STYLE.status.inmenu.text} text={statusValue === USER_STATUS.offline ? Lang.user.status.offline : Lang.user.status[statusName]} dotStyle={STYLE.status.inmenu.dot} type='dot-text' status={statusName} />} rightIcon={rightIcon} onClick={that.handleStatusItemClick.bind(null, statusName)}/>
                     })
                 }
                 <MenuDivider />
