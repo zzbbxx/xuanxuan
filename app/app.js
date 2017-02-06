@@ -231,7 +231,7 @@ class App extends ReadyNotifier {
         const oldIdentify = this._user ? this._user.identify : null;
 
         if(!(user instanceof User)) {
-            user = new User(user);
+            user = this.config.getUser(user);
         }
         user.listenStatus = true;
         this._user = user;
@@ -245,6 +245,17 @@ class App extends ReadyNotifier {
         // if(notifyRemote) this.ipc.send(EVENT.app_user, this.plainUser, this.config);
 
         return user;
+    }
+
+    /**
+     * Save user
+     */
+    saveUser(user) {
+        if(user) {
+            this.resetUser(user, true);
+        } else {
+            this.config.save(this.user);
+        }
     }
 
     /**

@@ -124,13 +124,22 @@ class Config extends ReadyNotifier {
      * @returns {User}
      */
     getUser(identify) {
-        let user;
+        let newUserValue = null;
+        if(typeof identify === 'object') {
+            newUserValue = Object.assign({}, Helper.plain(identify));
+            if(identify instanceof User) {
+                identify = identify.identify;
+            } else {
+                identify = (new User(identify)).identify;
+            }
+        }
+        let user = null;
         if(identify) {
             user = this.users[identify];
         } else {
             user = this.userList[0];
         }
-        return user ? new User(user) : null;
+        return user ? new User(Object.assign(user, newUserValue)) : new User(newUserValue);
     }
 
     get user() {
