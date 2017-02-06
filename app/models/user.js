@@ -29,6 +29,12 @@ const DEFAULT = {
             },
             sidebar: {
                 width: 300
+            },
+            fontSize: {
+                name: '1em',
+                time: '0.9230769231em',
+                lineHeight: 1.53846153846,
+                size: 13
             }
         },
 
@@ -88,6 +94,9 @@ class User extends Member {
             Object.assign(this.config, objOrKey);
         } else {
             this.config[objOrKey] = value;
+        }
+        if(this.listenStatus) {
+            Events.emit(R.event.user_config_change, this, objOrKey, value);
         }
     }
 

@@ -8,6 +8,8 @@ import ReactDOM            from 'react-dom';
 import StayBottom          from '../mixins/stay-bottom';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import ChatMessage         from '../../models/chat/chat-message';
+import R                   from 'Resource';
+import {defaultFontSize}   from './change-font-size';
 
 const STYLE = {
     main: {backgroundColor: Theme.color.canvas, padding: '10px 10px 0'}
@@ -29,6 +31,22 @@ function isAMomentAgoTime(time1, time2, minutes) {
 // display app component
 const MessageList = React.createClass({
     mixins: [StayBottom],
+
+    getInitialState() {
+        return {
+            fontSize: Object.assign({}, defaultFontSize, App.user.config.ui.chat.fontSize)
+        };
+    },
+
+    componentDidMount() {
+        this._handleUserConfigChangeEvent = App.on(R.event.user_config_change, () => {
+            this.setState({fontSize: App.user.config.ui.chat.fontSize});
+        });
+    },
+
+    componentWillUnmount() {
+        App.off(this._handleUserConfigChangeEvent);
+    },
     
     render() {
         let {
@@ -62,7 +80,7 @@ const MessageList = React.createClass({
                     list.push(<MessageListDivider key={message.id + '-date'} text={timeText} />);
                 }
 
-                list.push(<MessageListItem className={'message message-t-' + message.type} key={message.gid} lastMessage={lastMessage} message={message} hideAvatar={isSameUser && !isDiffDate} hideTime={isSameUser && isAMomentTime} />);
+                list.push(<MessageListItem className={'message message-t-' + message.type} key={message.gid} lastMessage={lastMessage} message={message} hideAvatar={isSameUser && !isDiffDate} hideTime={isSameUser && isAMomentTime} fontSize={this.state.fontSize} />);
 
                 lastMessage = message;
             });

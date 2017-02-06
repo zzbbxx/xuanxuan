@@ -13,7 +13,6 @@ import ImageBrokenIcon     from '../icons/image-broken';
 import ImageMessage        from './message-image';
 import FileListItem        from './file-list-item';
 
-
 /**
  * React component: MessageListItem
  */
@@ -54,19 +53,31 @@ const MessageListItem = React.createClass({
     },
 
     render() {
+        let {
+            message,
+            lastMessage,
+            hideAvatar,
+            fontSize,
+            hideTime,
+            style,
+            contentStyle,
+            ...other
+        } = this.props;
+
         const STYLE = {
             main: {
-                marginBottom: 20
+                marginBottom: 20,
+                fontSize: fontSize.size + 'px',
+                lineHeight: fontSize.lineHeight
             },
             broadcast: {
                 backgroundColor: Theme.color.pale3,
                 padding: 8,
-                fontSize: '12px',
                 color: Theme.color.accent3,
-                textAlign: 'center'
+                textAlign: 'center',
+                fontSize: fontSize.title
             },
             normal: {
-                fontSize: '13px',
                 paddingLeft: 40,
                 minHeight: 40,
                 position: 'relative'
@@ -76,7 +87,8 @@ const MessageListItem = React.createClass({
                 minHeight: 20
             },
             title: {
-                lineHeight: '20px',
+                fontSize: fontSize.title,
+                lineHeight: fontSize.titleLineHeight
             },
             avatar: {
                 position: 'absolute',
@@ -85,19 +97,20 @@ const MessageListItem = React.createClass({
             },
             time: {
                 color: Theme.color.accent3,
-                lineHeight: '16px'
+                lineHeight: '16px',
+                fontSize: '12px'
             },
             leftTime: {
                 position: 'absolute',
                 left: -3,
-                top: 0,
+                top: Math.floor((Math.floor(Math.max(20, fontSize.size * fontSize.lineHeight)) - 17)/2) - 1,
                 width: 36,
                 textAlign: 'center'
             },
             dot: {
                 position: 'absolute',
                 left: 11,
-                top: 3,
+                top: Math.floor((Math.floor(Math.max(20, fontSize.size * fontSize.lineHeight)) - 8)/2),
                 width: 8,
                 height: 8,
                 borderRadius: 4,
@@ -108,7 +121,6 @@ const MessageListItem = React.createClass({
                 overflow: 'hidden'
             },
             content: {
-                lineHeight: '16px'
             },
             unsavedContent: {
                 transition: Theme.transition.normal('opacity'),
@@ -120,7 +132,6 @@ const MessageListItem = React.createClass({
                 padding: 5
             },
             resendButton: {
-                fontSize: '13px',
                 display: 'inline-block',
                 padding: '2px 0'
             },
@@ -146,16 +157,6 @@ const MessageListItem = React.createClass({
             },
         };
 
-        let {
-            message,
-            lastMessage,
-            hideAvatar,
-            hideTime,
-            style,
-            contentStyle,
-            ...other
-        } = this.props;
-
         // console.info('RENDER MESSAGE',message);
 
         style = Object.assign({}, STYLE.main, message.isBroadcast ? STYLE.broadcast: STYLE.normal, style);
@@ -171,14 +172,14 @@ const MessageListItem = React.createClass({
             if(lastMessage && lastMessage.isBroadcast) {
                 style.marginTop = -18;
             }
-            return <div {...other} style={style}><span title={dateStr}>{timeStr}</span> &nbsp; {message.content}</div>
+            return <div {...other} style={style}><small><span title={dateStr}>{timeStr}</span> &nbsp; {message.content}</small></div>
         }
 
         let avatarElement = null, headerElement;
         if(hideAvatar) {
             Object.assign(style, STYLE.noAvatar);
             if(hideTime) {
-                avatarElement = <div className='message-time-dot' style={STYLE.dot} title={dateStr}><small>{timeStr}</small></div>;
+                avatarElement = <div className='message-time-dot' style={STYLE.dot} title={dateStr}><small style={{fontSize: '12px'}}>{timeStr}</small></div>;
             } else {
                 avatarElement = <div className='message-time-side' style={Object.assign({}, STYLE.time, STYLE.leftTime)} title={dateStr}><small>{timeStr}</small></div>;
             }

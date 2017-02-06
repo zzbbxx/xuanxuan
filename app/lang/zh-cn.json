@@ -29,7 +29,9 @@
     "completing": "即将完成",
     "later": "稍后",
     "nextTime": "下次提醒我",
-    "more": "更多"
+    "more": "更多",
+    "restoreDefault": "恢复默认",
+    "close": "关闭"
   },
 
   "debug": {
@@ -147,7 +149,8 @@
     "emptyFileList": "还没有人分享文件",
     "downloadChatHistory": "获取云端消息记录",
     "downloadingChatHistory": "正在从云端获取消息记录...",
-    "drapNDropFileMessage": "拖放文件或图片到此处来发送"
+    "drapNDropFileMessage": "拖放文件或图片到此处来发送",
+    "changeFontSizePlacehoder": "拖动滑块来更改会话界面文字大小，默认字体大小为 `{0}px`。\n向左滑动滑块设置为较小的字体，向右滑动滑块设置较大的字体。"
   },
 
   "main": {

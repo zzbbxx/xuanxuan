@@ -137,7 +137,8 @@ const FileListItem = React.createClass({
     render() {
         const STYLE = {
             main: {
-                display: 'table'
+                display: 'table',
+                fontSize: '13px'
             },
             iconWrapper: {
                 display: 'table-cell',

@@ -154,7 +154,7 @@ const ChatPage = React.createClass({
     },
 
     _handleChangeFontSizeMenuItemClick() {
-
+        App.chat.changeChatFontSize();
     },
 
     onWindowResize(windowWidth) {

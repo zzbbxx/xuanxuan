@@ -161,6 +161,13 @@ class Message extends Entity {
     }
 
     /**
+     * Mark foce render
+     */
+    markForceRender() {
+        delete this.$._renderTextContent;
+    }
+
+    /**
      * Set image content
      * @param  {object} content
      * @return {void}

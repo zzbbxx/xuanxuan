@@ -10,6 +10,7 @@ import PKG                               from '../../package.json';
 import Moment                            from 'moment';
 import Modal                             from 'Components/modal';
 import TextField                         from 'material-ui/TextField';
+import ChangeFontSize                    from 'Views/chat/change-font-size';
 
 const Helper = global.Helper;
 
@@ -353,12 +354,28 @@ class ChatApp extends AppCore {
         Modal.show({
             modal: true,
             closeButton: false,
+            contentStyle: {paddingTop: 20},
             content: this.lang.chat.exitChatConfirm.format(chat.getDisplayName(this.$app)),
             width: 360,
             actions: [{type: 'cancel'}, {type: 'submit'}],
             onSubmit: () => {
                 this.exit(chat);
             }
+        });
+    }
+
+    /**
+     * Open a dialog for user to change font size of chat UI
+     */
+    changeChatFontSize() {
+        Modal.show({
+            id: 'changeChatFontSizeModal',
+            header: this.lang.chat.changeFontSize,
+            content: <ChangeFontSize onCloseClick={() => {
+                Modal.hide('changeChatFontSizeModal', true);
+            }}/>,
+            width: 500,
+            actions: null
         });
     }
 
