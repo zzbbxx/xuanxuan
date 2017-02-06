@@ -128,6 +128,7 @@ class AppRemote extends ReadyNotifier {
             if(typeof result === 'function') {
                 result = result.call(this, ...args);
             }
+            if(method === 'quit') return;
             if(result instanceof Promise) {
                 result.then(x => {
                     e.sender.send(callBackEventName, x);

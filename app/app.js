@@ -847,6 +847,13 @@ class App extends ReadyNotifier {
      */
     unregisterGlobalHotKey(hotkey) {
     }
+
+    /**
+     * Quit application
+     */
+    quit() {
+        this.remote('quit');
+    }
 }
 
 const app = new App();
