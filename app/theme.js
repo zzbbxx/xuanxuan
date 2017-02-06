@@ -27,7 +27,7 @@ let config = {
         textColor: Colors.darkBlack,
         alternateTextColor: Colors.white,
         canvasColor: Colors.white,
-        borderColor: Colors.grey200,
+        borderColor: Colors.grey300,
         iconColor: Colors.grey600,
         disabledColor: fade(Colors.darkBlack, 0.3),
         positiveColor: Colors.green500,
