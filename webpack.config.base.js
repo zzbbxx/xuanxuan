@@ -38,6 +38,7 @@ export default validate({
         App: 'app.js',
         Resource: 'resource.js',
         Lang: 'lang.js',
+        Events: 'event-center.js',
         Helper: 'utils/helper.js',
         Components: 'views/components',
         Views: 'views',
