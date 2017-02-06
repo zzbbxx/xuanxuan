@@ -57,6 +57,14 @@ class EventCenter extends EventEmitter {
             });
         }
     }
+
+    /**
+     * Emit event
+     */
+    emit(names, ...args) {
+        super.emit(names, ...args);
+        if(DEBUG) console.log('%c EMIT EVENT %c' + names, 'color: orange', 'background: orange; color: #fff', args);
+    }
 }
 
 const eventCenter = new EventCenter();

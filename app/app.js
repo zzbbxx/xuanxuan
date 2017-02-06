@@ -194,7 +194,6 @@ class App extends ReadyNotifier {
      */
     emit(names, ...args) {
         this.event.emit(names, ...args);
-        if(DEBUG) console.log('%c EMIT EVENT %c' + names, 'color: orange', 'background: orange; color: #fff');
     }
 
     /**
