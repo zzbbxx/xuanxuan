@@ -22,6 +22,7 @@ import R                   from 'Resource';
 import Messager            from 'Components/messager';
 import Pager               from 'Components/pager';
 import TimeSpan            from 'Components/timespan';
+import ListPanel           from 'Components/list-panel';
 import Colors              from 'Utils/material-colors';
 
 const Helper = global.Helper;
@@ -100,9 +101,9 @@ const ChatsManager = React.createClass({
         }
     },
 
-    _handleHeaderClick(groupName) {
+    _handleGroupExpandChange(groupName, isExpand) {
         let groupState = this.state.groupState;
-        groupState[groupName] = !!!groupState[groupName];
+        groupState[groupName] = isExpand;
         this.setState({groupState});
     },
 
@@ -216,10 +217,14 @@ const ChatsManager = React.createClass({
         Object.keys(this.chats).forEach(groupName => {
             let chats = this.chats[groupName];
             let isGroupListOpen = this.state.groupState[groupName];
-            let groupList = <div key={groupName} style={Object.assign({maxHeight: isGroupListOpen ? (44 + chats.length * 40 + 100) : 44}, STYLE.groupList)}>
-              <div style={STYLE.groupHeader} className='hover-bg-light' onClick={this._handleHeaderClick.bind(this, groupName)}><ArrowDownIcon className={isGroupListOpen ? 'rotate-360' : 'rotate-270'} style={STYLE.groupHeaderIcon} /><span>{Lang.chat.chatTypes[groupName]} ({chats.length})</span></div>
-              <List style={STYLE.list}>
-              {
+            let groupList = <ListPanel
+              style={STYLE.list}
+              key={groupName}
+              heading={Lang.chat.chatTypes[groupName] + ' (' + chats.length + ')'}
+              expand={!!isGroupListOpen}
+              onExpand={isExpand => {this._handleGroupExpandChange(groupName, isExpand);}}
+            >
+            {
                 chats.map(item => {
                     let actived = this.state.chat && this.state.chat.gid === item.gid;
                     if(item.isOne2One) {
@@ -229,9 +234,8 @@ const ChatsManager = React.createClass({
                         return <ListItem key={item.gid} actived={actived} onClick={this._handleChatItemClick.bind(null, item)} primaryText={item.getDisplayName(App)} leftIcon={item.isSystem ? <ComtentTextIcon color={Colors.indigo500}/> : item.public ? <PoundIcon color={Colors.lightGreen700}/> : <PersonOutlineIcon color={Colors.lightBlue500}/>}/>;
                     }
                 })
-              }
-              </List>
-            </div>;
+            }
+            </ListPanel>;
             list.push(groupList);
         });
 
