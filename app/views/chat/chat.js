@@ -8,8 +8,11 @@ import Member              from '../../models/member';
 import StarBorderIcon      from 'material-ui/svg-icons/toggle/star-border';
 import StarIcon            from 'material-ui/svg-icons/toggle/star';
 import PersonAddIcon       from 'material-ui/svg-icons/social/person-add';
-import PersonOutlineIcon   from 'material-ui/svg-icons/social/people-outline';
 import SidebarIcon         from 'material-ui/svg-icons/action/chrome-reader-mode';
+import ComtentTextIcon     from '../icons/comment-text';
+import PoundIcon           from '../icons/pound-box';
+import PeopleIcon          from 'material-ui/svg-icons/social/people';
+import PersonOutlineIcon   from 'material-ui/svg-icons/social/people-outline';
 import HistoryIcon         from 'material-ui/svg-icons/action/history';
 import IconButton          from 'material-ui/IconButton';
 import SplitJS             from 'split.js';
@@ -248,8 +251,6 @@ const ChatPage = React.createClass({
                 pointerEvents: 'none'
             },
             headerIcon: {
-              color: Theme.color.icon,
-              fill: Theme.color.icon,
               position: 'absolute',
               left: 15,
               top: 12
@@ -318,7 +319,7 @@ const ChatPage = React.createClass({
         }
 
         let ChatStarIcon = chat.star ? StarIcon : StarBorderIcon;
-        let chatIcon = chat.isOne2One ? <UserAvatar size={20} user={chat.getTheOtherOne(App.user)} style={STYLE.headAvatar}/> : chat.public ? <ChatsIcon style={STYLE.headerIcon}/> : <PersonOutlineIcon style={STYLE.headerIcon}/>;
+        let chatIcon = chat.isOne2One ? <UserAvatar size={20} user={chat.getTheOtherOne(App.user)} style={STYLE.headAvatar}/> : chat.isSystem ? <ComtentTextIcon color={Colors.indigo500} style={STYLE.headerIcon}/> : chat.public ? <PoundIcon color={Colors.lightGreen700} style={STYLE.headerIcon}/> : <PersonOutlineIcon color={Colors.lightBlue500} style={STYLE.headerIcon}/>;
         
         let theOtherOne = chat.getTheOtherOne(App.user);
         let chatTitle = theOtherOne ? <div><UserStatus status={theOtherOne ? theOtherOne.status : null} />{chat.getDisplayName(App)}</div> : chat.getDisplayName(App);
@@ -342,7 +343,7 @@ const ChatPage = React.createClass({
           <div className='dock-full table-row'>
             <div className='table-col relative'>
               <header className='dock-top' style={STYLE.header}>
-                <div>{chatIcon}<span style={STYLE.headerTitle}>{chatTitle}</span>{chat.public ? <small style={STYLE.publicGroup}>{Lang.chat.publicGroup}</small> : null}</div>
+                <div>{chatIcon}<span style={STYLE.headerTitle}>{chatTitle}</span>{chat.public ? <small className="hint--bottom" data-hint={Lang.chat.publicGroupTip} style={STYLE.publicGroup}>{Lang.chat.publicGroup}</small> : null}</div>
                 <div className='dock-right' style={STYLE.headerActions}>
                   <IconButton className="hint--bottom" data-hint={chat.star ? Lang.chat.removeStar : Lang.chat.star} onClick={this._handleStarButtonClick}><ChatStarIcon color={chat.star ? Theme.color.accent1 : Theme.color.icon} hoverColor={chat.star ? Theme.color.accent1 : Theme.color.primary1}/></IconButton>
                   {chat.canInvite ? <div ref={(e) => this.inviteBtnWrapper = e} style={{display: 'inline-block'}}><IconButton className="hint--bottom" onClick={this._handleOnInviteBtnClick} data-hint={Lang.chat.inviteMember}><PersonAddIcon color={Theme.color.icon} hoverColor={Theme.color.primary1} style={STYLE.icon}/></IconButton></div> : null}
