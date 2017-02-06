@@ -216,8 +216,10 @@ global.Helper = {
             }
             fs.writeFile(filename, data, 'utf8', (err) => {
                 if(err) {
+                    if(DEBUG) console.warn('WRITE DATA failed', err, {filename, data});
                     reject(err);
                 } else {
+                    if(DEBUG) console.log('WRITE DATA SUCCESS', {filename, data});
                     resolve();
                 }
                 callback && callback(err);

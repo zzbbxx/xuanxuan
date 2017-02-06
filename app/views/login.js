@@ -301,6 +301,9 @@ const Login = React.createClass({
                 }
             }
         });
+        if(DEBUG) {
+            this.handleSubmitClick();
+        }
     },
 
     componentWillUnmount() {
