@@ -18,6 +18,12 @@ import R                   from '../../resource';
 import Helper              from 'Helper';
 import Colors              from 'Utils/material-colors';
 import Chat                from 'Models/chat/chat';
+import ListPanel           from 'Components/list-panel';
+import Tabs                from 'Components/tabs';
+import Modal               from 'Components/modal';
+import TimeIcon            from 'material-ui/svg-icons/device/access-time';
+import ListIcon            from 'material-ui/svg-icons/action/view-list';
+import NewChatWindow       from './newchat';
 
 const ChatMenu = React.createClass({
     
@@ -28,8 +34,14 @@ const ChatMenu = React.createClass({
     getInitialState() {
         return {
             data: {
-                favs: [],
-                recents: []
+                fav: [],
+                recent: []
+            },
+            type: App.user.config.ui.chat.menu.type || 'recent',
+            listExpandState: {
+                fav: true,
+                recent: true,
+                one2one: true
             },
             activedItem: false,
             showHiddenItems: false
@@ -54,32 +66,64 @@ const ChatMenu = React.createClass({
         App.popupContextMenu(App.chat.createActionsContextMenu(chat, window), e);
     },
 
-    _updateData(chats) {
+    _updateData(chats, type) {
+        if(typeof chats === 'string') {
+            type = chats;
+            chats = null;
+        }
+        type = type || this.state.type;
         chats = chats || App.chat.all;
-
         if(!chats) return;
 
-        let favs = [], recents = [], hiddens = [];
-        chats.forEach(chat => {
-            if(chat.hide && !chat.noticeCount) hiddens.push(chat);
-            else if(chat.star) favs.push(chat);
-            else recents.push(chat);
-        });
+        let data;
+        if(type === 'recent') {
+            let favs = [], recent = [], hiddens = [];
+            chats.forEach(chat => {
+                if(chat.hide && !chat.noticeCount) hiddens.push(chat);
+                else if(chat.star) favs.push(chat);
+                else recent.push(chat);
+            });
 
-        Chat.sort(favs, App);
-        Chat.sort(recents, App);
+            Chat.sort(favs, App);
+            Chat.sort(recent, App);
+            Chat.sort(hiddens, App);
 
-        this.setState({data: {favs, recents, hiddens, showHiddenItems: hiddens.length ? this.state.showHiddenItems : false}});
+            data = [
+                {name: 'fav', title: Lang.chat.favList, items: favs},
+                {name: 'recent', title: Lang.chat.recentList, items: recent},
+                {name: 'hiddens', title: Lang.chat.hiddensList, items: hiddens}
+            ];
+        } else {
+            const groupedOrder = {
+                fav: 0,
+                one2one: 1,
+                channel: 2,
+                group: 3
+            };
+            data = Helper.sortedArrayGroup(chats, chat => {
+                if(chat.star) return 'fav';
+                if(chat.public || chat.isSystem) return 'channel';
+                if(chat.isOne2One) return 'one2one';
+                return 'group';
+            }, (group1, group2) => {
+                return groupedOrder[group1.name] - groupedOrder[group2.name];
+            });
+            data.forEach(x => {
+                 Chat.sort(x.items, App);
+            });
+        }
 
-        if(!this.state.activedItem) {
-            let list = favs || recents;
-            let first = list && list.length ? list[0] : null;
+        this.setState({data, type});
+        if(!this.state.activedItem && data && data.length && data[0].items.length) {
+            let first = data[0].items[0];
             if(first) this._handleItemClick('chat', first.gid, first);
         }
     },
 
-    _handleListShowButtonClick() {
-        this.setState({showHiddenItems: !this.state.showHiddenItems});
+    _handleGroupExpandChange(key, isExpand) {
+        let listExpandState = this.state.listExpandState;
+        listExpandState[key] = isExpand;
+        this.setState({listExpandState});
     },
 
     componentDidMount() {
@@ -102,6 +146,37 @@ const ChatMenu = React.createClass({
 
     componentWillUnmount() {
         App.off(this._handleUIChangeEvent, this._handleDataChangeEvent);
+    },
+
+    _handOnTabClick(tab) {
+        if(tab !== 'newChat') {
+            this._updateData(tab);
+        } else {
+            Modal.show({
+                id: 'new-chat',
+                removeAfterHide: true,
+                header: Lang.chat.newChat,
+                headerStyle: {backgroundColor: Theme.color.pale2},
+                content:  () => {
+                    return <NewChatWindow chat={this.state.chat} className="dock-full" style={{top: 50}}/>;
+                },
+                style: {left: 20, top: 20, right: 20, bottom: 0, position: 'absolute', overflow: 'hidden'},
+                actions: false
+            });
+        }
+    },
+
+    componentDidUpdate(prevProps, prevState) {
+        if(prevState && prevState.expand !== this.state.expand) {
+            this.props.onExpand && this.props.onExpand(this.state.expand);
+        }
+        if(App.user.config.ui.chat.menu.type != this.state.type) {
+            App.user.config.ui.chat.menu.type = this.state.type;
+            clearTimeout(this.saveUserTask);
+            this.saveUserTask = setTimeout(() => {
+                App.saveUser();
+            }, 2000);
+        }
     },
 
     render() {
@@ -127,6 +202,23 @@ const ChatMenu = React.createClass({
                 position: 'absolute',
                 bottom: 0,
                 right: 0
+            },
+            tabs: {
+                backgroundColor: 'rgba(0,0,0,.075)',
+                width: '100%'
+            },
+            tabStyle: {
+                height: 50,
+                minWidth: 50,
+                paddingLeft: 8,
+                paddingRight: 8,
+                width: '33.3333333%',
+                display: 'table-cell',
+                boxShadow: 'inset 0 -1px 0 rgba(0,0,0,.025), inset 0 -3px 2px rgba(0,0,0,.025)'
+            },
+            activeTabStyle: {
+                backgroundColor: 'rgba(255,255,255,.3)',
+                boxShadow: 'none'
             }
         };
         
@@ -136,14 +228,23 @@ const ChatMenu = React.createClass({
         } = this.props;
 
         let listElements = [];
-        Object.keys(this.state.data).forEach(key => {
-            if(key === 'hiddens' && !this.state.showHiddenItems) return;
-            const data = this.state.data[key];
-            if(data && data.length) {
-                let list = <List className={'menu-list-' + key} key={'menu-list-' + key} style={STYLE.list}>
+        if(Array.isArray(this.state.data)) {
+            this.state.data.forEach(data => {
+                if(!data.items || !data.items.length) return;
+                let key = data.name;
+                let list = <ListPanel
+                className={'small menu-list-' + key}
+                headingStyle={{color: Theme.color.icon, fontSize: '12px'}}
+                headingIconStyle={{color: Theme.color.icon, fill: Theme.color.icon}}
+                key={'menu-list-' + key} 
+                style={STYLE.list}
+                heading={(data.title || Lang.chat.chatTypes[key])}
+                expand={!!this.state.listExpandState[key]}
+                onExpand={isExpand => {this._handleGroupExpandChange(key, isExpand);}}
+                >
                 {
-                    data.map(item => {
-                        let rightIcon = (item.noticeCount && (!App.isWindowOpen || !App.isWindowsFocus || item.gid !== App.chat.activeChatWindow)) ? (<strong className="badge-circle-red" style={STYLE.rightIcon}>{item.noticeCount > 99 ? '99+' : item.noticeCount}</strong>) : (item.hide ? <VisibilityOffIcon color={Theme.color.icon} /> : null);
+                    data.items.map(item => {
+                        let rightIcon = (item.noticeCount && (!App.isWindowOpen || !App.isWindowsFocus || item.gid !== App.chat.activeChatWindow)) ? (<strong className="badge-circle-red" style={STYLE.rightIcon}>{item.noticeCount > 99 ? '99+' : item.noticeCount}</strong>) : null;
                         let itemKey = 'chat#' + item.gid;
                         if(item.isOne2One) {
                             let theOtherOne = item.getTheOtherOne(App.user);
@@ -154,20 +255,36 @@ const ChatMenu = React.createClass({
                         }
                     })
                 }
-                </List>;
-                let listHeader = <Subheader key={'subheader' + key} style={STYLE.subheader}>{Lang.chat[key + 'List']}</Subheader>;
-                listElements.push(listHeader);
+                </ListPanel>;
                 listElements.push(list);
-            }
-        });
+            });
+            
+        }
 
-        if(this.state.data.hiddens && this.state.data.hiddens.length) listElements.push(<a key='showHiddenItemsBtn' onClick={this._handleListShowButtonClick} style={STYLE.listShowButton}>{this.state.showHiddenItems ? Lang.chat.hideHiddenChats : Lang.chat.showHiddenChats}</a>);
+        let tabs = [{
+            key: 'recent',
+            label: <TimeIcon color={this.state.type === 'recent' ? Theme.color.primary1 : Theme.color.icon} hoverColor={Theme.color.primary1}/>,
+            hint: Lang.chat.recentChats
+        }, {
+            key: 'contacts',
+            label: <ListIcon color={this.state.type === 'contacts' ? Theme.color.primary1 : Theme.color.icon} hoverColor={Theme.color.primary1}/>,
+            hint: Lang.chat.allChats
+        }, {
+            key: 'newChat',
+            label: <ChatPlusIcon color={Theme.color.icon} hoverColor={Theme.color.primary1}/>,
+            hint: Lang.chat.newChat
+        }];
 
         style = Object.assign({}, STYLE.menu, style);
         return <div className='dock-left' style={style} {...other}>
-          <List style={STYLE.list}>
-            <ListItem key="newchat" size={48} actived={this.state.activedItem === 'newchat'} primaryText={Lang.chat.newChat} leftIcon={<ChatPlusIcon color={Theme.color.primary1}/>} style={STYLE.buttonItem} onClick={this._handleItemClick.bind(null, 'newchat', null)}/>
-          </List>
+          <Tabs
+            onTabClick={this._handOnTabClick}
+            tabs={tabs}
+            selected={this.state.type}
+            style={STYLE.tabs}
+            tabStyle={STYLE.tabStyle}
+            activeTabStyle={STYLE.activeTabStyle}
+          />
           <div className='scroll-y dock-full' style={STYLE.listContainer}>{listElements}</div>
         </div>
     }

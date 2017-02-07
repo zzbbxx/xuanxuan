@@ -5,7 +5,6 @@ import ListDivider         from 'material-ui/Divider';
 import PeopleIcon          from 'material-ui/svg-icons/social/people';
 import PersonOutlineIcon   from 'material-ui/svg-icons/social/people-outline';
 import VisibilityOffIcon   from 'material-ui/svg-icons/action/visibility-off';
-import ArrowDownIcon       from 'material-ui/svg-icons/navigation/arrow-drop-down';
 import ChevronRightIcon    from 'material-ui/svg-icons/navigation/chevron-right';
 import CloudDownloadIcon   from 'material-ui/svg-icons/file/cloud-download';
 import {App, Lang, Config} from '../../app';

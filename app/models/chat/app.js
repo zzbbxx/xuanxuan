@@ -385,7 +385,7 @@ class ChatApp extends AppCore {
     renamePrompt(chat) {
         let newName = null;
         let content = <div>
-            <p>{this.lang.chat.renameTheChat.format(chat.getDisplayName(this.$app))}</p>
+            <p>{this.lang.chat.renameTheChat.format(chat.name)}</p>
             <TextField
               ref={(e) => setTimeout(() => {
                   e.focus();

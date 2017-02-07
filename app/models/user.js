@@ -21,7 +21,8 @@ const DEFAULT = {
 
         chat: {
             menu: {
-                width: 200
+                width: 200,
+                type: 'recents'
             },
             sendbox: {
                 height: 125,

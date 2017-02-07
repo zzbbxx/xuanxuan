@@ -139,6 +139,17 @@ global.Helper = {
         return group;
     },
 
+    sortedArrayGroup(arr, func, sorter) {
+        let group = Helper.arrayGroup(arr, func);
+        let sortedArr = Object.keys(group).map(name => {
+            return {name, items: group[name]};
+        });
+        if(sorter) {
+            sortedArr.sort(sorter);
+        }
+        return sortedArr;
+    },
+
     /**
      * Load json from file
      * @param  {string} filename
