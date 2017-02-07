@@ -114,6 +114,14 @@ const ContactsPage = React.createClass({
         });
     },
 
+    _titleCreator(member, title) {
+        let roleText = member.role && Lang.user.roles[member.role] ? ('[' + Lang.user.roles[member.role] + ']') : null;
+        if(roleText) {
+            title = <div>{title}<small style={{float: 'right', opacity: 0.5}}>{roleText}</small></div>;
+        }
+        return title;
+    },
+
     render() {
         let {
             style,
@@ -132,7 +140,7 @@ const ContactsPage = React.createClass({
                 </div>
               </header>
               <div className='dock-full scroll-y' style={STYLE.listWrapper}>
-                <MembersList showStatus={true} activeColor={Theme.color.canvas} activedMember={this.state.member} onItemDoubleClick={this._handleMemberDoubleClick} onItemClick={this._handleMemberClick} members={this.state.members} listStyle={STYLE.list}/>
+                <MembersList titleCreator={this._titleCreator} showStatus={true} activeColor={Theme.color.canvas} activedMember={this.state.member} onItemDoubleClick={this._handleMemberDoubleClick} onItemClick={this._handleMemberClick} members={this.state.members} listStyle={STYLE.list} size="small"/>
               </div>
             </div>
             <div className='table-col relative'>

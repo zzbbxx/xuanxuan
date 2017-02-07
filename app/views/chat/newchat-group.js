@@ -78,6 +78,13 @@ const STYLE = {
         paddingTop: 0,
         paddingBottom: 0
     },
+    listItem: {
+        float: 'left',
+        width: '33.333333333%',
+        minWidth: 140,
+        padding: 4,
+        boxSizing: 'border-box'
+    }
 };
 
 const NewChatGroup = React.createClass({
@@ -188,6 +195,11 @@ const NewChatGroup = React.createClass({
 
         let choosedMembersCount = Object.keys(this.state.choosed).length;
         let buttonLabel = choosedMembersCount > 2 ? Lang.chat.startGroupChat.format(choosedMembersCount) : choosedMembersCount === 2 ? Lang.chat.startOne2OneChat : Lang.chat.startChat;
+        let listItemStyle = Object.assign({}, STYLE.listItem);
+        if(this.listContainer) {
+            let containerWidth = this.listContainer.clientWidth - 8*2;
+            listItemStyle.width = Math.floor(containerWidth/Math.floor(containerWidth/180));
+        }
 
         return <div {...other} style={style}>
           <header className='dock-top' style={STYLE.header}>
@@ -201,8 +213,8 @@ const NewChatGroup = React.createClass({
             <a onClick={this._handleSelectInverseClick} style={STYLE.toolbarLink}>{Lang.common.selectInverse}</a>
             <Searchbox onValueChange={this._handleSearchboxChange} className='dock-right' hintText={Lang.chat.searchContacts} style={STYLE.searchbox}/>
           </div>
-          <div className='dock-full scroll-y' style={STYLE.content}>
-            <List className='checkable-grid clearfix' style={STYLE.list}>
+          <div className='dock-full scroll-y' ref={e => {this.listContainer = e;}} style={STYLE.content}>
+            <List className='clearfix' style={STYLE.list}>
             {
                 this.state.members.map(member => {
                     let actived = !!this.state.choosed[member.id];
@@ -210,7 +222,7 @@ const NewChatGroup = React.createClass({
                     let secondaryText = roleText;
                     let primaryText = showStatus && member.status ? <div><UserStatus status={member.status}/>{member.displayName}</div> : member.displayName;
 
-                    return <ListItem className={'checkable-grid-item' + (actived ? ' active' : '')} style={STYLE.normalItem} actived={actived} activeColor={STYLE.activeColor} onClick={this._handleMemberClick.bind(this, member)} key={'newchat-group-' + member._id} primaryText={primaryText} secondaryText={secondaryText} leftAvatar={<UserAvatar user={member} style={STYLE.avatar}/>} rightIcon={actived ? <CheckIcon style={STYLE.checkIcon}/> : null} />
+                    return <ListItem className={'checkable-grid-item' + (actived ? ' active' : '')} rootStyle={listItemStyle} actived={actived} activeColor={STYLE.activeColor} onClick={this._handleMemberClick.bind(this, member)} key={'newchat-group-' + member._id} primaryText={primaryText} leftAvatar={<UserAvatar  size={30} user={member} style={STYLE.avatar}/>} rightIcon={actived ? <CheckIcon style={STYLE.checkIcon}/> : null} />
                 })
             }
             </List>

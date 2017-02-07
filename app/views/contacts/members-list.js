@@ -65,6 +65,7 @@ const MembersList = React.createClass({
             listStyle,
             members,
             showStatus,
+            titleCreator,
             activedMember,
             onItemClick,
             activeColor,
@@ -81,11 +82,18 @@ const MembersList = React.createClass({
                 let actived = activedMember && activedMember.id === member.id;
                 if(size === 'small') {
                     let primaryText = showStatus && member.status ? <span><UserStatus status={member.status} />{member.displayName}</span> : member.displayName;
+                    if(typeof titleCreator === 'function') {
+                        primaryText = titleCreator(member, primaryText);
+                    }
                     return <ListItem onDoubleClick={this._handleItemDoubleClick.bind(this, member)} onClick={this._handleItemClick.bind(this, member)} key={member._id} actived={actived} activeColor={activeColor} primaryText={primaryText} leftAvatar={<UserAvatar size={20} user={member} style={STYLE.avatar}/>} />
                 } else {
                     let roleText = member.role && Lang.user.roles[member.role] ? ('[' + Lang.user.roles[member.role] + ']') : null;
                     let secondaryText = showStatus && member.status ? <span><UserStatus type='dot-text' status={member.status} /> &nbsp; &nbsp; {roleText}</span> : roleText;
-                    return <ListItem style={STYLE.normalItem} actived={actived} activeColor={activeColor} onDoubleClick={this._handleItemDoubleClick.bind(this, member)} onClick={this._handleItemClick.bind(this, member)} key={member._id} primaryText={member.displayName} secondaryText={secondaryText} leftAvatar={<UserAvatar user={member} style={STYLE.avatar}/>} rightIcon={actived ? <ChevronRightIcon /> : null} />
+                    let primaryText = member.displayName;
+                    if(typeof titleCreator === 'function') {
+                        primaryText = titleCreator(member, primaryText);
+                    }
+                    return <ListItem style={STYLE.normalItem} actived={actived} activeColor={activeColor} onDoubleClick={this._handleItemDoubleClick.bind(this, member)} onClick={this._handleItemClick.bind(this, member)} key={member._id} primaryText={primaryText} secondaryText={secondaryText} leftAvatar={<UserAvatar user={member} style={STYLE.avatar}/>} rightIcon={actived ? <ChevronRightIcon /> : null} />
                 }
              })
           }

@@ -126,6 +126,7 @@ const ListItem = React.createClass({
       secondaryTextLines,
       style,
       size,
+      rootStyle,
       activeColor,
       actived,
       ...other,
@@ -355,7 +356,7 @@ const ListItem = React.createClass({
 
     return hasCheckbox ? this._createLabelElement(styles, contentChildren) :
       disabled ? this._createDisabledElement(styles, contentChildren) : (
-      <div>
+      <div style={rootStyle}>
         <EnhancedButton
           {...other}
           disabled={disabled}

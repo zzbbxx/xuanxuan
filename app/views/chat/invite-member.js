@@ -55,6 +55,13 @@ const STYLE = {
         paddingTop: 0,
         paddingBottom: 0
     },
+    listItem: {
+        float: 'left',
+        width: '33.333333333%',
+        minWidth: 100,
+        padding: 4,
+        boxSizing: 'border-box'
+    },
     status: {
         online: {color: Colors.greenA400},
         offline:{color: Colors.grey400},
@@ -125,6 +132,11 @@ const InviteMembers = React.createClass({
             else unChoosedMembers.push(m);
         });
         let choosedMembersCount = choosedMembers.length;
+        let listItemStyle = Object.assign({}, STYLE.listItem);
+        if(this.listContainer) {
+            let containerWidth = this.listContainer.clientWidth - 8 - 20;
+            listItemStyle.width = Math.floor(containerWidth/Math.floor(containerWidth/145));
+        }
 
         return <div {...other} style={style}>
           <header className='dock-top' style={STYLE.header}>
@@ -133,20 +145,20 @@ const InviteMembers = React.createClass({
               <RaisedButton onClick={this._handleOnInviteBtnClick} disabled={choosedMembersCount < 1} label={Lang.chat.invite} primary={true} />
             </div>
           </header>
-          <div className='dock-full scroll-y' style={STYLE.content}>
+          <div className='dock-full scroll-y' style={STYLE.content} ref={e => {this.listContainer = e;}}>
             {choosedMembersCount ? <div className='small text-muted' style={STYLE.subheader}>{Lang.common.selected} ({choosedMembersCount})</div> : null}
-            <List className='checkable-grid clearfix' style={STYLE.list}>
+            <List className='clearfix' style={STYLE.list}>
             {
                 choosedMembers.map(member => {
-                    return <ListItem className={'checkable-grid-item active'} style={STYLE.normalItem} actived={true} activeColor={STYLE.activeColor} onClick={this._handleMemberClick.bind(this, member)} key={'invite-member-' + member._id} primaryText={<div><UserStatus status={member.status}/>{member.displayName}</div>} leftAvatar={<UserAvatar user={member} size={30} style={STYLE.avatar}/>} />
+                    return <ListItem rootStyle={listItemStyle} className={'checkable-grid-item active'} style={STYLE.normalItem} actived={true} activeColor={STYLE.activeColor} onClick={this._handleMemberClick.bind(this, member)} key={'invite-member-' + member._id} primaryText={<div><UserStatus status={member.status}/>{member.displayName}</div>} leftAvatar={<UserAvatar user={member} size={30} style={STYLE.avatar}/>} />
                 })
             }
             </List>
             {(choosedMembersCount && unChoosedMembers.length) ? <ListDivider style={STYLE.hr} /> : null}
-            <List className='checkable-grid clearfix' style={STYLE.list}>
+            <List className='clearfix' style={STYLE.list}>
             {
                 unChoosedMembers.map(member => {
-                    return <ListItem className={'checkable-grid-item'} style={STYLE.normalItem} actived={false} activeColor={STYLE.activeColor} onClick={this._handleMemberClick.bind(this, member)} key={'invite-member-' + member._id} primaryText={<div><UserStatus status={member.status}/>{member.displayName}</div>} leftAvatar={<UserAvatar user={member} size={30} style={STYLE.avatar}/>} />
+                    return <ListItem rootStyle={listItemStyle} className={'checkable-grid-item'} style={STYLE.normalItem} actived={false} activeColor={STYLE.activeColor} onClick={this._handleMemberClick.bind(this, member)} key={'invite-member-' + member._id} primaryText={<div><UserStatus status={member.status}/>{member.displayName}</div>} leftAvatar={<UserAvatar user={member} size={30} style={STYLE.avatar}/>} />
                 })
             }
             </List>
