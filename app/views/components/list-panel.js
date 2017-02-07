@@ -39,12 +39,6 @@ class ListGroup extends Component {
         return (!this.state || this.state.expand === undefined) ? this.props.expand : this.state.expand;
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if(prevState && prevState.expand !== this.state.expand) {
-            this.props.onExpand && this.props.onExpand(this.state.expand);
-        }
-    }
-
     render() {
         let {
             children,
@@ -52,6 +46,7 @@ class ListGroup extends Component {
             heading,
             headingStyle,
             headingIcon,
+            headingIconStyle,
             items,
             ...other
         } = this.props;
@@ -62,12 +57,13 @@ class ListGroup extends Component {
 
         let STYLE = {
             heading: {
-                color: Theme.color.primary1,
+                color: Theme.color.primary1
             },
             headingIcon: {
                 transition: Theme.transition.normal('transform'),
                 opacity: 0.5,
-                verticalAlign: 'middle'
+                verticalAlign: 'middle',
+                left: 0
             }
         };
 
@@ -76,8 +72,9 @@ class ListGroup extends Component {
                 key={'group-header-' + Helper.guid}
                 onClick={this.toggle.bind(this)}
                 primaryText={heading}
+                innerDivStyle={headingIcon === undefined ? {paddingLeft: 36} : null}
                 open={headingIcon !== undefined ? expand : null}
-                leftIcon={headingIcon !== undefined ? headingIcon : <ArrowDownIcon className={expand ? 'rotate-360' : 'rotate-270'} color={Theme.color.primary1} style={STYLE.headingIcon} />}
+                leftIcon={headingIcon !== undefined ? headingIcon : <ArrowDownIcon className={expand ? 'rotate-360' : 'rotate-270'} color={Theme.color.primary1} style={Object.assign({}, STYLE.headingIcon, headingIconStyle)} />}
                 style={Object.assign({}, STYLE.heading, headingStyle)}
             />
             {expand ? (items || children) : null}

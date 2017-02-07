@@ -16,6 +16,8 @@ const Tabs = React.createClass({
         let {
             style,
             tabs,
+            tabStyle,
+            activeTabStyle,
             selected,
             ...other
         } = this.props;
@@ -26,8 +28,12 @@ const Tabs = React.createClass({
         {
             tabs.map(tab => {
                 let className = 'tab';
-                if(selected === tab.key) className += ' active';
-                return <div onClick={() => {return this.props.onTabClick && this.props.onTabClick(tab.key)}} className={className} key={tab.key} style={STYLE.tab}>{tab.label}</div>;
+                let isActive = selected === tab.key;
+                if(isActive) className += ' active';
+                if(tab.hint) {
+                    className += ' hint--' + (tab.hintPlacement || 'bottom');
+                }
+                return <div data-hint={tab.hint} onClick={() => {return this.props.onTabClick && this.props.onTabClick(tab.key)}} className={className} key={tab.key} style={Object.assign({}, STYLE.tab, tabStyle, isActive ? activeTabStyle : null)}>{tab.label}</div>;
             })
         }
         </div>

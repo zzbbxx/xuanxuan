@@ -164,7 +164,7 @@ class ModalView extends Component {
                 zIndex: 1010,
                 maxWidth: '100%',
                 maxHeight: '100%',
-                top: 0,
+                top: 0
             },
             closeButton: {
                 cursor: 'pointer',
@@ -230,10 +230,12 @@ class ModalView extends Component {
             style,
             contentStyle,
             header,
+            headerStyle,
             footer,
             modal,
             width,
             closeButton,
+            closeButtonStyle,
             actions,
             ...other
         } = this.props;
@@ -273,8 +275,8 @@ class ModalView extends Component {
           <div {...other} style={this.state.stage >= STAGE.hidden ? {display: 'none'} : STYLE.wrapper} className='fix-full center-block'>
               <div className='fix-full' style={coverStyle} onClick={this._handleClickCover.bind(this)}></div>
               <Paper ref={(e) => this.modal = e} style={style} zDepth={4}>
-                {closeButton ? <CloseIcon onClick={this.hide.bind(this)} color={ColorManipulator.fade(Theme.color.icon, 0.5)} hoverColor={Theme.color.icon} style={STYLE.closeButton} /> : null}
-                {header !== undefined ? <header ref={e => this.modalHeader = e} style={STYLE.header}>{header}</header> : null}
+                {closeButton ? <CloseIcon onClick={this.hide.bind(this)} color={ColorManipulator.fade(Theme.color.icon, 0.5)} hoverColor={Theme.color.icon} style={Object.assign({}, STYLE.closeButton, closeButtonStyle)} /> : null}
+                {header !== undefined ? <header ref={e => this.modalHeader = e} style={Object.assign({}, STYLE.header, headerStyle)}>{header}</header> : null}
                 <div style={Object.assign({}, STYLE.content, contentStyle)} ref={e => this.modalContent = e}>
                   {typeof(content) === 'function' ? content() : content || <Spinner />}
                   {children ? <div>{children}</div> : null}
