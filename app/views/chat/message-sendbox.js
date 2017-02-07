@@ -188,6 +188,7 @@ const MessageSendbox = React.createClass({
                             App.user.config.shortcut.captureScreen = shortcut;
                             App.saveUser();
                             App.chat.registerGlobalHotKey();
+                            this.forceUpdate();
                         }
                     }
                 });

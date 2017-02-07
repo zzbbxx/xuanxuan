@@ -28,7 +28,7 @@ class ShortcutField extends Component {
         if(e.shiftKey) {
             shortcut.push('Shift');
         }
-        if(e.code && !e.code.includes('Meta') && !e.code.includes('Ctrl') &&!e.code.includes('Alt') &&!e.code.includes('Shift')) {
+        if(e.code && !e.code.includes('Meta') && !e.code.includes('Control') &&!e.code.includes('Alt') &&!e.code.includes('Shift')) {
             shortcut.push(e.code.replace('Key', ''));
         }
         shortcut = shortcut.join('+');
