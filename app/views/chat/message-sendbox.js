@@ -17,12 +17,13 @@ import ImageIcon           from '../icons/message-image';
 import Moment              from 'moment';
 import Hotkey              from '../mixins/hotkey';
 import Popover             from '../components/popover';
+import Modal               from '../components/modal';
 import EmoticonList        from '../components/emoticon-list';
 import EditBox             from '../components/editbox';
 import UUID                from 'uuid';
 import Helper              from 'Helper';
-
 import R                   from 'Resource';
+import ShortcutField       from '../components/shortcut-field';
 
 /**
  * React component: MessageSendbox
@@ -165,6 +166,30 @@ const MessageSendbox = React.createClass({
                 App.openCaptureScreen('all', true).then(image => {
                     this.editbox.appendImage(image);
                     this.editbox.focus();
+                });
+            }
+        }, {
+            type: 'separator'
+        }, {
+            label: Lang.chat.setCaptureScreenShotcut,
+            click: () => {
+                let shortcut = null;
+                let defaultShortcut = App.user.config.shortcut.captureScreen || 'Ctrl+Alt+Z';
+                Modal.show({
+                    modal: true,
+                    header: Lang.chat.setCaptureScreenShotcut,
+                    content: <ShortcutField fullWidth={true} hintText={defaultShortcut} checkGlobal={true} focus={true} onChange={newShortcut => {
+                        shortcut = newShortcut;
+                    }}/>,
+                    width: 360,
+                    actions: [{type: 'cancel'}, {type: 'submit', label: Lang.common.confirm}],
+                    onSubmit: () => {
+                        if(Helper.isNotEmptyString(shortcut) && App.user.config.shortcut.captureScreen !== shortcut) {
+                            App.user.config.shortcut.captureScreen = shortcut;
+                            App.saveUser();
+                            App.chat.registerGlobalHotKey();
+                        }
+                    }
                 });
             }
         }]), e);

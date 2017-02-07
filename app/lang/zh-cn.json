@@ -87,6 +87,7 @@
     "sendFile": "发送文件",
     "captureScreen": "截取屏幕",
     "hideCurrentWindowAndCaptureScreen": "隐藏当前窗口并截图",
+    "setCaptureScreenShotcut": "设置截图全局快捷键",
     "messageTip": "小技巧",    
     "sendMessageTooltip": "发送消息 (Enter)",
     "sendMessage": "发送消息",

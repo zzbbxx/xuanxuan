@@ -230,13 +230,14 @@ class ChatApp extends AppCore {
 
         app.on(R.event.user_login_finish, e => {
             if(e.result) {
-                app.registerGlobalHotKey({
-                    key: 'Ctrl+Alt+Z',
-                    active: () => {
-                        this.captureAndSendScreen();
-                    }
-                });
+                this.registerGlobalHotKey();
             }
+        });
+    }
+
+    registerGlobalHotKey() {
+        this.$app.registerGlobalShortcut('captureScreen', App.user.config.shortcut.captureScreen || 'ctrl+alt+z', () => {
+            this.captureAndSendScreen()
         });
     }
 
@@ -336,7 +337,7 @@ class ChatApp extends AppCore {
         if(chat.canExit) {
             menu.push({
                 type: 'separator'
-            },{
+            }, {
                 label: this.lang.chat.exitChat,
                 click: () => {
                     this.exitConfirm(chat);
@@ -528,11 +529,9 @@ class ChatApp extends AppCore {
         }
 
         if(!chat) return console.error('Select an chat before send screenshot.');
-
-        this.$app.captureScreen(image => {
+        App.openCaptureScreen('all').then(image => {
             if(image && image.path) {
-                this.$app.emit(R.event.capture_screen, image, chat);
-                // this.sendImageMessage(chat, image);
+                this.$app.emit(R.event.capture_screen_global, image, chat);
                 this.$app.showAndFocusWindow();
             }
         });
