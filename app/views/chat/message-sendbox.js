@@ -22,6 +22,7 @@ import EditBox             from '../components/editbox';
 import UUID                from 'uuid';
 import Helper              from 'Helper';
 
+import R                   from 'Resource';
 
 /**
  * React component: MessageSendbox
@@ -183,6 +184,19 @@ const MessageSendbox = React.createClass({
             },
             float: 'center'
         });
+    },
+
+    componentDidMount() {
+        this._handleCaptureScreenGlobalShortcutEvent = App.on(R.event.capture_screen_global, (image, chat) => {
+            if(this.props.chatId === chat.gid) {
+                this.editbox.appendImage(image);
+                this.editbox.focus();
+            }
+        });
+    },
+
+    componentWillUnmount() {
+        App.off(this._handleCaptureScreenGlobalShortcutEvent);
     },
 
     render() {

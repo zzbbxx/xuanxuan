@@ -27,6 +27,7 @@ const event = {
 
     file_upload: 'file.upload',
     capture_screen: 'capture.screen',
+    capture_screen_global: 'capture.screen.global',
 
     ui_change: 'ui.change',
     ui_navbar_expand: 'ui.navbar.expand',

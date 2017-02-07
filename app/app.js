@@ -30,11 +30,12 @@ if(DEBUG && process.type !== 'renderer') {
     console.error('App must run in renderer process.');
 }
 
-const config        = new Config();
-const Menu          = Remote.Menu;
-const MenuItem      = Remote.MenuItem;
-const Dialog        = Remote.dialog;
-const BrowserWindow = Remote.BrowserWindow;
+const config         = new Config();
+const Menu           = Remote.Menu;
+const MenuItem       = Remote.MenuItem;
+const Dialog         = Remote.dialog;
+const BrowserWindow  = Remote.BrowserWindow;
+const GlobalShortcut = Remote.globalShortcut;
 
 /**
  * Application
@@ -861,7 +862,24 @@ class App extends ReadyNotifier {
      * @param  {string} name
      * @return {void}
      */
-    registerGlobalHotKey(option, name) {
+    registerGlobalShortcut(name, accelerator, callback) {
+        if(!this.shortcuts) {
+            this.shortcuts = {};
+        }
+        this.unregisterGlobalShortcut(name);
+        this.shortcuts[name] = accelerator;
+        GlobalShortcut.register(accelerator, () => {
+            if(DEBUG) console.log("%cGLOBAL KEY ACTIVE " + name + ': ' + accelerator, 'display: inline-block; font-size: 10px; color: #fff; border: 1px solid #d9534f; padding: 1px 5px; border-radius: 2px; background: #d9534f');
+            callback();
+        });
+        if(DEBUG) console.log("%cGLOBAL KEY BIND " + name + ': ' + accelerator, 'display: inline-block; font-size: 10px; color: #d9534f; border: 1px solid #d9534f; padding: 1px 5px; border-radius: 2px');
+    }
+
+    /**
+     * Check a shortcu whether is registered
+     */
+    isGlobalShortcutRegistered(accelerator) {
+        return GlobalShortcut.isRegistered(accelerator);
     }
 
     /**
@@ -869,7 +887,11 @@ class App extends ReadyNotifier {
      * @param  {gui.Shortcut | string | object} hotkey
      * @return {void}
      */
-    unregisterGlobalHotKey(hotkey) {
+    unregisterGlobalShortcut(name) {
+        if(this.shortcuts && this.shortcuts[name]) {
+            GlobalShortcut.unregister(this.shortcuts[name]);
+            delete this.shortcuts[name];
+        }
     }
 
     /**

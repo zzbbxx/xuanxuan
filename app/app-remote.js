@@ -8,7 +8,8 @@ import {
     dialog,
     Tray,
     Menu,
-    nativeImage
+    nativeImage,
+    globalShortcut
 }                         from 'electron';
 import Lang               from './lang';
 import R, {EVENT}         from './resource';
@@ -227,6 +228,7 @@ class AppRemote extends ReadyNotifier {
         this.mainWindow.close();
         this.tray.destroy();
         ElectronApp.quit();
+        globalShortcut.unregisterAll();
     }
 
     get mainWindow() {
