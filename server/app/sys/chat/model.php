@@ -15,7 +15,6 @@ class chatModel extends model
         {
             $user->id   = (int)$user->id;
             $user->dept = (int)$user->dept;
-            if($user->avatar) $user->avatar = commonModel::getSysURL() . $user->avatar; 
         }
 
         return $user;
@@ -30,7 +29,7 @@ class chatModel extends model
      */
     public function getUserList($idList = array())
     {
-        $userList = $this->dao->select('id, realname, status, account, role, dept')
+        $userList = $this->dao->select('id, realname, avatar, status, account, role, dept')
             ->from(TABLE_USER)->where('deleted')->eq('0')
             ->beginIF($idList)->andWhere('id')->in($idList)->fi()
             ->fetchAll();
@@ -39,7 +38,6 @@ class chatModel extends model
         {
             $user->id   = (int)$user->id;
             $user->dept = (int)$user->dept;
-            if($user->avatar) $user->avatar = commonModel::getSysURL() . $user->avatar; 
         }
 
         return $userList;

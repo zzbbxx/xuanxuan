@@ -27,8 +27,9 @@ const UserAvatar = React.createClass({
         let iconText = null;
 
         if(user) {
-            if(user.avatar) {
-                other.src = user.avatar;
+            if(user.avatar) other.src = user.avatar;
+            if(other.src) {
+                return <Avatar className='user-avatar' size={size} {...other} style={style}/>;
             } else {
                 let displayName = user.displayName || user.account || user.realname;
                 if(displayName) {

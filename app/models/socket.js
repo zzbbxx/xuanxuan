@@ -276,7 +276,11 @@ class Socket extends ReadyNotifier {
                 },
                 usergetlist: msg => {
                     if(msg.isSuccess) {
-                        let members = Object.keys(msg.data).map(key => new Member(msg.data[key]));
+                        let members = Object.keys(msg.data).map(key => {
+                            let member = new Member(msg.data[key]);
+                            this.user.fixAvatar(member);
+                            return member;
+                        });
 
                         this.app.dao.initMembers(members);
                     }

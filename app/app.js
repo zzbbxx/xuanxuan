@@ -341,6 +341,7 @@ class App extends ReadyNotifier {
             delete serverUser.status;
             user.lastLoginTime = new Date().getTime();
             user.assign(serverUser);
+            user.fixAvatar();
 
             // init dao
             if(!this.dao || this.dao.dbName !== user.identify) {
