@@ -41,7 +41,8 @@ const ChatMenu = React.createClass({
             listExpandState: {
                 fav: true,
                 recent: true,
-                one2one: true
+                one2one: true,
+                channel: true
             },
             activedItem: false,
             showHiddenItems: false
