@@ -11,6 +11,7 @@
     "create": "创建",
     "add": "新增",
     "open": "打开",
+    "preview": "预览",
     "openFolder": "打开文件夹",
     "download": "下载",
     "upload": "上传",
@@ -51,7 +52,8 @@
     "NET_OFFLINE": "互联网连接已断开。",
     "KICKOFF": "当前账号已在其他地方登录。如果不是本人操作，请及时修改密码",
     "USER_DATA_PATH_DENY": "系统错误，无法使用用户目录",
-    "USER_DENY_ATTACT_UPLOAD": "你没有权限上传文件到服务器，请联系管理员。"
+    "USER_DENY_ATTACT_UPLOAD": "你没有权限上传文件到服务器，请联系管理员。",
+    "IMAGE_NOT_FIND": "无法打开图片，找不到图片或图片已损坏。位置 {0}。"
   },
 
   "navbar": {

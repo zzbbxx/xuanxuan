@@ -2,7 +2,8 @@ import 'ion-sound';
 import {
     shell,
     remote as Remote,
-    screen as Screen
+    screen as Screen,
+    nativeImage as NativeImage
 }                         from 'electron';
 import Path               from 'path';
 import React              from 'react';
@@ -22,6 +23,7 @@ import AboutView          from './views/misc/about';
 import ContactView        from './views/contacts/contact';
 import ConfirmCloseWindow from './views/windows/confirm-close-window';
 import Modal              from 'Components/modal';
+import ImageView          from 'Components/image-view';
 import Lang               from 'Lang';
 import Theme              from 'Theme';
 import takeScreenshot     from 'Utils/screenshot';
@@ -678,6 +680,20 @@ class App extends ReadyNotifier {
                 return format.format(url, url);
             }
             return format.format('http://' + url, url);
+        });
+    }
+
+    openImagePreview(imagePath, callback) {
+        Modal.show({
+            content: () => {
+                return <ImageView sourceImage={imagePath} />;
+            },
+            closeButtonStyle: {color: '#fff', fill: '#fff', background: 'rgba(0,0,0,0.2)'},
+            fullscreen: true,
+            clickThrough: true,
+            transparent: true,
+            actions: false,
+            onHide: callback
         });
     }
 

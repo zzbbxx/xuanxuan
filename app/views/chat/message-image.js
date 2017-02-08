@@ -37,8 +37,14 @@ const ImageMessage = React.createClass({
         let image = message.imageContent;
         if(image && this.state.imageState === 'ok') {
             let imagePath = Path.join(App.user.imagesPath, image.name);
-            App.popupContextMenu(App.createContextMenu([{
-                label: Lang.common.view,
+            App.popupContextMenu(App.createContextMenu([
+            {
+                label: Lang.common.preview,
+                click: () => {
+                    App.openImagePreview(imagePath);
+                }
+            }, {
+                label: Lang.common.open,
                 click: () => {
                     shell.openItem(imagePath);
                 }
@@ -77,7 +83,7 @@ const ImageMessage = React.createClass({
         let image = message.imageContent;
         if(image && this.state.imageState === 'ok') {
             let imagePath = Path.join(App.user.imagesPath, image.name);
-            shell.openItem(imagePath);
+            App.openImagePreview(imagePath);
         }
     },
 
