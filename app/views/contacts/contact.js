@@ -6,7 +6,7 @@ import PeopleIcon          from 'material-ui/svg-icons/social/people';
 import RaisedButton        from 'material-ui/RaisedButton';
 import Spinner             from '../components/spinner';
 import UserAvatar          from '../user-avatar';
-import ChatsIcon           from '../icons/comments-outline';
+import ChatsIcon           from '../icons/comment-text';
 import UserStatus          from '../chat/user-status';
 
 const STYLE = {
