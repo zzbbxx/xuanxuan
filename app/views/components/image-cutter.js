@@ -18,7 +18,6 @@ const ImageCutter = React.createClass({
         };
     },
     onHotkeyPress(e) {
-        console.log('onHotkeyPress', e);
         if(e) {
             // Listen ESC
             if(e.keyCode === 27) {
