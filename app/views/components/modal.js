@@ -221,6 +221,22 @@ class ModalView extends Component {
                     opacity: 0,
                     visibility: 'visible'
                 }
+            },
+            transparent: {
+                boxShadow: 'none',
+                borderRadius: 0,
+                border: 'none',
+                background: 'transparent'
+            },
+            fullscreen: {
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0
+            },
+            clickThrough: {
+                pointerEvents: 'none'
             }
         };
 
@@ -230,12 +246,15 @@ class ModalView extends Component {
             style,
             contentStyle,
             header,
+            transparent,
+            fullscreen,
             headerStyle,
             footer,
             modal,
             width,
             closeButton,
             closeButtonStyle,
+            clickThrough,
             actions,
             ...other
         } = this.props;
@@ -266,6 +285,15 @@ class ModalView extends Component {
         } else if(this.state.stage >= STAGE.hide) {
             Object.assign(style, STYLE.stage.hide);
             Object.assign(coverStyle, STYLE.coverStage.hide);
+        }
+        if(transparent) {
+            Object.assign(style, STYLE.transparent);
+        }
+        if(fullscreen) {
+            Object.assign(style, STYLE.fullscreen);
+        }
+        if(clickThrough) {
+            Object.assign(style, STYLE.clickThrough);
         }
 
         this.modalHeader = null;
