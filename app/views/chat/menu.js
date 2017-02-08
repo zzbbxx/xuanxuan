@@ -208,8 +208,8 @@ const ChatMenu = React.createClass({
                 width: '100%'
             },
             tabStyle: {
-                height: 50,
-                minWidth: 50,
+                height: 49,
+                minWidth: 49,
                 paddingLeft: 8,
                 paddingRight: 8,
                 width: '33.3333333%',
