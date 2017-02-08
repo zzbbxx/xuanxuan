@@ -94,9 +94,6 @@ const Contact = React.createClass({
           <section style={STYLE.section}>
             <div style={STYLE.sectionHeading}>{Lang.user.contact.info}</div>
           </section>
-          <section style={STYLE.section}>
-            <div style={STYLE.sectionHeading}>{Lang.user.contact.projects}</div>
-          </section>
         </div>
     }
 });
