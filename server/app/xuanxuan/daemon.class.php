@@ -118,7 +118,7 @@ class daemon extends router
             $now = helper::now();
             $id  = md5(time(). mt_rand());
             $gid = substr($id, 0, 8) . '-' . substr($id, 8, 4) . '-' . substr($id, 12, 4) . '-' . substr($id, 16, 4) . '-' . substr($id, 20, 12);
-            $this->dbh->exec("INSERT INTO " . TABLE_IM_CHAT . " (gid, name, type, createdBy, createdDate) values ('$gid', 'system group', 'system', 'system', '$now')");
+            $this->dbh->exec("INSERT INTO " . TABLE_IM_CHAT . " (gid, name, type, createdBy, createdDate) values ('$gid', '', 'system', 'system', '$now')");
         }
     }
 
