@@ -83,7 +83,7 @@ class Chat extends Entity {
             let otherOne = this.getTheOtherOne(app.user);
             return otherOne ? otherOne.displayName : app.lang.chat.tempChat;
         } else if(this.type === 'system') {
-            return app.lang.chat.groupNameFormat.format(app.lang.chat.systemGroup, this.membersCount);
+            return app.lang.chat.groupNameFormat.format(this.name || app.lang.chat.systemGroup, this.membersCount);
         } else if(this.name !== undefined && this.name !== '') {
             return app.lang.chat.groupNameFormat.format(this.name, this.membersCount);
         } else {
@@ -195,7 +195,7 @@ class Chat extends Entity {
      * @return {booean}
      */
     get canRename() {
-        return this.type !== 'one2one' && this.type !== 'system';
+        return this.type !== 'one2one';
     }
 
     /**
