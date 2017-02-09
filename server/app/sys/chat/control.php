@@ -500,7 +500,7 @@ class chat extends control
     {
         $response = new stdclass();
         $chat = $this->chat->getByGID($gid);
-        if($chat->type != 'group')
+        if($chat->type != 'group' && $chat->type != 'system')
         {
             $response->result  = 'fail';
             $response->message = $this->lang->chat->notGroupChat;
