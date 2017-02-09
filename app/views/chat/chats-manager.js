@@ -92,7 +92,9 @@ const ChatsManager = React.createClass({
                     });
                 }
 
-                this.setState({page: 0, messages});
+                this.setState({page: 0, messages}, () => {
+                    this.messageList.scrollToBottom(1500);
+                });
                 setTimeout(() => {
                     Messager.hide('loadingHistoryMessager');
                 }, 500);
@@ -257,7 +259,7 @@ const ChatsManager = React.createClass({
                 let endIndex = Math.min(startIndex + pager.recPerPage, pager.recTotal);
                 pager.pageRecCount = endIndex - startIndex;
                 pageMessages = messages.slice(startIndex, endIndex);
-                messagesList = <MessageList messages={pageMessages} chatId={this.state.chat.gid} className='messages-list dock-full scroll-y user-selectable'/>;
+                messagesList = <MessageList ref={e => {this.messageList = e;}} messages={pageMessages} chatId={this.state.chat.gid} className='messages-list dock-full scroll-y user-selectable'/>;
             } else {
                 messagesList = <ContentNotReady title={Lang.chat.noMessages}/>;
             }

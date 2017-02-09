@@ -53,8 +53,21 @@ const ChatPage = React.createClass({
     componentDidMount() {
         setTimeout(() => {
             let chat = App.chat.dao.getChat(this.props.chatId);
-            this.setState({chat});
-        }, 300);
+            this.setState({chat}, () => {
+                let chatMessageBox = this.chatMessageBox;
+                let messageSendboxHeight = Math.ceil(100 * App.user.config.ui.chat.sendbox.height / chatMessageBox.clientHeight);
+                SplitJS([ReactDOM.findDOMNode(this.messageList), ReactDOM.findDOMNode(this.messageSendbox)], {
+                    direction: 'vertical',
+                    gutterSize: 4,
+                    sizes: [100 - messageSendboxHeight, messageSendboxHeight],
+                    minSize: 90,
+                    onDragEnd: () => {
+                        this.messageList.scrollToBottom();
+                    }
+                });
+                this.messageList.scrollToBottom(1500);
+            });
+        }, 500);
 
         this._handleDataChangeEvent = App.on(R.event.data_change, data => {
             let chat = null;
@@ -66,32 +79,17 @@ const ChatPage = React.createClass({
 
         this._handleCaptureScreenEvent = App.on(R.event.capture_screen, (image, chat) => {
             if(image && chat && chat.gid === this.props.chatId) {
-                this.refs.messageSendbox.appendImages(image);
+                this.messageSendbox.appendImages(image);
             }
         });
 
         this._handleUILinkEvent = App.on(R.event.ui_link, actionLink => {
             if(actionLink.action === '@Member') {
-                let editbox = this.refs.messageSendbox.editbox;
+                let editbox = this.messageSendbox.editbox;
                 editbox.appendContent('@' + actionLink.target + '&nbsp;');
                 editbox.focus(false);
             }
         });
-
-        setTimeout(() => {
-            let chatMessageBox = ReactDOM.findDOMNode(this.refs.chatMessageBox);
-            let messageSendboxHeight = Math.ceil(100 * App.user.config.ui.chat.sendbox.height / chatMessageBox.clientHeight);
-            SplitJS([ReactDOM.findDOMNode(this.refs.messageList), ReactDOM.findDOMNode(this.refs.messageSendbox)], {
-                direction: 'vertical',
-                gutterSize: 4,
-                sizes: [100 - messageSendboxHeight, messageSendboxHeight],
-                minSize: 90,
-                onDragEnd: () => {
-                    this.refs.messageList.scrollToBottom();
-                }
-            });
-            this.refs.messageList.scrollToBottom();
-        }, 500);
     },
 
     componentWillUnmount() {
@@ -137,7 +135,7 @@ const ChatPage = React.createClass({
         }
         
         this.setState({chat});
-        this.refs.messageList.scrollToBottom();
+        this.messageList.scrollToBottom();
     },
 
     _handleStarButtonClick() {
@@ -230,7 +228,7 @@ const ChatPage = React.createClass({
         let file = e.dataTransfer.files[0];
         if(file) {
             if(file.type.startsWith('image/')) {
-                this.refs.messageSendbox.appendImages(file);
+                this.messageSendbox.appendImages(file);
             } else {
                 this._handleSelectFile(file);
             }
@@ -352,9 +350,9 @@ const ChatPage = React.createClass({
                   {chatMenu}
                 </div>
               </header>
-              <div className='dock-full' style={messageListStyle} ref='chatMessageBox'>
-                <MessageList ref='messageList' messages={chat.messages} chatId={chat.gid} className='user-selectable messages-list split split-vertical scroll-y'/>
-                <MessageSendbox ref='messageSendbox' className='split split-vertical' onSelectFile={this._handleSelectFile} onSendButtonClick={this._handSendMessage} forNewChat={chat.isNewChat && chat.canRename} chatId={chat.gid}/>
+              <div className='dock-full' style={messageListStyle} ref={e => {this.chatMessageBox = e;}}>
+                <MessageList ref={e => {this.messageList = e;}} messages={chat.messages} chatId={chat.gid} className='user-selectable messages-list split split-vertical scroll-y'/>
+                <MessageSendbox ref={e => {this.messageSendbox = e;}} className='split split-vertical' onSelectFile={this._handleSelectFile} onSendButtonClick={this._handSendMessage} forNewChat={chat.isNewChat && chat.canRename} chatId={chat.gid}/>
                 <div className="drag-n-drop-message center-block" onDragEnter={this._handleDndEnter} onDrop={this._handleDndDrop} onDragLeave={this._handleDndLeave}>
                   <div className="text-center">
                     <div className="dnd-over" dangerouslySetInnerHTML={{__html: Emojione.toImage(':hatching_chick:')}}></div>
