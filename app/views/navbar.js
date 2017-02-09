@@ -49,6 +49,8 @@ const UserMenu = React.createClass({
     handleStatusItemClick(status) {
         if(status === 'offline' || status === 'unverified') {
             App.user.changeStatus(USER_STATUS.unverified);
+        } else if(App.user.isOffline) {
+            App.login();
         } else {
             App.changeUserStatus(status);
         }
