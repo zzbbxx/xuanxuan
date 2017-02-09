@@ -389,7 +389,7 @@ class ChatApp extends AppCore {
             <p>{this.lang.chat.renameTheChat.format(chat.name)}</p>
             <TextField
               ref={(e) => setTimeout(() => {
-                  e.focus();
+                  if(e) e.focus();
               }, 400)}
               hintText={this.lang.chat.inputChatNewName}
               onChange={e => {newName = e.target.value}}
