@@ -43,5 +43,8 @@ dist
 main.js
 main.js.map
 
+# User custom files
+*.custom
+
 .idea
 .vscode/settings.json
