@@ -185,6 +185,46 @@ class App extends ReadyNotifier {
         this.browserWindow.on('restore', () => {
             this.emit(R.event.ui_show_main_window);
         });
+
+        this.event.ipc.on(R.event.app_main_window_close, () => {
+            let userCloseOption = this.user.config.ui.onClose;
+            const handleCloseOption = option => {
+                if(!option) option = userCloseOption;
+                if(option === 'minimize') {
+                    this.browserWindow.minimize();
+                } else {
+                    this.browserWindow.hide();
+                    if(DEBUG) console.error('WINDOW CLOSE...');
+                    setTimeout(() => {
+                        this.quit();
+                    }, 2000);
+                }
+            };
+            if(userCloseOption !== 'close' && userCloseOption !== 'minimize') {
+                userCloseOption = '';
+                Modal.show({
+                    modal: true,
+                    header: this.lang.main.askOnCloseWindow.title,
+                    content: () => {
+                        return <ConfirmCloseWindow onOptionChange={select => {
+                            userCloseOption = select;
+                        }}/>;
+                    },
+                    width: 400,
+                    actions: [{type: 'cancel'}, {type: 'submit'}],
+                    onSubmit: () => {
+                        if(userCloseOption) {
+                            if(userCloseOption.remember) {
+                                this.user.config.ui.onClose = userCloseOption.option;
+                                this.saveUser();
+                            }
+                            handleCloseOption(userCloseOption.option);
+                        }
+                    }
+                });
+                this.requestAttention(1);
+            }
+        });
     }
 
     /**

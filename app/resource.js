@@ -46,7 +46,8 @@ const event = {
     app_check_ready: 'app.check.ready',
     app_remote: 'app.remote',
     app_socket_change: 'app.socket.change',
-    app_remote_send: 'app.remote.send'
+    app_remote_send: 'app.remote.send',
+    app_main_window_close: 'app.main_window.close'
 };
 
 const ui = {
