@@ -212,7 +212,7 @@ class Chat extends Entity {
      * Check the current user is whether can set the chat committers
      */
     canSetCommitters(user) {
-        return this.isAdmin(user);
+        return this.isAdmin(user) && this.type !== 'one2one';
     }
 
     /**
