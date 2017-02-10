@@ -304,10 +304,9 @@ class ChatApp extends AppCore {
     /**
      * Create chat action context menu
      * @param  {Chat} chat
-     * @param  {Window} window
      * @return {gui.Menu}
      */
-    createActionsContextMenu(chat, window) {
+    createActionsContextMenu(chat) {
         let menu = [];
         if(chat.isOne2One) {
             menu.push({

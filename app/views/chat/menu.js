@@ -64,7 +64,7 @@ const ChatMenu = React.createClass({
 
     _handleItemContextMenu(chat, e) {
         e.preventDefault();
-        App.popupContextMenu(App.chat.createActionsContextMenu(chat, window), e);
+        App.popupContextMenu(App.chat.createActionsContextMenu(chat), e);
     },
 
     _updateData(chats, type) {
