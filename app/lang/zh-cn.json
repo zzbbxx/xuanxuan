@@ -253,7 +253,10 @@
     },
     "contact": {
       "info": "联系方式",
-      "projects": "参与的项目"
+      "email": "电子邮件",
+      "mobile": "手机",
+      "phone": "电话",
+      "site": "网站"
     }
   },
 

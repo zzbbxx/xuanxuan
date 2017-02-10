@@ -12,6 +12,7 @@ import Colors           from 'Utils/material-colors';
  */
 let config = {
     spacing    : Spacing,
+    colors     : Colors,
     transition : {longTime: '.7s', normalTime: '.3s', fastTime: '.2s', type: 'cubic-bezier(0.175,.885,.32,1)'},
     fontFamily : '"Helvetica Neue", Helvetica, Tahoma, Arial, "Microsoft Yahei", "PingFang SC", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif',
     palette    : {

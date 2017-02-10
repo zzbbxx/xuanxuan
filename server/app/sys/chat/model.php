@@ -10,7 +10,7 @@ class chatModel extends model
      */
     public function getUserByUserID($userID = 0)
     {
-        $user = $this->dao->select('id, account, realname, avatar, role, dept, status, admin, gender, email, mobile, site')->from(TABLE_USER)->where('id')->eq($userID)->fetch();
+        $user = $this->dao->select('id, account, realname, avatar, role, dept, status, admin, gender, email, mobile, site, phone')->from(TABLE_USER)->where('id')->eq($userID)->fetch();
         if($user)
         {
             $user->id   = (int)$user->id;
@@ -29,7 +29,7 @@ class chatModel extends model
      */
     public function getUserList($idList = array())
     {
-        $userList = $this->dao->select('id, realname, avatar, status, admin, account, role, dept, gender, email, mobile, site')
+        $userList = $this->dao->select('id, realname, avatar, status, admin, account, role, dept, gender, email, mobile, phone, site')
             ->from(TABLE_USER)->where('deleted')->eq('0')
             ->beginIF($idList)->andWhere('id')->in($idList)->fi()
             ->fetchAll();
