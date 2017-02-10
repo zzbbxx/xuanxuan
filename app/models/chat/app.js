@@ -371,7 +371,7 @@ class ChatApp extends AppCore {
      */
     createChatMemberContextMenu(chat, member) {
         let menu = [];
-        if(member.id !== this.user.id) {
+        if(!chat.isOne2One && member.id !== this.user.id) {
             menu.push({
                 label: this.lang.chat.sendMessage,
                 click: () => {
