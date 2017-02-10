@@ -21,6 +21,11 @@ const CONFIGS = [
         title: '1em',
         titleLineHeight: 1.5
     }, DEFAULT_CONFIG, {
+        size: 14,
+        lineHeight: 1.5,
+        title: '1em',
+        titleLineHeight: 1.4285714286
+    }, {
         size: 15,
         lineHeight: 1.5,
         title: '0.8666667em',
