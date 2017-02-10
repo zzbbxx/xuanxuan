@@ -354,7 +354,7 @@ class Chat extends Entity {
     /**
      * Sort chats
      */
-    static sort(chats, app, order = -1) {
+    static sort(chats, app, order = -1, onlyTime = false) {
         return chats.sort((x, y) => {
             let result = 0;
             if(result === 0) {
@@ -363,11 +363,13 @@ class Chat extends Entity {
             if(result === 0) {
                 result = (x.star ? 1 : 0) - (y.star ? 1 : 0);
             }
-            if(result === 0 && (x.noticeCount || y.noticeCount)) {
-                result = (x.noticeCount || 0) - (y.noticeCount || 0);
-            }
-            if(result === 0 && app) {
-                result = (x.isOnline(app) ? 1 : 0) - (y.isOnline(app) ? 1 : 0);
+            if(!onlyTime) {
+                if(result === 0 && (x.noticeCount || y.noticeCount)) {
+                    result = (x.noticeCount || 0) - (y.noticeCount || 0);
+                }
+                if(result === 0 && app) {
+                    result = (x.isOnline(app) ? 1 : 0) - (y.isOnline(app) ? 1 : 0);
+                }
             }
             if(result === 0 && (x.lastActiveTime || y.lastActiveTime)) {
                 result = (x.lastActiveTime || 0) - (y.lastActiveTime || 0);

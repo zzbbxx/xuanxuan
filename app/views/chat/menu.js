@@ -85,9 +85,9 @@ const ChatMenu = React.createClass({
                 else recent.push(chat);
             });
 
-            Chat.sort(favs, App);
-            Chat.sort(recent, App);
-            Chat.sort(hiddens, App);
+            Chat.sort(favs, App, -1, true);
+            Chat.sort(recent, App, -1, true);
+            Chat.sort(hiddens, App, -1, true);
 
             data = [
                 {name: 'fav', title: Lang.chat.favList, items: favs},
@@ -115,8 +115,14 @@ const ChatMenu = React.createClass({
         }
 
         this.setState({data, type});
-        if(!this.state.activedItem && data && data.length && data[0].items.length) {
-            let first = data[0].items[0];
+        if(!this.state.activedItem && data) {
+            let first = null;
+            for(let dataItems of data) {
+                if(dataItems.items && dataItems.items.length) {
+                    first = dataItems.items[0];
+                    break;
+                }
+            }
             if(first) this._handleItemClick('chat', first.gid, first);
         }
     },
