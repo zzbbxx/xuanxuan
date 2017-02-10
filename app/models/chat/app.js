@@ -577,12 +577,12 @@ class ChatApp extends AppCore {
      * @return {void}
      */
     sendChatMessage(messages, chat) {
-        if(chat.isReadonly(this.user)) {
+        if(chat && chat.isReadonly(this.user)) {
             this.$app.emit(R.event.ui_messager, {
                 content: Lang.chat.blockedCommitterTip,
                 color: Theme.color.negative
             });
-            if(DEBUG) console.warn('The user try send message in a readonly chat.', {chat, messages});
+            if(DEBUG) console.warn('The user try send messages in a readonly chat.', {chat, messages});
             return false;
         }
         if(!Array.isArray(messages)) messages = [messages];
@@ -603,6 +603,15 @@ class ChatApp extends AppCore {
      * @return {void}
      */
     sendMessage(message, chat) {
+        if(!chat) chat = this.dao.getChat(message.cgid);
+        if(chat && chat.isReadonly(this.user)) {
+            this.$app.emit(R.event.ui_messager, {
+                content: Lang.chat.blockedCommitterTip,
+                color: Theme.color.negative
+            });
+            if(DEBUG) console.warn('The user try send message in a readonly chat.', {chat, message});
+            return false;
+        }
         let command = message.getCommand();
         if(command) {
             if(command.action === 'rename') {
