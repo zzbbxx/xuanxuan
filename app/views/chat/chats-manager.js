@@ -93,7 +93,9 @@ const ChatsManager = React.createClass({
                 }
 
                 this.setState({page: 0, messages}, () => {
-                    this.messageList.scrollToBottom(1500);
+                    if(this.messageList) {
+                        this.messageList.scrollToBottom(1500);
+                    }
                 });
                 setTimeout(() => {
                     Messager.hide('loadingHistoryMessager');

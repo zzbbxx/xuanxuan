@@ -50,7 +50,6 @@ const STYLE = {
     section: {
         position: 'relative',
         borderTop: '1px solid ' + Theme.color.border,
-        padding: '10px',
         minHeight: 60,
         margin: '0 20px'
     },
@@ -94,6 +93,7 @@ const Contact = React.createClass({
         let contactsItems = [];
         if(member.email) {
             contactsItems.push(<ListItem
+                key="contact-email"
                 leftAvatar={<Avatar icon={<MailIcon />} backgroundColor={Theme.colors.blue500} />}
                 primaryText={Lang.user.contact.email}
                 secondaryText={member.email}
@@ -101,13 +101,15 @@ const Contact = React.createClass({
         }
         if(member.mobile) {
             contactsItems.push(<ListItem
-                leftAvatar={<Avatar icon={<MobileIcon />} backgroundColor={Theme.colors.blue500} />}
+                key="contact-mobile"
+                leftAvatar={<Avatar icon={<MobileIcon />} backgroundColor={Theme.colors.green500} />}
                 primaryText={Lang.user.contact.mobile}
                 secondaryText={member.mobile}
             />);
         }
         if(member.phone) {
             contactsItems.push(<ListItem
+                key="contact-phone"
                 leftAvatar={<Avatar icon={<PhoneIcon />} backgroundColor={Theme.colors.teal500} />}
                 primaryText={Lang.user.contact.phone}
                 secondaryText={member.phone}
@@ -115,6 +117,7 @@ const Contact = React.createClass({
         }
         if(member.site) {
             contactsItems.push(<ListItem
+                key="contact-site"
                 leftAvatar={<Avatar icon={<WebIcon />} backgroundColor={Theme.colors.lightBlue500} />}
                 primaryText={Lang.user.contact.site}
                 secondaryText={member.site}
@@ -125,7 +128,7 @@ const Contact = React.createClass({
           <header style={STYLE.header}>
             <UserAvatar size={80} user={member} style={STYLE.avatar}/>
             <h2 style={STYLE.heading}>{member.displayName} &nbsp; <small style={STYLE.userAccount}>@{member.account}</small></h2>
-            <div style={STYLE.userInfo}><UserStatus status={member.status} type='dot-text' /> {Lang.user.genders[member.gender]} &nbsp; {Lang.user.roles[member.role]}</div>
+            <div style={STYLE.userInfo}><UserStatus status={member.status} type='dot-text' /> &nbsp; &nbsp; {Lang.user.genders[member.gender]} &nbsp; {Lang.user.roles[member.role]}</div>
             <div>{raisedButton}</div>
           </header>
           <section style={STYLE.section}>
