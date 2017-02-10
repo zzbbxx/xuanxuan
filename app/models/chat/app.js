@@ -514,6 +514,21 @@ class ChatApp extends AppCore {
     }
 
     /**
+     * Delete local message
+     */
+    deleteLocalMessage(message, chat) {
+        if(!chat) chat = this.dao.getChat(message.cgid);
+        chat.removeMessage(message);
+        return new Promise((resolve, reject) => {
+            this.dao.$dao.delete(message).then(x => {
+                this.$dao._emit(R.event.data_change, {messages: [message], chats: [chat]});
+                this.$dao._emit(R.event.data_delete, {messages: [message]});
+                resolve();
+            }).catch(reject);
+        });
+    }
+
+    /**
      * Send chat messages
      * @param  {[ChatMessage]} messages
      * @param  {Chat} chat

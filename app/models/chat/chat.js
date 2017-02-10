@@ -526,11 +526,21 @@ class Chat extends Entity {
 
     /**
      * Delete local message
-     * @param  {ChatMessage} message
-     * @return {void}
      */
-    // deleteLocalMessage(message) {
-    // }
+    removeMessage(message, onlyLocal = true) {
+        if(this.$.messages && this.$.messages.length) {
+            if(typeof message === 'object') {
+                message = message.gid;
+            }
+            let findIndex = this.$.messages.findIndex(x => {
+                return (!onlyLocal || !x.remoteId) && x.gid === message;
+            });
+            if(findIndex > -1) {
+                this.$.messages.splice(findIndex, 1);
+            }
+        }
+        return false;
+    }
 
     static TYPES() {
         return MESSAGE_TYPES;

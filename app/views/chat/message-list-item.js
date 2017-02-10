@@ -57,6 +57,10 @@ const MessageListItem = React.createClass({
         this.forceUpdate();
     },
 
+    _handleDeleteBtnClick() {
+        App.chat.deleteLocalMessage(this.props.message);
+    },
+
     render() {
         let {
             message,
@@ -207,7 +211,7 @@ const MessageListItem = React.createClass({
 
         let resendButton = null;
         if(message.needResend) {
-            resendButton = <a style={STYLE.resendButton} className='negative' onClick={this._handleResendBtnClick}>{Lang.chat.resend}</a>
+            resendButton = <div><a style={STYLE.resendButton} className='negative' onClick={this._handleResendBtnClick}>{Lang.chat.resend}</a> &nbsp; <a style={STYLE.resendButton} className='negative' onClick={this._handleDeleteBtnClick}>{Lang.common.delete}</a></div>
         }
 
         return <div {...other} style={style}>
