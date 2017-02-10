@@ -18,6 +18,7 @@ import Messager            from '../components/messager';
 import UserStatus          from './user-status';
 import Searchbox           from '../components/searchbox';
 import R                   from '../../resource';
+import Modal               from 'Components/modal';
 
 const Helper = global.Helper;
 
@@ -146,6 +147,7 @@ const NewChatGroup = React.createClass({
         let members = Object.keys(this.state.choosed).map(x => this.state.choosed[x]);
         App.chat.create(...members);
         this.setState({choosed: {[App.user.id]: App.user}});
+        Modal.hide('new-chat');
     },
 
     _handleSearchboxChange(searchText) {
