@@ -365,6 +365,49 @@ class ChatApp extends AppCore {
     }
 
     /**
+     * Create chat member context menu
+     * @param  object chat
+     * @param  object member
+     * @return object
+     */
+    createChatMemberContextMenu(chat, member) {
+        let menu = [];
+        if(member.id !== this.user.id) {
+            menu.push({
+                label: this.lang.chat.sendMessage,
+                click: () => {
+                    this.create(member);
+                }
+            });
+        }
+        menu.push({
+            label: this.lang.user.viewProfile,
+            click: () => {
+                this.$app.openProfile({member, inModal: true});
+            }
+        });
+
+        if(chat.hasWhitelist && chat.isAdmin(this.user)) {
+            let isCommitter = chat.isCommitter(member);
+            menu.push({
+                type: 'separator'
+            }, {
+                label: isCommitter ? this.lang.chat.removeFromWhitelist : this.lang.chat.addToWhitelist,
+                click: () => {
+                    if(isCommitter) {
+                        chat.removeFromWhitelist(member);
+                    } else {
+                        chat.addToWhitelist(member);
+                    }
+                    this.setCommitters(chat, chat.whitelist);
+                }
+            });
+        }
+
+        return this.$app.createContextMenu(menu);
+    }
+
+    /**
      * Open a confirm window ask user to exit chat
      */
     exitConfirm(chat) {

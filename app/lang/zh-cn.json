@@ -101,6 +101,8 @@
     "tempChat": "临时",
     "exitChat": "退出会话",
     "setCommitters": "设置白名单",
+    "addToWhitelist": "加入白名单",
+    "removeFromWhitelist": "从白名单移除",
     "setChatCommitters": "设置会话 【{0}】的白名单",
     "exitChatConfirm": "确定退出会话 【{0}】?",
     "changeFontSize": "设置字体大小",
