@@ -237,7 +237,7 @@ const ChatMenu = React.createClass({
                 paddingRight: 8,
                 width: '33.3333333%',
                 display: 'table-cell',
-                boxShadow: 'inset 0 -1px 0 rgba(0,0,0,.025), inset 0 -3px 2px rgba(0,0,0,.025)'
+                boxShadow: 'inset 0 -1px 0 rgba(0,0,0,.075'
             },
             activeTabStyle: {
                 backgroundColor: 'rgba(255,255,255,.3)',
