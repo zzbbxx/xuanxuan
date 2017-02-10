@@ -180,8 +180,8 @@ class Chat extends Entity {
      * Check whether the chat can invite more members
      * @return {boolean}
      */
-    get canInvite() {
-        return this.type === 'one2one' || this.type === 'group';
+    canInvite(user) {
+        return this.isCommiter(user) && (this.type === 'one2one' || this.type === 'group');
     }
 
     /**
@@ -205,7 +205,7 @@ class Chat extends Entity {
      * @return {booean}
      */
     canRename(user) {
-        return this.isAdmin(user) && this.type !== 'one2one';
+        return this.isCommiter(user) && this.type !== 'one2one';
     }
 
     /**

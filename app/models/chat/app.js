@@ -704,7 +704,7 @@ class ChatApp extends AppCore {
      * @return {void}
      */
     inviteMembers(chat, members) {
-        if(chat.canInvite) {
+        if(chat.canInvite(this.user)) {
             if(!chat.isOne2One) {
                 this.inviteMembersToChat(chat, members);
             } else {
