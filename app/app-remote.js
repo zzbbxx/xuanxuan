@@ -185,7 +185,7 @@ class AppRemote extends ReadyNotifier {
      * @param  {string | false} tooltip
      * @return {void}
      */
-    set trayTooltip(tooltip) {
+    trayTooltip(tooltip) {
         this.tray.setToolTip(tooltip || Lang.title);
     }
 
@@ -288,7 +288,7 @@ class AppRemote extends ReadyNotifier {
         }
     }
 
-    set dockBadgeLabel(label) {
+    dockBadgeLabel(label) {
         ElectronApp.dock.setBadge(label);
         if(label) {
             this.trayTooltip = (Lang.title + ' （' + Lang.chat.someNewMessages.format(label) + ')');
