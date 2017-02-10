@@ -551,6 +551,57 @@ class chat extends control
 
         return $response;
     }
+
+    /**
+     * Change the commiters of a chat
+     * 
+     * @param  string $gid 
+     * @param  string $commiters
+     * @access public
+     * @return object
+     */
+    public function setCommiters($gid = '', $commiters = '')
+    {
+        $response = new stdclass();
+        $chat = $this->chat->getByGID($gid);
+        if($chat->type != 'group' && $chat->type != 'system')
+        {
+            $response->result  = 'fail';
+            $response->message = $this->lang->chat->notGroupChat;
+
+            return $response;
+        }
+
+        $chat->commiters = $commiters;
+        $chat = $this->chat->update($chat);
+
+        $userList = $this->chat->getUsersToNotify(array_values($chat->members));
+
+        $data = new stdclass();
+        $data->module = $this->moduleName;
+        $data->method = $this->methodName;
+        $data->data   = $chat;
+
+        /* Add to message queue. */
+        $this->chat->send($userList, $data);
+
+        if(dao::isError())
+        {
+            $response->result  = 'fail';
+            $response->message = 'Set commiters failed.';
+        }
+        else
+        {
+            $data = new stdclass();
+            $data->gid       = $gid;
+            $data->commiters = $commiters;
+
+            $response->result = 'success';
+            $response->data   = $data;
+        }
+
+        return $response;
+    }
     
     /**
      * Change a chat to be public or not. 

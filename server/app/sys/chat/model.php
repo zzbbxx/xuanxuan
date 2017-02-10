@@ -10,7 +10,7 @@ class chatModel extends model
      */
     public function getUserByUserID($userID = 0)
     {
-        $user = $this->dao->select('id, account, realname, avatar, role, dept, status')->from(TABLE_USER)->where('id')->eq($userID)->fetch();
+        $user = $this->dao->select('id, account, realname, avatar, role, dept, status, admin, gender, email, mobile, site')->from(TABLE_USER)->where('id')->eq($userID)->fetch();
         if($user)
         {
             $user->id   = (int)$user->id;
@@ -29,7 +29,7 @@ class chatModel extends model
      */
     public function getUserList($idList = array())
     {
-        $userList = $this->dao->select('id, realname, avatar, status, account, role, dept')
+        $userList = $this->dao->select('id, realname, avatar, status, admin, account, role, dept, gender, email, mobile, site')
             ->from(TABLE_USER)->where('deleted')->eq('0')
             ->beginIF($idList)->andWhere('id')->in($idList)->fi()
             ->fetchAll();
@@ -194,12 +194,12 @@ class chatModel extends model
     {
         if(!$userID) $userID = $this->session->user->id;
 
-        $systemChat = $this->dao->select('*, 0 as star, 0 as hide')
+        $systemChat = $this->dao->select('*, 0 as star, 0 as hide, 0 as mute')
             ->from(TABLE_IM_CHAT)
             ->where('type')->eq('system')
             ->fetchAll();
 
-        $chatList = $this->dao->select('t1.*, t2.star, t2.hide')
+        $chatList = $this->dao->select('t1.*, t2.star, t2.hide, t2.mute')
             ->from(TABLE_IM_CHAT)->alias('t1')
             ->leftjoin(TABLE_IM_CHATUSER)->alias('t2')->on('t1.gid=t2.cgid')
             ->where('t2.quit')->eq('0000-00-00 00:00:00')
@@ -219,6 +219,7 @@ class chatModel extends model
             $chat->lastActiveTime = $chat->lastActiveTime == '0000-00-00 00:00:00' ? '' : strtotime($chat->lastActiveTime);
             $chat->star           = (int)$chat->star;
             $chat->hide           = (int)$chat->hide;
+            $chat->mute           = (int)$chat->mute;
         }
 
         return $chatList;
