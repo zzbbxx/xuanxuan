@@ -139,7 +139,7 @@
     "chooseContacts": "选择参与会话的联系人",
     "choosePublicGroup": "选择一个公共频道",
     "join": "加入",
-    "avaliablePublicGroup": "{} 个公开频道可以加入",
+    "avaliablePublicGroup": "{0} 个公开频道可以加入",
     "searchPublicGroup": "搜索频道",
     "numberOfMembers": "{} 个成员",
     "noAvaliablePublicGroup": "没有找到可以加入的公共频道。普通讨论组可以设置为公共频道。",
