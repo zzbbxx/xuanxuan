@@ -27,6 +27,48 @@ const defaultValuesConveter = {
             return val === '1' || val === 'true';
         }
         return !!val;
+    },
+    intSet: val => {
+        if(val instanceof Set) {
+            return val;
+        }
+        if(Array.isArray(val)) {
+            return new Set(val);
+        }
+        let valType = typeof val;
+        if(valType === 'string') {
+            let set = new Set();
+            let arr = val.split(',').forEach(x => {
+                x = Number.parseInt(x);
+                if(x !== NaN) {
+                    set.add(x);
+                }
+            });
+            return set;
+        } else if(valType === 'number') {
+            return new Set([Math.floor(val)]);
+        } else {
+            if(DEBUG) console.warn('Value can not conver to a set.', val);
+        }
+        return null;
+    },
+    'set': val => {
+        if(val instanceof Set) {
+            return val;
+        }
+        if(Array.isArray(val)) {
+            return new Set(val);
+        }
+        let valType = typeof val;
+        if(valType === 'string') {
+            let set = new Set();
+            let arr = val.split(',').forEach(x => {
+                if(x !== '') set.add(x);
+            });
+            return set;
+        } else {
+            return new Set(val);
+        }
     }
 };
 
