@@ -349,7 +349,7 @@ const ChatPage = React.createClass({
                 <div>{chatIcon}<span style={STYLE.headerTitle}>{chatTitle}</span>{chat.public ? <small className="hint--bottom" data-hint={Lang.chat.publicGroupTip} style={STYLE.publicGroup}>{Lang.chat.publicGroup}</small> : null}</div>
                 <div className='dock-right' style={STYLE.headerActions}>
                   <IconButton className="hint--bottom" data-hint={chat.star ? Lang.chat.removeStar : Lang.chat.star} onClick={this._handleStarButtonClick}><ChatStarIcon color={chat.star ? Theme.color.accent1 : Theme.color.icon} hoverColor={chat.star ? Theme.color.accent1 : Theme.color.primary1}/></IconButton>
-                  {chat.canInvite ? <div ref={(e) => this.inviteBtnWrapper = e} style={{display: 'inline-block'}}><IconButton className="hint--bottom" onClick={this._handleOnInviteBtnClick} data-hint={Lang.chat.inviteMember}><PersonAddIcon color={Theme.color.icon} hoverColor={Theme.color.primary1} style={STYLE.icon}/></IconButton></div> : null}
+                  {chat.canInvite(App.user) ? <div ref={(e) => this.inviteBtnWrapper = e} style={{display: 'inline-block'}}><IconButton className="hint--bottom" onClick={this._handleOnInviteBtnClick} data-hint={Lang.chat.inviteMember}><PersonAddIcon color={Theme.color.icon} hoverColor={Theme.color.primary1} style={STYLE.icon}/></IconButton></div> : null}
                   {<IconButton className="hint--bottom" onClick={this._handleHistoryBtnClick} data-hint={Lang.chat.history}><HistoryIcon color={Theme.color.icon} hoverColor={Theme.color.primary1} style={STYLE.icon}/></IconButton>}
                   {sidebarIconButton}
                   {chatMenu}
