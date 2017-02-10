@@ -339,6 +339,9 @@ class User extends Member {
         return '';
     }
 
+    /**
+     * Fix user avatar path
+     */
     fixAvatar(avatar) {
         if(typeof avatar === 'object') {
             let member = avatar;

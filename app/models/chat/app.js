@@ -11,6 +11,7 @@ import Moment                            from 'moment';
 import Modal                             from 'Components/modal';
 import TextField                         from 'material-ui/TextField';
 import ChangeFontSize                    from 'Views/chat/change-font-size';
+import SetCommiters                      from 'Views/chat/set-commiters';
 
 const Helper = global.Helper;
 
@@ -33,6 +34,15 @@ class ChatApp extends AppCore {
                             let chat = this.dao.getChat(msg.data.gid);
                             if(chat) {
                                 chat.name = msg.data.name;
+                                this.dao.updateChats(chat);
+                            }
+                        }
+                    },
+                    setcommiters: msg => {
+                        if(msg.isSuccess) {
+                            let chat = this.dao.getChat(msg.data.gid);
+                            if(chat) {
+                                chat.commiters = msg.data.commiters;
                                 this.dao.updateChats(chat);
                             }
                         }
@@ -64,7 +74,7 @@ class ChatApp extends AppCore {
                                 this.dao.updateChats(chat);
                             } else {
                                 chat = new Chat(msg.data);
-                                chat.updateMembersSet(this.dao$);
+                                chat.updateWithApp(this);
                                 this.dao.updateChats(chat);
                             }
                         }
@@ -73,7 +83,7 @@ class ChatApp extends AppCore {
                         if(msg.isSuccess) {
                             let chats = Object.keys(msg.data).map(key => {
                                 let chat = new Chat(msg.data[key]);
-                                chat.updateMembersSet(this.$dao);
+                                chat.updateWithApp(this);
                                 return chat;
                             });
 
@@ -83,7 +93,7 @@ class ChatApp extends AppCore {
                     create: msg => {
                         if(msg.isSuccess) {
                             let chat = new Chat(msg.data);
-                            chat.updateMembersSet(this.$dao);
+                            chat.updateWithApp(this);
 
                             this.dao.updateChats(chat);
                         }
@@ -316,7 +326,7 @@ class ChatApp extends AppCore {
             }
         });
 
-        if(chat.canRename) {
+        if(chat.canRename(this.user)) {
             menu.push({
                 label: this.lang.common.rename,
                 click: () => {
@@ -409,6 +419,38 @@ class ChatApp extends AppCore {
                 }
             }
         });
+    }
+
+    /**
+     * Open a dialog for user to set chat commiters
+     */
+    openCommitersDialog(chat) {
+        let setCommitersView = null;
+        Modal.show({
+            modal: true,
+            header: this.lang.chat.setChatCommiters.format(chat.getDisplayName(this.$app)),
+            content: <SetCommiters ref={e => {setCommitersView = e;}} chat={chat}/>,
+            width: 800,
+            actions: [{type: 'cancel'}, {type: 'submit', label: this.lang.common.confirm}],
+            onSubmit: () => {
+                if(setCommitersView) {
+                    this.setCommiters(chat, setCommitersView.getCommiters());
+                }
+            }
+        });
+    }
+
+    setCommiters(chat, commiters) {
+        if(commiters instanceof Set) {
+            commiters = Array.from(commiters);
+        }
+        if(Array.isArray(commiters)) {
+            commiters = commiters.join(',');
+        }
+        this.socket.send(this.socket.createSocketMessage({
+            'method': 'setCommiters',
+            'params': [chat.gid, commiters]
+        }));
     }
 
     /**
@@ -510,7 +552,7 @@ class ChatApp extends AppCore {
      * @return {void}
      */
     rename(chat, newName) {
-        if(chat && chat.canRename) {
+        if(chat && chat.canRename(this.user)) {
             return this.socket.send(this.socket.createSocketMessage({
                 'method': 'changeName',
                 'params': [chat.gid, newName]

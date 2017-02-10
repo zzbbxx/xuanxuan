@@ -158,6 +158,10 @@ const ChatPage = React.createClass({
         App.chat.changeChatFontSize();
     },
 
+    _handleSetCommitersMenuItemClick() {
+        App.chat.openCommitersDialog(this.state.chat);
+    },
+
     onWindowResize(windowWidth) {
         this.setState({smallWindow: windowWidth < 900});
     },
@@ -304,9 +308,7 @@ const ChatPage = React.createClass({
 
         if(!chat) {
             return <div {...other} style={style}><Spinner/></div>
-        }// else {
-        //    console.log('RENDER CHAT', chat);
-        // }
+        }
 
         let messageListStyle = Object.assign({}, STYLE.messageList);
 
@@ -323,6 +325,8 @@ const ChatPage = React.createClass({
         let chatTitle = theOtherOne ? <div><UserStatus status={theOtherOne ? theOtherOne.status : null} />{chat.getDisplayName(App)}</div> : chat.getDisplayName(App);
 
         let canMakePublic = chat.canMakePublic(App.user);
+        let canSetCommiters = chat.canSetCommiters(App.user);
+        let canRename = chat.canRename(App.user);
         let chatMenu = <IconMenu
             desktop={true}
             iconButtonElement={<IconButton className="hint--bottom" data-hint={Lang.common.more}><MoreVertIcon color={Theme.color.icon} hoverColor={Theme.color.primary1} style={STYLE.icon} /></IconButton>}
@@ -331,9 +335,10 @@ const ChatPage = React.createClass({
             listStyle={{paddingTop: 8, paddingBottom: 8}}
             >
             {canMakePublic ? <MenuItem onClick={this._handleMakePublicMenuItemClick} style={STYLE.menuItem} primaryText={chat.public ? Lang.chat.cancelSetPublic : Lang.chat.setPublic} /> : null}
-            {chat.canRename ? <MenuItem onClick={this._handleRenameChatMenuItemClick} style={STYLE.menuItem} primaryText={Lang.common.rename} />: null}
+            {canRename ? <MenuItem onClick={this._handleRenameChatMenuItemClick} style={STYLE.menuItem} primaryText={Lang.common.rename} />: null}
+            {canSetCommiters ? <MenuItem onClick={this._handleSetCommitersMenuItemClick} style={STYLE.menuItem} primaryText={Lang.chat.setCommiters} /> : null}
             {chat.canExit ? <MenuItem onClick={this._handleExitChatMenuItemClick} style={STYLE.menuItem} primaryText={Lang.chat.exitChat} /> : null}
-            {canMakePublic || chat.canRename || chat.canExit ? <Divider /> : null}
+            {canSetCommiters || canMakePublic || canRename || chat.canExit ? <Divider /> : null}
             <MenuItem onClick={this._handleChangeFontSizeMenuItemClick} style={STYLE.menuItem} primaryText={Lang.chat.changeFontSize} />
         </IconMenu>;
 

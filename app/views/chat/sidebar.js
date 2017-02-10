@@ -9,6 +9,9 @@ import MembersList         from '../contacts/members-list';
 import CacheContents       from '../mixins/cache-contents';
 import FileList            from './file-list';
 import Modal               from 'Components/modal';
+import UserStatus          from './user-status';
+import ListItem            from '../components/small-list-item';
+import UserAvatar          from '../user-avatar';
 
 const STYLE = {
     main: {
@@ -38,6 +41,28 @@ const STYLE = {
         display: 'block',
         width: '100%',
         color: Theme.color.negative
+    },
+    adminBadge: {
+        border: '1px solid ' + Theme.color.primary1,
+        color: Theme.color.primary1,
+        display: 'inline-block',
+        fontSize: 12,
+        margin: '0 5px',
+        lineHeight: '16px',
+        padding: '0 3px',
+        borderRadius: 2,
+        float: 'right'
+    },
+    commiterBadge: {
+        border: '1px solid ' + Theme.color.icon,
+        color: Theme.color.icon,
+        display: 'inline-block',
+        fontSize: 12,
+        margin: '0 5px',
+        lineHeight: '16px',
+        padding: '0 3px',
+        borderRadius: 2,
+        float: 'right' 
     }
 };
 
@@ -70,7 +95,6 @@ const ChatSidebar = React.createClass({
     },
 
     _handleMemberClick(member) {
-
         App.openProfile({member, inModal: true});
     },
 
@@ -87,6 +111,16 @@ const ChatSidebar = React.createClass({
         });
     },
 
+    _memberItemCreator(member) {
+        let primaryText = <div>
+          <UserStatus status={member.status} />
+          {member.displayName}
+          {this.props.chat.isCommiter(member) ? null : <span style={STYLE.commiterBadge}>{Lang.chat.blockedCommiter}</span>}
+          {this.props.chat.isAdmin(member) ? <span style={STYLE.adminBadge}>{Lang.chat.admin}</span> : null}
+        </div>;
+        return <ListItem onClick={this._handleMemberClick.bind(this, member)} key={member._id} primaryText={primaryText} leftAvatar={<UserAvatar size={20} user={member} style={STYLE.avatar}/>} />;
+    },
+
     renderCacheContent(contentId, cacheName) {
         if(contentId === 'members') {
             let exitChatButtonView = null;
@@ -101,7 +135,7 @@ const ChatSidebar = React.createClass({
             this.tabsNameAlias[contentId] = members.length;
 
             return <div>
-              <MembersList onItemClick={this._handleMemberClick} size='small' members={members} style={STYLE.tabContent} listStyle={STYLE.tabList}/>
+              <MembersList onItemClick={this._handleMemberClick} members={members} style={STYLE.tabContent} listStyle={STYLE.tabList} itemCreator={this._memberItemCreator}/>
               {exitChatButtonView}
             </div>
         } else if(contentId === 'files') {
