@@ -111,14 +111,14 @@ const MessageListItem = React.createClass({
             leftTime: {
                 position: 'absolute',
                 left: -3,
-                top: Math.floor((Math.floor(Math.max(20, fontSize.size * fontSize.lineHeight)) - 17)/2) - 1,
+                top: Math.floor((Math.floor(Math.max(16, fontSize.size * fontSize.lineHeight)) - 17)/2),
                 width: 36,
                 textAlign: 'center'
             },
             dot: {
                 position: 'absolute',
                 left: 11,
-                top: Math.floor((Math.floor(Math.max(20, fontSize.size * fontSize.lineHeight)) - 8)/2),
+                top: Math.floor((Math.floor(Math.max(16, fontSize.size * fontSize.lineHeight)) - 8)/2),
                 width: 8,
                 height: 8,
                 borderRadius: 4,
