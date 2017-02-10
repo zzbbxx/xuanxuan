@@ -4,6 +4,7 @@ import {App, Lang, Config} from '../../app';
 import CloseIcon           from 'material-ui/svg-icons/navigation/close';
 import IconButton          from 'material-ui/IconButton';
 import FlatButton          from 'material-ui/FlatButton';
+import LockIcon            from 'material-ui/svg-icons/action/lock';
 import Tabs                from '../components/tabs';
 import MembersList         from '../contacts/members-list';
 import CacheContents       from '../mixins/cache-contents';
@@ -53,16 +54,11 @@ const STYLE = {
         borderRadius: 2,
         float: 'right'
     },
-    committerBadge: {
-        border: '1px solid ' + Theme.color.icon,
+    blockIcon: {
+        width: 18,
+        height: 18,
         color: Theme.color.icon,
-        display: 'inline-block',
-        fontSize: 12,
-        margin: '0 5px',
-        lineHeight: '16px',
-        padding: '0 3px',
-        borderRadius: 2,
-        float: 'right' 
+        fill: Theme.color.icon
     }
 };
 
@@ -115,7 +111,7 @@ const ChatSidebar = React.createClass({
         let primaryText = <div>
           <UserStatus status={member.status} />
           {member.displayName}
-          {this.props.chat.isCommitter(member) ? null : <span style={STYLE.committerBadge}>{Lang.chat.blockedCommitter}</span>}
+          {this.props.chat.isCommitter(member) ? null : <div data-hint={Lang.chat.blockedCommitter} className="hint--left pull-right"><LockIcon style={STYLE.blockIcon} /></div>}
           {this.props.chat.isAdmin(member) ? <span style={STYLE.adminBadge}>{Lang.chat.admin}</span> : null}
         </div>;
         return <ListItem onClick={this._handleMemberClick.bind(this, member)} key={member._id} primaryText={primaryText} leftAvatar={<UserAvatar size={20} user={member} style={STYLE.avatar}/>} />;

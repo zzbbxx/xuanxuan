@@ -119,7 +119,8 @@
     "showHiddenChats": "显示隐藏的会话",
     "hideHiddenChats": "不显示隐藏的会话",
     "committersSettingTip": "通过设置白名单来决定哪些人可以在该会话中发言。",
-    "blockedCommitter": "禁言",
+    "blockedCommitter": "已禁言",
+    "blockedCommitterTip": "该会话设置为只读，暂时你无法发送消息。",
     "committersTypes": {
       "all": "所有人",
       "admins": "仅管理员",

@@ -1,8 +1,6 @@
 import AppCore                           from '../app-core';
 import React                             from 'react';
 import {User, Member, Chat, ChatMessage} from '../entities';
-import fs                                from 'fs';
-import ZentaoAPI                         from '../api';
 import R                                 from '../../resource';
 import ChatDao                           from './dao';
 import Path                              from 'path';
@@ -11,7 +9,9 @@ import Moment                            from 'moment';
 import Modal                             from 'Components/modal';
 import TextField                         from 'material-ui/TextField';
 import ChangeFontSize                    from 'Views/chat/change-font-size';
-import SetCommitters                      from 'Views/chat/set-committers';
+import SetCommitters                     from 'Views/chat/set-committers';
+import Theme                             from 'Theme';
+import Lang                              from 'Lang';
 
 const Helper = global.Helper;
 
@@ -245,6 +245,9 @@ class ChatApp extends AppCore {
         });
     }
 
+    /**
+     * Register global hotkey
+     */
     registerGlobalHotKey() {
         this.$app.registerGlobalShortcut('captureScreen', App.user.config.shortcut.captureScreen || 'ctrl+alt+z', () => {
             this.captureAndSendScreen()
@@ -514,6 +517,14 @@ class ChatApp extends AppCore {
      * @return {void}
      */
     sendChatMessage(messages, chat) {
+        if(chat.isReadonly(this.user)) {
+            this.$app.emit(R.event.ui_messager, {
+                content: Lang.chat.blockedCommitterTip,
+                color: Theme.color.negative
+            });
+            if(DEBUG) console.warn('The user try send message in a readonly chat.', {chat, messages});
+            return false;
+        }
         if(!Array.isArray(messages)) messages = [messages];
 
         if(chat) chat.addMessage(...messages);
@@ -531,7 +542,7 @@ class ChatApp extends AppCore {
      * @param  {ChatMessage} message
      * @return {void}
      */
-    sendMessage(message) {
+    sendMessage(message, chat) {
         let command = message.getCommand();
         if(command) {
             if(command.action === 'rename') {
@@ -542,7 +553,7 @@ class ChatApp extends AppCore {
                 message.content = '```\n$$version = "' + `v${PKG.version}${PKG.distributeTime ? (' (' + Moment(PKG.distributeTime).format('YYYYMMDDHHmm') + ')') : null} ${DEBUG ? '[debug]' : ''}` + '";\n```';
             }
         }
-        this.sendChatMessage(message);
+        this.sendChatMessage(message, chat);
     }
 
     /**

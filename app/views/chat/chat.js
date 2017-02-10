@@ -36,7 +36,7 @@ import IconMenu            from 'material-ui/IconMenu';
 import MenuItem            from 'material-ui/MenuItem';
 import MoreVertIcon        from 'material-ui/svg-icons/navigation/more-vert';
 import Divider             from 'material-ui/Divider';
-
+import LockIcon            from 'material-ui/svg-icons/action/lock-outline';
 
 // display app component
 const ChatPage = React.createClass({
@@ -51,45 +51,48 @@ const ChatPage = React.createClass({
     },
 
     componentDidMount() {
-        setTimeout(() => {
+        // setTimeout(() => {
             let chat = App.chat.dao.getChat(this.props.chatId);
             this.setState({chat}, () => {
                 let chatMessageBox = this.chatMessageBox;
-                let messageSendboxHeight = Math.ceil(100 * App.user.config.ui.chat.sendbox.height / chatMessageBox.clientHeight);
-                SplitJS([ReactDOM.findDOMNode(this.messageList), ReactDOM.findDOMNode(this.messageSendbox)], {
-                    direction: 'vertical',
-                    gutterSize: 4,
-                    sizes: [100 - messageSendboxHeight, messageSendboxHeight],
-                    minSize: 90,
-                    onDragEnd: () => {
-                        this.messageList.scrollToBottom();
-                    }
-                });
+                if(this.messageSendbox) {
+                    let messageSendboxHeight = Math.ceil(100 * App.user.config.ui.chat.sendbox.height / chatMessageBox.clientHeight);
+                    SplitJS([ReactDOM.findDOMNode(this.messageList), ReactDOM.findDOMNode(this.messageSendbox)], {
+                        direction: 'vertical',
+                        gutterSize: 4,
+                        sizes: [100 - messageSendboxHeight, messageSendboxHeight],
+                        minSize: 90,
+                        onDragEnd: () => {
+                            this.messageList.scrollToBottom();
+                        }
+                    });
+                }
                 this.messageList.scrollToBottom(1500);
             });
-        }, 500);
+            this._handleDataChangeEvent = App.on(R.event.data_change, data => {
+                let chat = null;
+                if(data.chats) {
+                    chat = data.chats.find(x => x.gid === this.props.chatId);
+                }
+                if(chat && chat.gid === this.props.chatId) this.setState({chat});
+            });
 
-        this._handleDataChangeEvent = App.on(R.event.data_change, data => {
-            let chat = null;
-            if(data.chats) {
-                chat = data.chats.find(x => x.gid === this.props.chatId);
-            }
-            if(chat && chat.gid === this.props.chatId) this.setState({chat});
-        });
+            if(chat.isCommitter(App.user)) {
+                this._handleCaptureScreenEvent = App.on(R.event.capture_screen, (image, chat) => {
+                    if(image && chat && chat.gid === this.props.chatId) {
+                        this.messageSendbox.appendImages(image);
+                    }
+                });
 
-        this._handleCaptureScreenEvent = App.on(R.event.capture_screen, (image, chat) => {
-            if(image && chat && chat.gid === this.props.chatId) {
-                this.messageSendbox.appendImages(image);
+                this._handleUILinkEvent = App.on(R.event.ui_link, actionLink => {
+                    if(actionLink.action === '@Member') {
+                        let editbox = this.messageSendbox.editbox;
+                        editbox.appendContent('@' + actionLink.target + '&nbsp;');
+                        editbox.focus(false);
+                    }
+                });
             }
-        });
-
-        this._handleUILinkEvent = App.on(R.event.ui_link, actionLink => {
-            if(actionLink.action === '@Member') {
-                let editbox = this.messageSendbox.editbox;
-                editbox.appendContent('@' + actionLink.target + '&nbsp;');
-                editbox.focus(false);
-            }
-        });
+        // }, 500);
     },
 
     componentWillUnmount() {
@@ -342,6 +345,22 @@ const ChatPage = React.createClass({
             <MenuItem onClick={this._handleChangeFontSizeMenuItemClick} style={STYLE.menuItem} primaryText={Lang.chat.changeFontSize} />
         </IconMenu>;
 
+        let messagesView = [];
+        if(chat.isCommitter(App.user)) {
+            messagesView.push(<MessageList key="messae-list" ref={e => {this.messageList = e;}} messages={chat.messages} chatId={chat.gid} className='user-selectable messages-list split split-vertical scroll-y'/>);
+            messagesView.push(<MessageSendbox key="message-sendbox" ref={e => {this.messageSendbox = e;}} className='split split-vertical' onSelectFile={this._handleSelectFile} onSendButtonClick={this._handSendMessage} forNewChat={chat.isNewChat && chat.canRename} chatId={chat.gid}/>);
+            messagesView.push(<div key="chat-dnd-box" className="drag-n-drop-message center-block" onDragEnter={this._handleDndEnter} onDrop={this._handleDndDrop} onDragLeave={this._handleDndLeave}>
+                <div className="text-center">
+                <div className="dnd-over" dangerouslySetInnerHTML={{__html: Emojione.toImage(':hatching_chick:')}}></div>
+                <div className="dnd-hover" dangerouslySetInnerHTML={{__html: Emojione.toImage(':hatched_chick:')}}></div>
+                <h1>{Lang.chat.drapNDropFileMessage}</h1>
+                </div>
+            </div>);
+        } else {
+            messagesView.push(<MessageList key="messae-list" ref={e => {this.messageList = e;}} messages={chat.messages} chatId={chat.gid} className='user-selectable messages-list dock-full' style={{paddingBottom: 40}}/>);
+            messagesView.push(<div className="dock-bottom" key="blockedCommitterTip" style={{lineHeight: '24px', padding: '8px 10px 8px 40px', backgroundColor: 'rgba(0,0,0,.1)', color: Theme.color.icon}}><LockIcon color={Theme.color.icon} style={{position: 'absolute', top: 7, left: 8}} /> {Lang.chat.blockedCommitterTip}</div>);
+        }
+
         return <div {...other} style={style}>
           <div className='dock-full table-row'>
             <div className='table-col relative'>
@@ -355,17 +374,7 @@ const ChatPage = React.createClass({
                   {chatMenu}
                 </div>
               </header>
-              <div className='dock-full' style={messageListStyle} ref={e => {this.chatMessageBox = e;}}>
-                <MessageList ref={e => {this.messageList = e;}} messages={chat.messages} chatId={chat.gid} className='user-selectable messages-list split split-vertical scroll-y'/>
-                <MessageSendbox ref={e => {this.messageSendbox = e;}} className='split split-vertical' onSelectFile={this._handleSelectFile} onSendButtonClick={this._handSendMessage} forNewChat={chat.isNewChat && chat.canRename} chatId={chat.gid}/>
-                <div className="drag-n-drop-message center-block" onDragEnter={this._handleDndEnter} onDrop={this._handleDndDrop} onDragLeave={this._handleDndLeave}>
-                  <div className="text-center">
-                    <div className="dnd-over" dangerouslySetInnerHTML={{__html: Emojione.toImage(':hatching_chick:')}}></div>
-                    <div className="dnd-hover" dangerouslySetInnerHTML={{__html: Emojione.toImage(':hatched_chick:')}}></div>
-                    <h1>{Lang.chat.drapNDropFileMessage}</h1>
-                  </div>
-                </div>
-              </div>
+              <div className='dock-full' style={messageListStyle} ref={e => {this.chatMessageBox = e;}}>{messagesView}</div>
             </div>
             <div className='table-col relative' style={sidebarStyle}>
               {this.state.sidebar ? <Sidebar chat={chat} className='dock-full' onCloseButtonClick={() => this.setState({sidebar: false})}/> : null}
