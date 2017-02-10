@@ -51,48 +51,46 @@ const ChatPage = React.createClass({
     },
 
     componentDidMount() {
-        // setTimeout(() => {
-            let chat = App.chat.dao.getChat(this.props.chatId);
-            this.setState({chat}, () => {
-                let chatMessageBox = this.chatMessageBox;
-                if(this.messageSendbox) {
-                    let messageSendboxHeight = Math.ceil(100 * App.user.config.ui.chat.sendbox.height / chatMessageBox.clientHeight);
-                    SplitJS([ReactDOM.findDOMNode(this.messageList), ReactDOM.findDOMNode(this.messageSendbox)], {
-                        direction: 'vertical',
-                        gutterSize: 4,
-                        sizes: [100 - messageSendboxHeight, messageSendboxHeight],
-                        minSize: 90,
-                        onDragEnd: () => {
-                            this.messageList.scrollToBottom();
-                        }
-                    });
-                }
-                this.messageList.scrollToBottom(1500);
-            });
-            this._handleDataChangeEvent = App.on(R.event.data_change, data => {
-                let chat = null;
-                if(data.chats) {
-                    chat = data.chats.find(x => x.gid === this.props.chatId);
-                }
-                if(chat && chat.gid === this.props.chatId) this.setState({chat});
-            });
-
-            if(chat.isCommitter(App.user)) {
-                this._handleCaptureScreenEvent = App.on(R.event.capture_screen, (image, chat) => {
-                    if(image && chat && chat.gid === this.props.chatId) {
-                        this.messageSendbox.appendImages(image);
-                    }
-                });
-
-                this._handleUILinkEvent = App.on(R.event.ui_link, actionLink => {
-                    if(actionLink.action === '@Member') {
-                        let editbox = this.messageSendbox.editbox;
-                        editbox.appendContent('@' + actionLink.target + '&nbsp;');
-                        editbox.focus(false);
+        let chat = App.chat.dao.getChat(this.props.chatId);
+        this.setState({chat}, () => {
+            let chatMessageBox = this.chatMessageBox;
+            if(this.messageSendbox) {
+                let messageSendboxHeight = Math.ceil(100 * App.user.config.ui.chat.sendbox.height / chatMessageBox.clientHeight);
+                SplitJS([ReactDOM.findDOMNode(this.messageList), ReactDOM.findDOMNode(this.messageSendbox)], {
+                    direction: 'vertical',
+                    gutterSize: 4,
+                    sizes: [100 - messageSendboxHeight, messageSendboxHeight],
+                    minSize: 90,
+                    onDragEnd: () => {
+                        this.messageList.scrollToBottom();
                     }
                 });
             }
-        // }, 500);
+            this.messageList.scrollToBottom(1500);
+        });
+        this._handleDataChangeEvent = App.on(R.event.data_change, data => {
+            let chat = null;
+            if(data.chats) {
+                chat = data.chats.find(x => x.gid === this.props.chatId);
+            }
+            if(chat && chat.gid === this.props.chatId) this.setState({chat});
+        });
+
+        if(chat.isCommitter(App.user)) {
+            this._handleCaptureScreenEvent = App.on(R.event.capture_screen, (image, chat) => {
+                if(image && chat && chat.gid === this.props.chatId) {
+                    this.messageSendbox.appendImages(image);
+                }
+            });
+
+            this._handleUILinkEvent = App.on(R.event.ui_link, actionLink => {
+                if(actionLink.action === '@Member') {
+                    let editbox = this.messageSendbox.editbox;
+                    editbox.appendContent('@' + actionLink.target + '&nbsp;');
+                    editbox.focus(false);
+                }
+            });
+        }
     },
 
     componentWillUnmount() {
