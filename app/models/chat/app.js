@@ -208,15 +208,18 @@ class ChatApp extends AppCore {
                 }
                 return false;
             });
-            this.totalNoticeCount = totalNoticeCount || false;
-            this.$app.badgeLabel = this.totalNoticeCount;
-            this.$app.trayTooltip = this.totalNoticeCount ? (this.$app.lang.chat.someNewMessages || '{0} 条新消息').format(this.totalNoticeCount) : false;
-            if(this.totalNoticeCount && (!this.$app.isWindowOpen || !this.$app.isWindowsFocus)) {
-                if(Helper.isWindowsOS) {
-                    if(!this.$app.isWindowOpen) this.$app.flashTrayIcon(this.totalNoticeCount);
-                    this.$app.requestAttention(1);
+            if(this.totalNoticeCount !== totalNoticeCount) {
+                this.totalNoticeCount = totalNoticeCount || false;
+                this.$app.badgeLabel = this.totalNoticeCount;
+                this.$app.trayTooltip = this.totalNoticeCount ? (this.$app.lang.chat.someNewMessages || '{0} 条新消息').format(this.totalNoticeCount) : false;
+                if(this.totalNoticeCount && (!this.$app.isWindowOpen || !this.$app.isWindowsFocus)) {
+                    if(Helper.isWindowsOS) {
+                        if(!this.$app.isWindowOpen) this.$app.flashTrayIcon(this.totalNoticeCount);
+                        this.$app.requestAttention(1);
+                    }
+                    if(!this.$app.isWindowOpen) this.$app.playSound('message');
                 }
-                if(!this.$app.isWindowOpen) this.$app.playSound('message');
+                this.$app.emit(R.event.chats_notice_change, totalNoticeCount);
             }
         });
 

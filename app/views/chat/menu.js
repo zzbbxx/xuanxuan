@@ -50,7 +50,7 @@ const ChatMenu = React.createClass({
     },
 
     _handleItemClick(type, id, chat) {
-        if(chat && chat.noticeCount !== undefined) {
+        if(chat && chat.noticeCount) {
             chat.noticeCount = 0;
             App.emit(R.event.chats_notice, {muteChats: [chat]});
         }
@@ -198,7 +198,23 @@ const ChatMenu = React.createClass({
                 top: 48
             },
             buttonItem: {color: Theme.color.primary1},
-            rightIcon: {color: Theme.color.accent1, textAlign: 'right', paddingLeft: 0, lineHeight: '24px'},
+            rightIcon: {
+                textAlign: 'right',
+                paddingLeft: 0,
+                lineHeight: '24px'
+            },
+            badgeRed: {
+                backgroundColor: Theme.colors.red500,
+                color: 'white',
+                lineHeight: '16px',
+                display: 'inline-block',
+                fontSize: '12px',
+                padding: '0 4px',
+                borderRadius: 8,
+                minWidth: 8,
+                textAlign: 'center',
+                width: 'auto'
+            },
             subheader: {fontSize: '12px', lineHeight: '30px', marginTop: 10, width: 'auto'},
             listShowButton: {
                 fontSize: '13px',
@@ -251,7 +267,7 @@ const ChatMenu = React.createClass({
                 >
                 {
                     data.items.map(item => {
-                        let rightIcon = (item.noticeCount && (!App.isWindowOpen || !App.isWindowsFocus || item.gid !== App.chat.activeChatWindow)) ? (<strong className="badge-circle-red" style={STYLE.rightIcon}>{item.noticeCount > 99 ? '99+' : item.noticeCount}</strong>) : null;
+                        let rightIcon = (item.noticeCount && (!App.isWindowOpen || !App.isWindowsFocus || item.gid !== App.chat.activeChatWindow)) ? (<div style={STYLE.rightIcon}><div style={STYLE.badgeRed}>{item.noticeCount > 99 ? '99+' : item.noticeCount}</div></div>) : null;
                         let itemKey = 'chat#' + item.gid;
                         if(item.isOne2One) {
                             let theOtherOne = item.getTheOtherOne(App.user);

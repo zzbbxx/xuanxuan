@@ -518,6 +518,13 @@ class App extends ReadyNotifier {
     }
 
     /**
+     * Check whether the main window is focused
+     */
+    get isWindowsFocus() {
+        return this.browserWindow.isFocused();
+    }
+
+    /**
      * Request attention to the main window
      * @param  {number} attention (optional)
      * @return {void}

@@ -13,6 +13,7 @@ const event = {
     data_delete: 'data.delete',
     data_get_public_list: 'data.getPublicList',
     chats_notice: 'chats.notice',
+    chats_notice_change: 'chats.notice.change',
     chats_history: 'chats.history',
     database_rebuild: 'database.rebuild',
 
