@@ -66,6 +66,7 @@ const MembersList = React.createClass({
             members,
             showStatus,
             titleCreator,
+            itemCreator,
             activedMember,
             onItemClick,
             activeColor,
@@ -79,6 +80,9 @@ const MembersList = React.createClass({
           {
              members.map(member => {
                 member = App.dao.members[typeof(member) === 'number' ? member : member.id] || member;
+                if(typeof itemCreator === 'function') {
+                    return itemCreator(member);
+                }
                 let actived = activedMember && activedMember.id === member.id;
                 if(size === 'small') {
                     let primaryText = showStatus && member.status ? <span><UserStatus status={member.status} />{member.displayName}</span> : member.displayName;
