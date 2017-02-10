@@ -553,14 +553,14 @@ class chat extends control
     }
 
     /**
-     * Change the commiters of a chat
+     * Change the committers of a chat
      * 
      * @param  string $gid 
-     * @param  string $commiters
+     * @param  string $committers
      * @access public
      * @return object
      */
-    public function setCommiters($gid = '', $commiters = '')
+    public function setCommitters($gid = '', $committers = '')
     {
         $response = new stdclass();
         $chat = $this->chat->getByGID($gid);
@@ -572,7 +572,7 @@ class chat extends control
             return $response;
         }
 
-        $chat->commiters = $commiters;
+        $chat->committers = $committers;
         $chat = $this->chat->update($chat);
 
         $userList = $this->chat->getUsersToNotify(array_values($chat->members));
@@ -588,13 +588,13 @@ class chat extends control
         if(dao::isError())
         {
             $response->result  = 'fail';
-            $response->message = 'Set commiters failed.';
+            $response->message = 'Set committers failed.';
         }
         else
         {
             $data = new stdclass();
             $data->gid       = $gid;
-            $data->commiters = $commiters;
+            $data->committers = $committers;
 
             $response->result = 'success';
             $response->data   = $data;

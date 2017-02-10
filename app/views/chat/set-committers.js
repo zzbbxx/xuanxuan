@@ -9,11 +9,11 @@ import {
 import Checkbox           from 'material-ui/Checkbox';
 import Theme              from 'Theme';
 
-class SetCommiters extends Component {
+class SetCommitters extends Component {
 
     componentWillMount() {
         let chat = this.props.chat;
-        let type = chat.commitersType;
+        let type = chat.committersType;
         let members = chat.membersSet;
         let whitelist = chat.whitelist || new Set();
         let isEmptyWhiteList = !whitelist.size;
@@ -27,7 +27,7 @@ class SetCommiters extends Component {
         this.setState({type, members, adminsCount, whitelist});
     }
 
-    getCommiters() {
+    getCommitters() {
         let type = this.state.type;
         if(type === 'whitelist') {
             return this.state.whitelist;
@@ -97,21 +97,21 @@ class SetCommiters extends Component {
         }
 
         return <div {...other}>
-            <p style={{color: Theme.color.icon}}>{Lang.chat.commitersSettingTip}</p>
-            <RadioButtonGroup name={'setChatCommiters-' + this.props.chat.gid} valueSelected={this.state.type} onChange={this._onSelectChange.bind(this)}>
+            <p style={{color: Theme.color.icon}}>{Lang.chat.committersSettingTip}</p>
+            <RadioButtonGroup name={'setChatCommitters-' + this.props.chat.gid} valueSelected={this.state.type} onChange={this._onSelectChange.bind(this)}>
                 <RadioButton
                     value="all"
-                    label={Lang.chat.commitersTypes.all + ' (' + chat.membersCount + ')'}
+                    label={Lang.chat.committersTypes.all + ' (' + chat.membersCount + ')'}
                     style={STYLE.radioButton}
                 />
                 <RadioButton
                     value="admins"
-                    label={Lang.chat.commitersTypes.admins + ' (' + adminsCount + ')'}
+                    label={Lang.chat.committersTypes.admins + ' (' + adminsCount + ')'}
                     style={STYLE.radioButton}
                 />
                 <RadioButton
                     value="whitelist"
-                    label={Lang.chat.commitersTypes.whitelist + (this.state.type === 'whitelist' ? (' (' + whitelist.size + '/' + chat.membersCount + ')') : '')}
+                    label={Lang.chat.committersTypes.whitelist + (this.state.type === 'whitelist' ? (' (' + whitelist.size + '/' + chat.membersCount + ')') : '')}
                     style={STYLE.radioButton}
                 />
             </RadioButtonGroup>
@@ -120,4 +120,4 @@ class SetCommiters extends Component {
     }
 }
 
-export default SetCommiters;
+export default SetCommitters;

@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `im_chat` (
   `name` varchar(60) NOT NULL DEFAULT '',
   `type` varchar(20) NOT NULL DEFAULT 'group',
   `admins` varchar(255) NOT NULL DEFAULT '',
-  `commiters` varchar(255) NOT NULL DEFAULT '',
+  `committers` varchar(255) NOT NULL DEFAULT '',
   `subject` mediumint(8) unsigned NOT NULL DEFAULT 0,
   `public` enum('0', '1') NOT NULL DEFAULT '0',
   `createdBy` varchar(30) NOT NULL DEFAULT '',

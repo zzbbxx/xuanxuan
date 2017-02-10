@@ -53,7 +53,7 @@ const STYLE = {
         borderRadius: 2,
         float: 'right'
     },
-    commiterBadge: {
+    committerBadge: {
         border: '1px solid ' + Theme.color.icon,
         color: Theme.color.icon,
         display: 'inline-block',
@@ -115,7 +115,7 @@ const ChatSidebar = React.createClass({
         let primaryText = <div>
           <UserStatus status={member.status} />
           {member.displayName}
-          {this.props.chat.isCommiter(member) ? null : <span style={STYLE.commiterBadge}>{Lang.chat.blockedCommiter}</span>}
+          {this.props.chat.isCommitter(member) ? null : <span style={STYLE.committerBadge}>{Lang.chat.blockedCommitter}</span>}
           {this.props.chat.isAdmin(member) ? <span style={STYLE.adminBadge}>{Lang.chat.admin}</span> : null}
         </div>;
         return <ListItem onClick={this._handleMemberClick.bind(this, member)} key={member._id} primaryText={primaryText} leftAvatar={<UserAvatar size={20} user={member} style={STYLE.avatar}/>} />;

@@ -11,7 +11,7 @@ import Moment                            from 'moment';
 import Modal                             from 'Components/modal';
 import TextField                         from 'material-ui/TextField';
 import ChangeFontSize                    from 'Views/chat/change-font-size';
-import SetCommiters                      from 'Views/chat/set-commiters';
+import SetCommitters                      from 'Views/chat/set-committers';
 
 const Helper = global.Helper;
 
@@ -38,11 +38,11 @@ class ChatApp extends AppCore {
                             }
                         }
                     },
-                    setcommiters: msg => {
+                    setcommitters: msg => {
                         if(msg.isSuccess) {
                             let chat = this.dao.getChat(msg.data.gid);
                             if(chat) {
-                                chat.commiters = msg.data.commiters;
+                                chat.committers = msg.data.committers;
                                 this.dao.updateChats(chat);
                             }
                         }
@@ -422,34 +422,34 @@ class ChatApp extends AppCore {
     }
 
     /**
-     * Open a dialog for user to set chat commiters
+     * Open a dialog for user to set chat committers
      */
-    openCommitersDialog(chat) {
-        let setCommitersView = null;
+    openCommittersDialog(chat) {
+        let setCommittersView = null;
         Modal.show({
             modal: true,
-            header: this.lang.chat.setChatCommiters.format(chat.getDisplayName(this.$app)),
-            content: <SetCommiters ref={e => {setCommitersView = e;}} chat={chat}/>,
+            header: this.lang.chat.setChatCommitters.format(chat.getDisplayName(this.$app)),
+            content: <SetCommitters ref={e => {setCommittersView = e;}} chat={chat}/>,
             width: 800,
             actions: [{type: 'cancel'}, {type: 'submit', label: this.lang.common.confirm}],
             onSubmit: () => {
-                if(setCommitersView) {
-                    this.setCommiters(chat, setCommitersView.getCommiters());
+                if(setCommittersView) {
+                    this.setCommitters(chat, setCommittersView.getCommitters());
                 }
             }
         });
     }
 
-    setCommiters(chat, commiters) {
-        if(commiters instanceof Set) {
-            commiters = Array.from(commiters);
+    setCommitters(chat, committers) {
+        if(committers instanceof Set) {
+            committers = Array.from(committers);
         }
-        if(Array.isArray(commiters)) {
-            commiters = commiters.join(',');
+        if(Array.isArray(committers)) {
+            committers = committers.join(',');
         }
         this.socket.send(this.socket.createSocketMessage({
-            'method': 'setCommiters',
-            'params': [chat.gid, commiters]
+            'method': 'setCommitters',
+            'params': [chat.gid, committers]
         }));
     }
 

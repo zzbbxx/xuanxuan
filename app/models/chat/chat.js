@@ -181,7 +181,7 @@ class Chat extends Entity {
      * @return {boolean}
      */
     canInvite(user) {
-        return this.isCommiter(user) && (this.type === 'one2one' || this.type === 'group');
+        return this.isCommitter(user) && (this.type === 'one2one' || this.type === 'group');
     }
 
     /**
@@ -205,22 +205,22 @@ class Chat extends Entity {
      * @return {booean}
      */
     canRename(user) {
-        return this.isCommiter(user) && this.type !== 'one2one';
+        return this.isCommitter(user) && this.type !== 'one2one';
     }
 
     /**
-     * Check the current user is whether can set the chat commiters
+     * Check the current user is whether can set the chat committers
      */
-    canSetCommiters(user) {
+    canSetCommitters(user) {
         return this.isAdmin(user);
     }
 
     /**
-     * Get commiters type
+     * Get committers type
      */
-    get commitersType() {
-        if((this.isSystem || this.isGroup) && this.commiters && this.commiters !== '$ALL') {
-            if(this.commiters === '$ADMINS') {
+    get committersType() {
+        if((this.isSystem || this.isGroup) && this.committers && this.committers !== '$ALL') {
+            if(this.committers === '$ADMINS') {
                 return 'admins';
             }
             return 'whitelist';
@@ -232,7 +232,7 @@ class Chat extends Entity {
      * Check whether has whitelist setting
      */
     get hasWhitelist() {
-        return this.commitersType === 'whitelist';
+        return this.committersType === 'whitelist';
     }
 
     /**
@@ -241,7 +241,7 @@ class Chat extends Entity {
     get whitelist() {
         if(this.hasWhitelist) {
             let set = new Set();
-            this.commiters.split(',').forEach(x => {
+            this.committers.split(',').forEach(x => {
                 x = Number.parseInt(x);
                 if(x !== NaN) {
                     set.add(x);
@@ -266,7 +266,7 @@ class Chat extends Entity {
         if(Array.isArray(value)) {
             value = value.join(',');
         }
-        this.commiters = value;
+        this.committers = value;
     }
 
     /**
@@ -320,10 +320,10 @@ class Chat extends Entity {
     }
 
     /**
-     * Check a member whether is commiter
+     * Check a member whether is committer
      */
-    isCommiter(member) {
-        switch(this.commitersType) {
+    isCommitter(member) {
+        switch(this.committersType) {
             case 'admins':
                 return this.isAdmin(member);
             case 'whitelist':
@@ -339,7 +339,7 @@ class Chat extends Entity {
      * Check a member whether can only read the chat
      */
     isReadonly(member) {
-        return !this.isCommiter(member);
+        return !this.isCommitter(member);
     }
 
     /**

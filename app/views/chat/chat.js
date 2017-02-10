@@ -158,8 +158,8 @@ const ChatPage = React.createClass({
         App.chat.changeChatFontSize();
     },
 
-    _handleSetCommitersMenuItemClick() {
-        App.chat.openCommitersDialog(this.state.chat);
+    _handleSetCommittersMenuItemClick() {
+        App.chat.openCommittersDialog(this.state.chat);
     },
 
     onWindowResize(windowWidth) {
@@ -325,7 +325,7 @@ const ChatPage = React.createClass({
         let chatTitle = theOtherOne ? <div><UserStatus status={theOtherOne ? theOtherOne.status : null} />{chat.getDisplayName(App)}</div> : chat.getDisplayName(App);
 
         let canMakePublic = chat.canMakePublic(App.user);
-        let canSetCommiters = chat.canSetCommiters(App.user);
+        let canSetCommitters = chat.canSetCommitters(App.user);
         let canRename = chat.canRename(App.user);
         let chatMenu = <IconMenu
             desktop={true}
@@ -336,9 +336,9 @@ const ChatPage = React.createClass({
             >
             {canMakePublic ? <MenuItem onClick={this._handleMakePublicMenuItemClick} style={STYLE.menuItem} primaryText={chat.public ? Lang.chat.cancelSetPublic : Lang.chat.setPublic} /> : null}
             {canRename ? <MenuItem onClick={this._handleRenameChatMenuItemClick} style={STYLE.menuItem} primaryText={Lang.common.rename} />: null}
-            {canSetCommiters ? <MenuItem onClick={this._handleSetCommitersMenuItemClick} style={STYLE.menuItem} primaryText={Lang.chat.setCommiters} /> : null}
+            {canSetCommitters ? <MenuItem onClick={this._handleSetCommittersMenuItemClick} style={STYLE.menuItem} primaryText={Lang.chat.setCommitters} /> : null}
             {chat.canExit ? <MenuItem onClick={this._handleExitChatMenuItemClick} style={STYLE.menuItem} primaryText={Lang.chat.exitChat} /> : null}
-            {canSetCommiters || canMakePublic || canRename || chat.canExit ? <Divider /> : null}
+            {canSetCommitters || canMakePublic || canRename || chat.canExit ? <Divider /> : null}
             <MenuItem onClick={this._handleChangeFontSizeMenuItemClick} style={STYLE.menuItem} primaryText={Lang.chat.changeFontSize} />
         </IconMenu>;
 

@@ -100,8 +100,8 @@
     "chatGroup": "讨论组",
     "tempChat": "临时",
     "exitChat": "退出会话",
-    "setCommiters": "设置白名单",
-    "setChatCommiters": "设置会话 【{0}】的白名单",
+    "setCommitters": "设置白名单",
+    "setChatCommitters": "设置会话 【{0}】的白名单",
     "exitChatConfirm": "确定退出会话 【{0}】?",
     "changeFontSize": "设置字体大小",
     "setPublic": "设为公共频道",
@@ -118,9 +118,9 @@
     "noMessages": "此会话没有消息。",
     "showHiddenChats": "显示隐藏的会话",
     "hideHiddenChats": "不显示隐藏的会话",
-    "commitersSettingTip": "通过设置白名单来决定哪些人可以在该会话中发言。",
-    "blockedCommiter": "禁言",
-    "commitersTypes": {
+    "committersSettingTip": "通过设置白名单来决定哪些人可以在该会话中发言。",
+    "blockedCommitter": "禁言",
+    "committersTypes": {
       "all": "所有人",
       "admins": "仅管理员",
       "whitelist": "仅指定的成员"
