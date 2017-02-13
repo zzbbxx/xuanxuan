@@ -277,8 +277,9 @@ const Login = React.createClass({
         });
 
         this._handleSocketCloseEvent = App.on(R.event.socket_close, () => {
-            if(!this.state.logining) {
-                this.setState({logining: true, message: Lang.errors.WRONG_CONNECT});
+            clearTimeout(this.loginTimeoutCheck);
+            if(this.state.logining) {
+                this.setState({logining: false, message: Lang.errors.SOCKET_CLOSE});
             }
         });
 
