@@ -61,6 +61,10 @@ const MessageListItem = React.createClass({
         App.chat.deleteLocalMessage(this.props.message);
     },
 
+    _handleMemberItemContextMenu(e) {
+        App.popupContextMenu(App.chat.createChatMemberContextMenu(this.props.message), e);
+    },
+
     render() {
         let {
             message,
@@ -194,8 +198,8 @@ const MessageListItem = React.createClass({
         } else {
             if(!message.sender) message.findSender(App.dao);
             let target = message.sender ? 'Member/' + message.sender.id : '#';
-            avatarElement = <UserAvatar size={30} className='link-app message-avatar' data-target={target} user={message.sender} style={STYLE.avatar}/>;
-            headerElement = <div style={STYLE.title}><strong title={message.sender ? ('@' + message.sender.account) : ''} style={{color: Theme.color.primary1}} className='link-app message-title' data-target={message.sender ? '@Member/' + message.sender.account : '#'}>{message.sender ? message.sender.displayName : ('用户<' + message.user + '>')}</strong> &nbsp; <small style={STYLE.time} title={dateStr}>{timeStr}</small></div>;
+            avatarElement = <UserAvatar onContextMenu={this._handleMemberItemContextMenu.bind(this)} size={30} className='link-app message-avatar' data-target={target} user={message.sender} style={STYLE.avatar}/>;
+            headerElement = <div style={STYLE.title}><strong onContextMenu={this._handleMemberItemContextMenu.bind(this)} title={message.sender ? ('@' + message.sender.account) : ''} style={{color: Theme.color.primary1}} className='link-app message-title' data-target={message.sender ? '@Member/' + message.sender.account : '#'}>{message.sender ? message.sender.displayName : ('用户<' + message.user + '>')}</strong> &nbsp; <small style={STYLE.time} title={dateStr}>{timeStr}</small></div>;
         }
 
         let messageContent = null;
