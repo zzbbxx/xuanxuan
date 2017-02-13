@@ -48,3 +48,6 @@ main.js.map
 
 .idea
 .vscode/settings.json
+
+# backyard settings
+server/db/upgradebackyard.sql
