@@ -35,7 +35,6 @@ const UserAvatar = React.createClass({
                 }).then(() => {
                     setTimeout(() => {
                         this.setState({src: localPath});
-                        console.info('>>> Avatar file download success', localPath);
                     }, 500);
                 });
             }
@@ -55,7 +54,7 @@ const UserAvatar = React.createClass({
         let iconText = null;
 
         if(user) {
-            if(this.state.src) other.src = this.state.src;
+            if(this.state.src) other.src = this.state.src + '?v=' + Helper.guid;
             if(other.src) {
                 return <Avatar className='user-avatar' size={size} {...other} style={style}/>;
             } else {
