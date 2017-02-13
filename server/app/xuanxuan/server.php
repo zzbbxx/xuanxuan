@@ -10,7 +10,7 @@ include '../../framework/router.class.php';
 include '../../framework/control.class.php';
 include '../../framework/model.class.php';
 include '../../framework/helper.class.php';
-include './daemon.class.php';
+include 'daemon.class.php';
 
 $_COOKIE['lang'] = 'zh-cn';
 /* Instance the daemon and run it. */

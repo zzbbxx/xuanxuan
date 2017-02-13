@@ -62,6 +62,8 @@
   },
 
   "chat": {
+    "admin": "管理员",
+    "allMembers": "所有",
     "renameChat": "重命名会话",
     "renameTheChat": "重命名会话 【{0}】",
     "inputChatNewName": "输入新的会话名称",
@@ -93,11 +95,16 @@
     "messageTip": "小技巧",    
     "sendMessageTooltip": "发送消息 (Enter)",
     "sendMessage": "发送消息",
+    "atHim": "@他/她",
     "openSidebar": "打开侧边栏",
     "closeSidebar": "关闭侧边栏",
     "chatGroup": "讨论组",
     "tempChat": "临时",
     "exitChat": "退出会话",
+    "setCommitters": "设置白名单",
+    "addToWhitelist": "加入白名单",
+    "removeFromWhitelist": "从白名单移除",
+    "setChatCommitters": "设置会话 【{0}】的白名单",
     "exitChatConfirm": "确定退出会话 【{0}】?",
     "changeFontSize": "设置字体大小",
     "setPublic": "设为公共频道",
@@ -114,6 +121,14 @@
     "noMessages": "此会话没有消息。",
     "showHiddenChats": "显示隐藏的会话",
     "hideHiddenChats": "不显示隐藏的会话",
+    "committersSettingTip": "通过设置白名单来决定哪些人可以在该会话中发言。",
+    "blockedCommitter": "已禁言",
+    "blockedCommitterTip": "该会话设置为只读，暂时你无法发送消息。",
+    "committersTypes": {
+      "all": "所有人",
+      "admins": "仅管理员",
+      "whitelist": "仅指定的成员"
+    },
     "sidebar": {
       "tabs": {
         "members": "成员",
@@ -139,7 +154,7 @@
     "chooseContacts": "选择参与会话的联系人",
     "choosePublicGroup": "选择一个公共频道",
     "join": "加入",
-    "avaliablePublicGroup": "{} 个公开频道可以加入",
+    "avaliablePublicGroup": "{0} 个公开频道可以加入",
     "searchPublicGroup": "搜索频道",
     "numberOfMembers": "{} 个成员",
     "noAvaliablePublicGroup": "没有找到可以加入的公共频道。普通讨论组可以设置为公共频道。",
@@ -222,11 +237,14 @@
       "busy":   "忙碌"
     },
     "roles": {
-      "dev": "开发人员",
+      "dev": "研发",
       "po": "产品经理",
       "pm": "项目经理",
-      "qa": "测试人员",
-      "qd": "测试经理"
+      "qa": "测试",
+      "qd": "测试经理",
+      "market": "市场",
+      "sale": "销售",
+      "office": "行政"
     },
     "genders": {
       "f": "女",
@@ -239,7 +257,10 @@
     },
     "contact": {
       "info": "联系方式",
-      "projects": "参与的项目"
+      "email": "电子邮件",
+      "mobile": "手机",
+      "phone": "电话",
+      "site": "网站"
     }
   },
 

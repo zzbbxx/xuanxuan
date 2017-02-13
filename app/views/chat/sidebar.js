@@ -4,11 +4,15 @@ import {App, Lang, Config} from '../../app';
 import CloseIcon           from 'material-ui/svg-icons/navigation/close';
 import IconButton          from 'material-ui/IconButton';
 import FlatButton          from 'material-ui/FlatButton';
+import LockIcon            from 'material-ui/svg-icons/action/lock';
 import Tabs                from '../components/tabs';
 import MembersList         from '../contacts/members-list';
 import CacheContents       from '../mixins/cache-contents';
 import FileList            from './file-list';
 import Modal               from 'Components/modal';
+import UserStatus          from './user-status';
+import ListItem            from '../components/small-list-item';
+import UserAvatar          from '../user-avatar';
 
 const STYLE = {
     main: {
@@ -38,6 +42,23 @@ const STYLE = {
         display: 'block',
         width: '100%',
         color: Theme.color.negative
+    },
+    adminBadge: {
+        border: '1px solid ' + Theme.color.primary1,
+        color: Theme.color.primary1,
+        display: 'inline-block',
+        fontSize: 12,
+        margin: '0 5px',
+        lineHeight: '16px',
+        padding: '0 3px',
+        borderRadius: 2,
+        float: 'right'
+    },
+    blockIcon: {
+        width: 18,
+        height: 18,
+        color: Theme.color.icon,
+        fill: Theme.color.icon
     }
 };
 
@@ -70,7 +91,6 @@ const ChatSidebar = React.createClass({
     },
 
     _handleMemberClick(member) {
-
         App.openProfile({member, inModal: true});
     },
 
@@ -87,6 +107,21 @@ const ChatSidebar = React.createClass({
         });
     },
 
+    _handleMemberItemContextMenu(member, e) {
+        e.preventDefault();
+        App.popupContextMenu(App.chat.createChatMemberContextMenu(this.props.chat, member), e);
+    },
+
+    _memberItemCreator(member) {
+        let primaryText = <div>
+          <UserStatus status={member.status} />
+          {member.displayName}
+          {this.props.chat.isCommitter(member) ? null : <div data-hint={Lang.chat.blockedCommitter} className="hint--left pull-right"><LockIcon style={STYLE.blockIcon} /></div>}
+          {this.props.chat.isAdmin(member) ? <span style={STYLE.adminBadge}>{Lang.chat.admin}</span> : null}
+        </div>;
+        return <ListItem onContextMenu={this._handleMemberItemContextMenu.bind(this, member)} onClick={this._handleMemberClick.bind(this, member)} key={member._id} primaryText={primaryText} leftAvatar={<UserAvatar size={20} user={member} style={STYLE.avatar}/>} />;
+    },
+
     renderCacheContent(contentId, cacheName) {
         if(contentId === 'members') {
             let exitChatButtonView = null;
@@ -101,7 +136,7 @@ const ChatSidebar = React.createClass({
             this.tabsNameAlias[contentId] = members.length;
 
             return <div>
-              <MembersList onItemClick={this._handleMemberClick} size='small' members={members} style={STYLE.tabContent} listStyle={STYLE.tabList}/>
+              <MembersList onItemClick={this._handleMemberClick} members={members} style={STYLE.tabContent} listStyle={STYLE.tabList} itemCreator={this._memberItemCreator}/>
               {exitChatButtonView}
             </div>
         } else if(contentId === 'files') {

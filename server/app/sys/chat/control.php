@@ -500,7 +500,7 @@ class chat extends control
     {
         $response = new stdclass();
         $chat = $this->chat->getByGID($gid);
-        if($chat->type != 'group')
+        if($chat->type != 'group' && $chat->type != 'system')
         {
             $response->result  = 'fail';
             $response->message = $this->lang->chat->notGroupChat;
@@ -547,6 +547,57 @@ class chat extends control
             $broadcast->data->type          = 'broadcast';
             $broadcast->data->content       = (empty($this->session->user->realname) ? ('@' . $this->session->user->account) : $this->session->user->realname) . $this->lang->chat->changeRenameTo . $name;
             $this->chat->send($userList, $broadcast, true, true);
+        }
+
+        return $response;
+    }
+
+    /**
+     * Change the committers of a chat
+     * 
+     * @param  string $gid 
+     * @param  string $committers
+     * @access public
+     * @return object
+     */
+    public function setCommitters($gid = '', $committers = '')
+    {
+        $response = new stdclass();
+        $chat = $this->chat->getByGID($gid);
+        if($chat->type != 'group' && $chat->type != 'system')
+        {
+            $response->result  = 'fail';
+            $response->message = $this->lang->chat->notGroupChat;
+
+            return $response;
+        }
+
+        $chat->committers = $committers;
+        $chat = $this->chat->update($chat);
+
+        $userList = $this->chat->getUsersToNotify(array_values($chat->members));
+
+        $data = new stdclass();
+        $data->module = $this->moduleName;
+        $data->method = $this->methodName;
+        $data->data   = $chat;
+
+        /* Add to message queue. */
+        $this->chat->send($userList, $data);
+
+        if(dao::isError())
+        {
+            $response->result  = 'fail';
+            $response->message = 'Set committers failed.';
+        }
+        else
+        {
+            $data = new stdclass();
+            $data->gid       = $gid;
+            $data->committers = $committers;
+
+            $response->result = 'success';
+            $response->data   = $data;
         }
 
         return $response;

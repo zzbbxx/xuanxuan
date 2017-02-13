@@ -185,7 +185,7 @@ class AppRemote extends ReadyNotifier {
      * @param  {string | false} tooltip
      * @return {void}
      */
-    set trayTooltip(tooltip) {
+    trayTooltip(tooltip) {
         this.tray.setToolTip(tooltip || Lang.title);
     }
 
@@ -225,7 +225,7 @@ class AppRemote extends ReadyNotifier {
      * Close main window and quit
      */
     quit() {
-        this.mainWindow.close();
+        this.closeMainWindow();
         this.tray.destroy();
         ElectronApp.quit();
         globalShortcut.unregisterAll();
@@ -236,7 +236,23 @@ class AppRemote extends ReadyNotifier {
     }
 
     set mainWindow(mainWindow) {
-        this.windows.main = mainWindow;
+        if(!mainWindow) {
+            delete this.windows.main;
+        } else {
+            this.windows.main = mainWindow;
+            mainWindow.on('close', e => {
+                if(this.markClose) return;
+                mainWindow.webContents.send(R.event.app_main_window_close);
+                e.preventDefault();
+                return false;
+            });
+        }
+    }
+
+    closeMainWindow() {
+        this.markClose = true;
+        this.mainWindow.close();
+        this.mainWindow = null;
     }
 
     reloadWindow(windowNameOrWebContents, confirm = true, ignoreCache = false) {
@@ -256,7 +272,7 @@ class AppRemote extends ReadyNotifier {
             };
             if(confirm) {
                 let options = {
-                    buttons: ['重新载入'],
+                    buttons: [Lang.main.reload],
                     cancelId: 0,
                     type: 'question',
                     message: typeof confirm === 'string' ? confirm : Lang.main.confirmToReloadWindow
@@ -272,10 +288,12 @@ class AppRemote extends ReadyNotifier {
         }
     }
 
-    set dockBadgeLabel(label) {
-        ElectronApp.dock.setBadge(label);
-        if(label) {
-            this.trayTooltip = (Lang.title + ' （' + Lang.chat.someNewMessages.format(label) + ')');
+    dockBadgeLabel(label) {
+        if(ElectronApp.dock.setBadge) {
+            ElectronApp.dock.setBadge(label);
+            if(label) {
+                this.trayTooltip = (Lang.title + ' （' + Lang.chat.someNewMessages.format(label) + ')');
+            }
         }
     }
 

@@ -1,9 +1,16 @@
 import React               from 'react';
 import PureRenderMixin     from 'react-addons-pure-render-mixin';
-import Theme               from '../../theme';
-import {App, Lang, Config} from '../../app';
+import Theme               from 'Theme';
+import {App, Lang, Config} from 'App';
+import {List, ListItem}    from 'material-ui/List';
+import Subheader           from 'material-ui/Subheader';
 import PeopleIcon          from 'material-ui/svg-icons/social/people';
+import MailIcon            from 'material-ui/svg-icons/communication/email';
+import MobileIcon          from 'material-ui/svg-icons/hardware/smartphone';
+import PhoneIcon           from 'material-ui/svg-icons/communication/phone';
+import WebIcon             from 'material-ui/svg-icons/av/web';
 import RaisedButton        from 'material-ui/RaisedButton';
+import Avatar              from 'material-ui/Avatar';
 import Spinner             from '../components/spinner';
 import UserAvatar          from '../user-avatar';
 import ChatsIcon           from '../icons/comment-text';
@@ -43,7 +50,6 @@ const STYLE = {
     section: {
         position: 'relative',
         borderTop: '1px solid ' + Theme.color.border,
-        padding: '10px 0 10px 100px',
         minHeight: 60,
         margin: '0 20px'
     },
@@ -84,15 +90,49 @@ const Contact = React.createClass({
 
         let raisedButton = App.user.id === this.member.id ? null : <RaisedButton onClick={this._handleSendMessageBtnClick} label={<span><ChatsIcon style={STYLE.btnIcon}/> &nbsp; {Lang.chat.sendMessage}</span>} primary={true}/>;
 
+        let contactsItems = [];
+        if(member.email) {
+            contactsItems.push(<ListItem
+                key="contact-email"
+                leftAvatar={<Avatar icon={<MailIcon />} backgroundColor={Theme.colors.blue500} />}
+                primaryText={Lang.user.contact.email}
+                secondaryText={member.email}
+            />);
+        }
+        if(member.mobile) {
+            contactsItems.push(<ListItem
+                key="contact-mobile"
+                leftAvatar={<Avatar icon={<MobileIcon />} backgroundColor={Theme.colors.green500} />}
+                primaryText={Lang.user.contact.mobile}
+                secondaryText={member.mobile}
+            />);
+        }
+        if(member.phone) {
+            contactsItems.push(<ListItem
+                key="contact-phone"
+                leftAvatar={<Avatar icon={<PhoneIcon />} backgroundColor={Theme.colors.teal500} />}
+                primaryText={Lang.user.contact.phone}
+                secondaryText={member.phone}
+            />);
+        }
+        if(member.site) {
+            contactsItems.push(<ListItem
+                key="contact-site"
+                leftAvatar={<Avatar icon={<WebIcon />} backgroundColor={Theme.colors.lightBlue500} />}
+                primaryText={Lang.user.contact.site}
+                secondaryText={member.site}
+            />);
+        }
+
         return <div {...other} style={style}>
           <header style={STYLE.header}>
             <UserAvatar size={80} user={member} style={STYLE.avatar}/>
             <h2 style={STYLE.heading}>{member.displayName} &nbsp; <small style={STYLE.userAccount}>@{member.account}</small></h2>
-            <div style={STYLE.userInfo}><UserStatus status={member.status} type='dot-text' /> {Lang.user.genders[member.gender]} &nbsp; {Lang.user.roles[member.role]}</div>
+            <div style={STYLE.userInfo}><UserStatus status={member.status} type='dot-text' /> &nbsp; &nbsp; {Lang.user.genders[member.gender]} &nbsp; {Lang.user.roles[member.role]}</div>
             <div>{raisedButton}</div>
           </header>
           <section style={STYLE.section}>
-            <div style={STYLE.sectionHeading}>{Lang.user.contact.info}</div>
+            {contactsItems.length ? <List><Subheader>{Lang.user.contact.info}</Subheader>{}{contactsItems}</List> : null}
           </section>
         </div>
     }

@@ -41,7 +41,8 @@ const ChatMenu = React.createClass({
             listExpandState: {
                 fav: true,
                 recent: true,
-                one2one: true
+                one2one: true,
+                channel: true
             },
             activedItem: false,
             showHiddenItems: false
@@ -49,7 +50,7 @@ const ChatMenu = React.createClass({
     },
 
     _handleItemClick(type, id, chat) {
-        if(chat && chat.noticeCount !== undefined) {
+        if(chat && chat.noticeCount) {
             chat.noticeCount = 0;
             App.emit(R.event.chats_notice, {muteChats: [chat]});
         }
@@ -63,7 +64,7 @@ const ChatMenu = React.createClass({
 
     _handleItemContextMenu(chat, e) {
         e.preventDefault();
-        App.popupContextMenu(App.chat.createActionsContextMenu(chat, window), e);
+        App.popupContextMenu(App.chat.createActionsContextMenu(chat), e);
     },
 
     _updateData(chats, type) {
@@ -84,9 +85,9 @@ const ChatMenu = React.createClass({
                 else recent.push(chat);
             });
 
-            Chat.sort(favs, App);
-            Chat.sort(recent, App);
-            Chat.sort(hiddens, App);
+            Chat.sort(favs, App, -1, true);
+            Chat.sort(recent, App, -1, true);
+            Chat.sort(hiddens, App, -1, true);
 
             data = [
                 {name: 'fav', title: Lang.chat.favList, items: favs},
@@ -114,8 +115,14 @@ const ChatMenu = React.createClass({
         }
 
         this.setState({data, type});
-        if(!this.state.activedItem && data && data.length && data[0].items.length) {
-            let first = data[0].items[0];
+        if(!this.state.activedItem && data) {
+            let first = null;
+            for(let dataItems of data) {
+                if(dataItems.items && dataItems.items.length) {
+                    first = dataItems.items[0];
+                    break;
+                }
+            }
             if(first) this._handleItemClick('chat', first.gid, first);
         }
     },
@@ -191,7 +198,23 @@ const ChatMenu = React.createClass({
                 top: 48
             },
             buttonItem: {color: Theme.color.primary1},
-            rightIcon: {color: Theme.color.accent1, textAlign: 'right', paddingLeft: 0, lineHeight: '24px'},
+            rightIcon: {
+                textAlign: 'right',
+                paddingLeft: 0,
+                lineHeight: '24px'
+            },
+            badgeRed: {
+                backgroundColor: Theme.colors.red500,
+                color: 'white',
+                lineHeight: '16px',
+                display: 'inline-block',
+                fontSize: '12px',
+                padding: '0 4px',
+                borderRadius: 8,
+                minWidth: 8,
+                textAlign: 'center',
+                width: 'auto'
+            },
             subheader: {fontSize: '12px', lineHeight: '30px', marginTop: 10, width: 'auto'},
             listShowButton: {
                 fontSize: '13px',
@@ -214,7 +237,7 @@ const ChatMenu = React.createClass({
                 paddingRight: 8,
                 width: '33.3333333%',
                 display: 'table-cell',
-                boxShadow: 'inset 0 -1px 0 rgba(0,0,0,.025), inset 0 -3px 2px rgba(0,0,0,.025)'
+                boxShadow: 'inset 0 -1px 0 rgba(0,0,0,.075'
             },
             activeTabStyle: {
                 backgroundColor: 'rgba(255,255,255,.3)',
@@ -244,7 +267,7 @@ const ChatMenu = React.createClass({
                 >
                 {
                     data.items.map(item => {
-                        let rightIcon = (item.noticeCount && (!App.isWindowOpen || !App.isWindowsFocus || item.gid !== App.chat.activeChatWindow)) ? (<strong className="badge-circle-red" style={STYLE.rightIcon}>{item.noticeCount > 99 ? '99+' : item.noticeCount}</strong>) : null;
+                        let rightIcon = (item.noticeCount && (!App.isWindowOpen || !App.isWindowsFocus || item.gid !== App.chat.activeChatWindow)) ? (<div style={STYLE.rightIcon}><div style={STYLE.badgeRed}>{item.noticeCount > 99 ? '99+' : item.noticeCount}</div></div>) : null;
                         let itemKey = 'chat#' + item.gid;
                         if(item.isOne2One) {
                             let theOtherOne = item.getTheOtherOne(App.user);

@@ -33,11 +33,13 @@ class Chat extends Entity {
      */
     _initValuesConverter() {
         return {
-            createdDate: "timestamp",
-            lastActiveTime: "timestamp",
-            "public": "bool",
-            "hide": "bool",
-            star: "bool",
+            createdDate: 'timestamp',
+            lastActiveTime: 'timestamp',
+            'public': 'bool',
+            'hide': 'bool',
+            star: 'bool',
+            mute: 'bool',
+            admins: 'intSet',
             $global: data => {
                 if(Array.isArray(data.members)) {
                     data.members = new Set(data.members);
@@ -83,7 +85,7 @@ class Chat extends Entity {
             let otherOne = this.getTheOtherOne(app.user);
             return otherOne ? otherOne.displayName : app.lang.chat.tempChat;
         } else if(this.type === 'system') {
-            return app.lang.chat.groupNameFormat.format(app.lang.chat.systemGroup, this.membersCount);
+            return app.lang.chat.groupNameFormat.format(this.name || app.lang.chat.systemGroup, app.lang.chat.allMembers);
         } else if(this.name !== undefined && this.name !== '') {
             return app.lang.chat.groupNameFormat.format(this.name, this.membersCount);
         } else {
@@ -97,6 +99,10 @@ class Chat extends Entity {
     isOnline(app) {
         if(this.isOne2One) {
             let otherOne = this.getTheOtherOne(app.user);
+            if(!otherOne) {
+                if(DEBUG) console.error('Can not get the other member of the chat', {chat: this, user: app.user});
+                return false;
+            }
             return otherOne.isOnline;
         }
         return true;
@@ -157,21 +163,25 @@ class Chat extends Entity {
         return this.type === 'system';
     }
 
+    get isGroup() {
+        return this.type === 'group';
+    }
+
     /**
      * Check the chat whether can turn public status by the given user
      * @param  {User | Member} user
      * @return {boolean}
      */
     canMakePublic(user) {
-        return this.isOwner(user) &&  this.type === 'group';
+        return this.isAdmin(user) &&  this.type === 'group';
     }
 
     /**
      * Check whether the chat can invite more members
      * @return {boolean}
      */
-    get canInvite() {
-        return this.type === 'one2one' || this.type === 'group';
+    canInvite(user) {
+        return this.isCommitter(user) && (this.type === 'one2one' || this.type === 'group');
     }
 
     /**
@@ -194,8 +204,142 @@ class Chat extends Entity {
      * Check whether the chat can change name
      * @return {booean}
      */
-    get canRename() {
-        return this.type !== 'one2one' && this.type !== 'system';
+    canRename(user) {
+        return this.isCommitter(user) && this.type !== 'one2one';
+    }
+
+    /**
+     * Check the current user is whether can set the chat committers
+     */
+    canSetCommitters(user) {
+        return this.isAdmin(user) && this.type !== 'one2one';
+    }
+
+    /**
+     * Get committers type
+     */
+    get committersType() {
+        if((this.isSystem || this.isGroup) && this.committers && this.committers !== '$ALL') {
+            if(this.committers === '$ADMINS') {
+                return 'admins';
+            }
+            return 'whitelist';
+        }
+        return 'all';
+    }
+
+    /**
+     * Check whether has whitelist setting
+     */
+    get hasWhitelist() {
+        return this.committersType === 'whitelist';
+    }
+
+    /**
+     * Get whitelist
+     */
+    get whitelist() {
+        if(this.hasWhitelist) {
+            let set = new Set();
+            this.committers.split(',').forEach(x => {
+                x = Number.parseInt(x);
+                if(x !== NaN) {
+                    set.add(x);
+                }
+            });
+            return set;
+        }
+        return null;
+    }
+
+    /**
+     * Set whitelist
+     */
+    set whitelist(value) {
+        if(!this.isSystem && !this.isGroup) {
+            value = '';
+        }
+        let valType = typeof value;
+        if(value instanceof Set) {
+            value = Array.from(value);
+        }
+        if(Array.isArray(value)) {
+            value = value.join(',');
+        }
+        this.committers = value;
+    }
+
+    /**
+     * Check a member whether is in whitelist
+     */
+    isInWhitelist(member, whitelist) {
+        if(typeof member === 'object') {
+            member = member.remoteId;
+        }
+        whitelist = whitelist || this.whitelist;
+        if(whitelist) {
+            return whitelist.has(member);
+        }
+        return false;
+    }
+
+    /**
+     * Add member to whitelist
+     */
+    addToWhitelist(member) {
+        let whitelist = this.whitelist;
+        if(whitelist) {
+            if(typeof member === 'object') {
+                member = member.remoteId;
+            }
+            if(!whitelist.has(member)) {
+                whitelist.add(member);
+                this.whitelist = whitelist;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Remove user from whitelist
+     */
+    removeFromWhitelist(member) {
+        let whitelist = this.whitelist;
+        if(whitelist) {
+            if(typeof member === 'object') {
+                member = member.remoteId;
+            }
+            if(whitelist.has(member)) {
+                whitelist.delete(member);
+                this.whitelist = whitelist;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check a member whether is committer
+     */
+    isCommitter(member) {
+        switch(this.committersType) {
+            case 'admins':
+                return this.isAdmin(member);
+            case 'whitelist':
+                if(typeof member === 'object') {
+                    member = member.remoteId;
+                }
+                return this.isInWhitelist(member);
+        }
+        return true;
+    }
+
+    /**
+     * Check a member whether can only read the chat
+     */
+    isReadonly(member) {
+        return !this.isCommitter(member);
     }
 
     /**
@@ -254,17 +398,50 @@ class Chat extends Entity {
     }
 
     /**
+     * Add a member as 
+     */
+    addAdmin(member) {
+        if(!this.admins) {
+            this.admins = new Set();
+        }
+        this.admins.add(typeof member === 'object' ? member.remoteId : member);
+    }
+
+    /**
+     * Check a member whether is administrator
+     */
+    isAdmin(member) {
+        if(typeof member !== 'object') {
+            member = {remoteId: member, account: member};
+        }
+        if(this.isSystem && member.isSuperAdmin) {
+            return true;
+        }
+        if(this.createdBy === member.account) {
+            return true;
+        }
+        if(this.admins) {
+            return this.admins.has(member.remoteId) || this.admins.has(member.account);
+        }
+        return false;
+    }
+
+    /**
      * Update members information with the DAO object
      * @param  {DAO} dao
      * @return {void}
      */
-    updateMembersSet(dao) {
-        this.$.members = dao.getMembers(Array.isArray(this.members) ? this.members : Array.from(this.members));
+    updateMembersSet(app) {
+        this.$.members = app.$dao.getMembers(Array.isArray(this.members) ? this.members : Array.from(this.members));
     }
 
-    updateActiveTime(dao) {
+    /**
+     * Update active time
+     */
+    updateActiveTime(app) {
         if(!this.lastActiveTime) {
-            dao.getChatMessages().then(messages => {
+            this.lastActiveTime = this.createdDate;
+            app.dao.getChatMessages().then(messages => {
                 let maxTime = 0, lastMessage;
                 messages.forEach(function(message) {
                     if(message.date > maxTime) {
@@ -277,6 +454,14 @@ class Chat extends Entity {
                 }
             });
         }
+    }
+
+    /**
+     * Update chat information with dao
+     */
+    updateWithApp(app) {
+        this.updateMembersSet(app);
+        this.updateActiveTime(app);
     }
 
     /**
@@ -341,11 +526,21 @@ class Chat extends Entity {
 
     /**
      * Delete local message
-     * @param  {ChatMessage} message
-     * @return {void}
      */
-    // deleteLocalMessage(message) {
-    // }
+    removeMessage(message, onlyLocal = true) {
+        if(this.$.messages && this.$.messages.length) {
+            if(typeof message === 'object') {
+                message = message.gid;
+            }
+            let findIndex = this.$.messages.findIndex(x => {
+                return (!onlyLocal || !x.remoteId) && x.gid === message;
+            });
+            if(findIndex > -1) {
+                this.$.messages.splice(findIndex, 1);
+            }
+        }
+        return false;
+    }
 
     static TYPES() {
         return MESSAGE_TYPES;
@@ -354,7 +549,7 @@ class Chat extends Entity {
     /**
      * Sort chats
      */
-    static sort(chats, app, order = -1) {
+    static sort(chats, app, order = -1, onlyTime = false) {
         return chats.sort((x, y) => {
             let result = 0;
             if(result === 0) {
@@ -363,11 +558,13 @@ class Chat extends Entity {
             if(result === 0) {
                 result = (x.star ? 1 : 0) - (y.star ? 1 : 0);
             }
-            if(result === 0 && (x.noticeCount || y.noticeCount)) {
-                result = (x.noticeCount || 0) - (y.noticeCount || 0);
-            }
-            if(result === 0 && app) {
-                result = (x.isOnline(app) ? 1 : 0) - (y.isOnline(app) ? 1 : 0);
+            if(!onlyTime) {
+                if(result === 0 && (x.noticeCount || y.noticeCount)) {
+                    result = (x.noticeCount || 0) - (y.noticeCount || 0);
+                }
+                if(result === 0 && app) {
+                    result = (x.isOnline(app) ? 1 : 0) - (y.isOnline(app) ? 1 : 0);
+                }
             }
             if(result === 0 && (x.lastActiveTime || y.lastActiveTime)) {
                 result = (x.lastActiveTime || 0) - (y.lastActiveTime || 0);

@@ -19,6 +19,7 @@ import Searchbox           from '../components/searchbox';
 import ContentNotReady     from '../misc/content-not-ready';
 import ChatsIcon           from '../icons/comments-outline';
 import R                   from '../../resource';
+import Modal               from 'Components/modal';
 
 const Helper = global.Helper;
 
@@ -125,6 +126,7 @@ const NewChatPublic = React.createClass({
                 let joined = this.state.joined;
                 joined[chat.gid] = true;
                 this.setState({joined, choosed: null});
+                Modal.hide('new-chat');
             }
         }
     },

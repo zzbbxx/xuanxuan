@@ -388,7 +388,7 @@ global.Helper = {
      * Whether the OS is OSX
      * @type {boolean}
      */
-    isOSX: OS_PLATFORM === 'osx',
+    isOSX: OS_PLATFORM === 'osx' || OS_PLATFORM === 'darwin',
 
     /**
      * Whether the OS is windows xp

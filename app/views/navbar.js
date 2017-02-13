@@ -49,6 +49,8 @@ const UserMenu = React.createClass({
     handleStatusItemClick(status) {
         if(status === 'offline' || status === 'unverified') {
             App.user.changeStatus(USER_STATUS.unverified);
+        } else if(App.user.isOffline) {
+            App.login();
         } else {
             App.changeUserStatus(status);
         }
@@ -90,7 +92,7 @@ const UserMenu = React.createClass({
                 boxShadow: 'inset 3px 0 0 ' + Theme.color.positive,
                 fontWeight: '500',
             },
-            navbar:    {width: App.user.config.ui.navbar.width, transition: Theme.transition.normal('width'), backgroundColor: Theme.palette.primary1Color, zIndex: 20},
+            navbar:    {width: App.user.config.ui.navbar.width, transition: Theme.transition.normal('width'), backgroundColor: Theme.color.primary1, zIndex: 20},
             status:    {
                 base:   {position: 'absolute', left: -29, top: 13, transition: Theme.transition.normal('left', 'top')},
                 dot: {display: 'block', width: 10, height: 10, borderRadius: 6, marginRight: 5},
@@ -104,7 +106,7 @@ const UserMenu = React.createClass({
         let that = this;
         let thisStatus = this.props.user.statusValue;
         return <div className='menu-wrapper' style={{position: 'relative', left: 0, minWidth: 200}}>
-          <Paper style={{position: 'absolute', top: -15, zIndex: 1}}>
+          <Paper style={{position: 'absolute', top: -15, zIndex: 2}}>
             <Menu key='user-menu' desktop={true} autoWidth={false} width={STYLE.navbar.width} animated={false} className='navbar-user-menu' listStyle={STYLE.menu}>
                 {
                     userStatus.map(function(statusValue) {
@@ -139,6 +141,7 @@ const Navbar = React.createClass({
             user: {name: 'Guest', status: 'online'},
             menu: false,
             dock: App.user.config.ui.navbar.dock || 'left',
+            chatNoticeCount: 0
         };
     },
 
@@ -179,17 +182,20 @@ const Navbar = React.createClass({
                 this.setState({active: e.navbar});
             }
         });
+        this._handleChatNoticeEvent = App.on(R.event.chats_notice_change, chatNoticeCount => {
+            this.setState({chatNoticeCount});
+        });
     },
 
     componentWillUnmount() {
-        App.off(this._handleUIChangeEvent, this._handleUserLoginFinishEvent, this._handleUserChangeEvent);
+        App.off(this._handleUIChangeEvent, this._handleUserLoginFinishEvent, this._handleUserChangeEvent, this._handleChatNoticeEvent);
     },
 
     render() {
         const STYLE = {
           compactWidth: App.user.config.ui.navbar.compactWidth,
-          navbar:    {width: App.user.config.ui.navbar.width, transition: Theme.transition.normal('width'), backgroundColor: Theme.palette.primary1Color, zIndex: 20},
-          icon:      {left: 6},
+          navbar:    {width: App.user.config.ui.navbar.width, transition: Theme.transition.normal('width'), backgroundColor: Theme.color.primary1, zIndex: 20},
+          icon:      {left: 5},
           rightIcon: {right: 6, top: 14},
           list:      {backgroundColor: 'transparent'},
           navItem:   {paddingTop: 6, paddingBottom: 6, maxHeight: 60},
@@ -201,6 +207,18 @@ const Navbar = React.createClass({
           status:    {
               base:   {position: 'absolute', left: -29, top: 13, transition: Theme.transition.normal('left', 'top')},
               dot: {display: 'block', width: 10, height: 10, borderRadius: 6, marginRight: 5},
+          },
+          noticeBadge: {
+              position: 'absolute',
+              top: 8,
+              left: 5,
+              width: 40,
+              height: 20,
+              color: Theme.color.primary1,
+              textAlign: 'center',
+              lineHeight: '20px',
+              zIndex: 1,
+              fontSize: '12px'
           }
         };
 
@@ -225,11 +243,9 @@ const Navbar = React.createClass({
 
         let expandTogger;
         if(that.state.expand) {
-            expandTogger = <ListItem className='item' key='expand-togger' primaryText={menuText} leftIcon={menuIcon} onClick={that.handleExpandToggerClick} style={STYLE.footerItem}/>
+            expandTogger = <ListItem className='item text-ellipsis' key='expand-togger' primaryText={menuText} leftIcon={menuIcon} onClick={that.handleExpandToggerClick} style={STYLE.footerItem}/>
         } else {
-            let rightIconButton = <IconButton data-hint={menuText} style={STYLE.iconButton} className={'hint--' + tooltipPlacement}>{menuIcon}</IconButton>;
-
-            expandTogger = <ListItem className='item' key='expand-togger' primaryText='&nbsp;' onClick={that.handleExpandToggerClick} style={STYLE.footerItem}>{rightIconButton}</ListItem>;
+            expandTogger = <ListItem data-hint={menuText} className={'item hint--' + tooltipPlacement} key='expand-togger' leftIcon={menuIcon} primaryText='&nbsp;' onClick={that.handleExpandToggerClick} style={STYLE.footerItem}/>;
         }
 
         let menu = null;
@@ -243,20 +259,29 @@ const Navbar = React.createClass({
         return (
           <div {...this.props} className={navbarClassName} style={navbarStyle}>
             <List className='list navbar-header' style={STYLE.list}>
-              <ListItem className='item' key='user-info' primaryText={userInfo} leftAvatar={userAvatar} onClick={that.handleUserAvatarClick} rightIconButton={moreIcon} style={{fontSize: '14px'}}/>
+              <ListItem className='item text-ellipsis' key='user-info' primaryText={userInfo} leftAvatar={userAvatar} onClick={that.handleUserAvatarClick} rightIconButton={moreIcon} style={{fontSize: '14px'}}/>
             </List>
             {menu}
             <ListDivider style={STYLE.list} />
             <List className='list navbar-nav' style={STYLE.list}>
             {
-                listItems.map(function(item) {
+                listItems.map(item => {
                     let className = 'item';
                     if(item.name === that.state.active) className += ' active';
                     if(that.state.expand) {
-                        return  <ListItem className={className} key={item.name} primaryText={item.text} leftIcon={item.icon} onClick={that.handleItemClick.bind(null, item.name)} style={STYLE.navItem} />;
+                        let primaryText = item.text;
+                        if(item.name === R.ui.navbar_chat && this.state.chatNoticeCount) {
+                            primaryText += ' [ ' + this.state.chatNoticeCount + ' ]';
+                        }
+                        className += ' text-ellipsis';
+                        return  <ListItem className={className} key={item.name} primaryText={primaryText} leftIcon={item.icon} onClick={that.handleItemClick.bind(null, item.name)} style={STYLE.navItem} />;
                     } else {
-                        let rightIconButton = <IconButton data-hint={item.text} style={STYLE.iconButton} className={'hint--' + tooltipPlacement}>{item.icon}</IconButton>;
-                        return  <ListItem className={className} key={item.name} primaryText='&nbsp;' onClick={that.handleItemClick.bind(null, item.name)} style={STYLE.navItem}>{rightIconButton}</ListItem>;
+                        className += ' hint--' + tooltipPlacement;
+                        let noticeCountText = null;
+                        if(item.name === R.ui.navbar_chat && this.state.chatNoticeCount) {
+                            noticeCountText = <div style={STYLE.noticeBadge}>{this.state.chatNoticeCount > 99 ? '99' : this.state.chatNoticeCount}</div>;
+                        }
+                        return  <ListItem leftIcon={item.icon} data-hint={item.text} className={className} key={item.name} primaryText='&nbsp;' onClick={that.handleItemClick.bind(null, item.name)} style={STYLE.navItem}>{noticeCountText}</ListItem>;
                     }
                 })
             }

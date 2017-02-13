@@ -143,6 +143,13 @@ class Member extends Entity {
     }
 
     /**
+     * Check the user is supper admin
+     */
+    get isSuperAdmin() {
+        return this.admin === 'super';
+    }
+
+    /**
      * Get a number for compare function
      * @return {number}
      */

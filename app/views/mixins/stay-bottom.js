@@ -15,22 +15,24 @@ const StayBottom = {
     },
 
     checkStayBottomAndSroll() {
-        
         if (this.shouldScrollBottom) {
-            this._checkScrollToBottomTimes = 0;
+            this._checkScrollToBottomTime = 300;
             this.scrollToBottom();
         }
     },
 
-    scrollToBottom() {
+    scrollToBottom(time) {
         let element = this._getStayBottomElement();
         if(!element) return;
         let maxScrollTop = element.scrollHeight - element.offsetHeight;
         if(element.scrollTop !== maxScrollTop) {
             element.scrollTop = maxScrollTop;
         }
-        if(!this._checkScrollToBottomTimes || this._checkScrollToBottomTimes < 30) {
-            this._checkScrollToBottomTimes++;
+        if(time !== undefined) {
+            this._checkScrollToBottomTime = time;
+        }
+        if(this._checkScrollToBottomTime || this._checkScrollToBottomTime > 0) {
+            this._checkScrollToBottomTime -= 10;
             setTimeout(this.scrollToBottom, 10);
         }
     },

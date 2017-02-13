@@ -340,6 +340,27 @@ class User extends Member {
     }
 
     /**
+     * Fix user avatar path
+     */
+    fixAvatar(avatar) {
+        if(typeof avatar === 'object') {
+            let member = avatar;
+            avatar = member.avatar;
+            if(avatar && avatar.indexOf('http://') !== 0 && avatar.indexOf('https://') !== 0) {
+                member.avatar = this.address + avatar;
+            }
+            return member.avatar;
+        } else {
+            avatar = avatar || this.avatar;
+            if(avatar && avatar.indexOf('http://') !== 0 && avatar.indexOf('https://') !== 0) {
+                avatar = this.address + avatar;
+            }
+            this.avatar = avatar;
+            return this.avatar;
+        }
+    }
+
+    /**
      * Set user status
      * @param  {String} status
      * @return {Void}

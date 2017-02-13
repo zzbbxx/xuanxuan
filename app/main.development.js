@@ -75,6 +75,7 @@ const createWindow = () => {
 
     mainWindow.on('closed', () => {
         mainWindow = null;
+        application.mainWindow = null;
     });
 
     application.mainWindow = mainWindow;

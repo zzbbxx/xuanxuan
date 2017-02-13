@@ -185,6 +185,46 @@ class App extends ReadyNotifier {
         this.browserWindow.on('restore', () => {
             this.emit(R.event.ui_show_main_window);
         });
+
+        this.event.ipc.on(R.event.app_main_window_close, () => {
+            let userCloseOption = this.user.config.ui.onClose;
+            const handleCloseOption = option => {
+                if(!option) option = userCloseOption;
+                if(option === 'minimize') {
+                    this.browserWindow.minimize();
+                } else {
+                    this.browserWindow.hide();
+                    if(DEBUG) console.error('WINDOW CLOSE...');
+                    setTimeout(() => {
+                        this.quit();
+                    }, 2000);
+                }
+            };
+            if(userCloseOption !== 'close' && userCloseOption !== 'minimize') {
+                userCloseOption = '';
+                Modal.show({
+                    modal: true,
+                    header: this.lang.main.askOnCloseWindow.title,
+                    content: () => {
+                        return <ConfirmCloseWindow onOptionChange={select => {
+                            userCloseOption = select;
+                        }}/>;
+                    },
+                    width: 400,
+                    actions: [{type: 'cancel'}, {type: 'submit'}],
+                    onSubmit: () => {
+                        if(userCloseOption) {
+                            if(userCloseOption.remember) {
+                                this.user.config.ui.onClose = userCloseOption.option;
+                                this.saveUser();
+                            }
+                            handleCloseOption(userCloseOption.option);
+                        }
+                    }
+                });
+                this.requestAttention(1);
+            }
+        });
     }
 
     /**
@@ -341,6 +381,7 @@ class App extends ReadyNotifier {
             delete serverUser.status;
             user.lastLoginTime = new Date().getTime();
             user.assign(serverUser);
+            user.fixAvatar();
 
             // init dao
             if(!this.dao || this.dao.dbName !== user.identify) {
@@ -474,6 +515,13 @@ class App extends ReadyNotifier {
      */
     get isWindowOpen() {
         return this.browserWindow.isVisible();
+    }
+
+    /**
+     * Check whether the main window is focused
+     */
+    get isWindowsFocus() {
+        return this.browserWindow.isFocused();
     }
 
     /**
@@ -773,6 +821,7 @@ class App extends ReadyNotifier {
         if(!Array.isArray(screenSources)) {
             screenSources = [screenSources];
         }
+        hideCurrentWindow = hideCurrentWindow && this.browserWindow.isVisible();
         return new Promise((resolve, reject) => {
             let captureScreenWindows = [];
             Event.ipc.once(EVENT.capture_screen, (e, image) => {
@@ -780,6 +829,10 @@ class App extends ReadyNotifier {
                     captureScreenWindows.forEach(captureWindow => {
                         captureWindow.close();
                     });
+                }
+                if(hideCurrentWindow) {
+                    this.browserWindow.show();
+                    this.browserWindow.focus();
                 }
                 if(image) {
                     let filePath = this.user.makeFilePath(UUID.v4() + '.png');
@@ -797,15 +850,10 @@ class App extends ReadyNotifier {
                     });
                 }));
             };
-            hideCurrentWindow = hideCurrentWindow && this.browserWindow.isVisible();
             if(hideCurrentWindow) {
                 this.browserWindow.hide();
                 setTimeout(() => {
-                    takeScreenshots().then(results => {
-                        if(hideCurrentWindow) {
-                            this.browserWindow.show();
-                        }
-                    });
+                    takeScreenshots();
                 }, Helper.isWindowsOS ? 600 : 0);
             } else {
                 takeScreenshots();

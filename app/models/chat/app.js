@@ -1,8 +1,6 @@
 import AppCore                           from '../app-core';
 import React                             from 'react';
 import {User, Member, Chat, ChatMessage} from '../entities';
-import fs                                from 'fs';
-import ZentaoAPI                         from '../api';
 import R                                 from '../../resource';
 import ChatDao                           from './dao';
 import Path                              from 'path';
@@ -11,6 +9,10 @@ import Moment                            from 'moment';
 import Modal                             from 'Components/modal';
 import TextField                         from 'material-ui/TextField';
 import ChangeFontSize                    from 'Views/chat/change-font-size';
+import SetCommitters                     from 'Views/chat/set-committers';
+import Theme                             from 'Theme';
+import Lang                              from 'Lang';
+import AppActionLink                     from 'Utils/app-link';
 
 const Helper = global.Helper;
 
@@ -33,6 +35,15 @@ class ChatApp extends AppCore {
                             let chat = this.dao.getChat(msg.data.gid);
                             if(chat) {
                                 chat.name = msg.data.name;
+                                this.dao.updateChats(chat);
+                            }
+                        }
+                    },
+                    setcommitters: msg => {
+                        if(msg.isSuccess) {
+                            let chat = this.dao.getChat(msg.data.gid);
+                            if(chat) {
+                                chat.committers = msg.data.committers;
                                 this.dao.updateChats(chat);
                             }
                         }
@@ -64,7 +75,7 @@ class ChatApp extends AppCore {
                                 this.dao.updateChats(chat);
                             } else {
                                 chat = new Chat(msg.data);
-                                chat.updateMembersSet(this.dao$);
+                                chat.updateWithApp(this);
                                 this.dao.updateChats(chat);
                             }
                         }
@@ -73,7 +84,7 @@ class ChatApp extends AppCore {
                         if(msg.isSuccess) {
                             let chats = Object.keys(msg.data).map(key => {
                                 let chat = new Chat(msg.data[key]);
-                                chat.updateMembersSet(this.$dao);
+                                chat.updateWithApp(this);
                                 return chat;
                             });
 
@@ -83,7 +94,7 @@ class ChatApp extends AppCore {
                     create: msg => {
                         if(msg.isSuccess) {
                             let chat = new Chat(msg.data);
-                            chat.updateMembersSet(this.$dao);
+                            chat.updateWithApp(this);
 
                             this.dao.updateChats(chat);
                         }
@@ -198,15 +209,18 @@ class ChatApp extends AppCore {
                 }
                 return false;
             });
-            this.totalNoticeCount = totalNoticeCount || false;
-            this.$app.badgeLabel = this.totalNoticeCount;
-            this.$app.trayTooltip = this.totalNoticeCount ? (this.$app.lang.chat.someNewMessages || '{0} 条新消息').format(this.totalNoticeCount) : false;
-            if(this.totalNoticeCount && (!this.$app.isWindowOpen || !this.$app.isWindowsFocus)) {
-                if(Helper.isWindowsOS) {
-                    if(!this.$app.isWindowOpen) this.$app.flashTrayIcon(this.totalNoticeCount);
-                    this.$app.requestAttention(1);
+            if(this.totalNoticeCount !== totalNoticeCount) {
+                this.totalNoticeCount = totalNoticeCount || false;
+                this.$app.badgeLabel = this.totalNoticeCount;
+                this.$app.trayTooltip = this.totalNoticeCount ? (this.$app.lang.chat.someNewMessages || '{0} 条新消息').format(this.totalNoticeCount) : false;
+                if(this.totalNoticeCount && (!this.$app.isWindowOpen || !this.$app.isWindowsFocus)) {
+                    if(Helper.isWindowsOS) {
+                        if(!this.$app.isWindowOpen) this.$app.flashTrayIcon(this.totalNoticeCount);
+                        this.$app.requestAttention(1);
+                    }
+                    if(!this.$app.isWindowOpen) this.$app.playSound('message');
                 }
-                if(!this.$app.isWindowOpen) this.$app.playSound('message');
+                this.$app.emit(R.event.chats_notice_change, totalNoticeCount);
             }
         });
 
@@ -235,6 +249,9 @@ class ChatApp extends AppCore {
         });
     }
 
+    /**
+     * Register global hotkey
+     */
     registerGlobalHotKey() {
         this.$app.registerGlobalShortcut('captureScreen', App.user.config.shortcut.captureScreen || 'ctrl+alt+z', () => {
             this.captureAndSendScreen()
@@ -288,10 +305,9 @@ class ChatApp extends AppCore {
     /**
      * Create chat action context menu
      * @param  {Chat} chat
-     * @param  {Window} window
      * @return {gui.Menu}
      */
-    createActionsContextMenu(chat, window) {
+    createActionsContextMenu(chat) {
         let menu = [];
         if(chat.isOne2One) {
             menu.push({
@@ -316,7 +332,7 @@ class ChatApp extends AppCore {
             }
         });
 
-        if(chat.canRename) {
+        if(chat.canRename(this.user)) {
             menu.push({
                 label: this.lang.common.rename,
                 click: () => {
@@ -341,6 +357,58 @@ class ChatApp extends AppCore {
                 label: this.lang.chat.exitChat,
                 click: () => {
                     this.exitConfirm(chat);
+                }
+            });
+        }
+
+        return this.$app.createContextMenu(menu);
+    }
+
+    /**
+     * Create chat member context menu
+     * @param  object chat
+     * @param  object member
+     * @return object
+     */
+    createChatMemberContextMenu(chat, member) {
+        if(chat instanceof ChatMessage) {
+            if(!member) member = chat.sender;
+            chat = this.dao.getChat(chat.cgid);
+        }
+        let menu = [];
+        if(!chat.isOne2One && member.id !== this.user.id) {
+            menu.push({
+                label: this.lang.chat.atHim,
+                click: () => {
+                    this.$app.emit(R.event.ui_link, new AppActionLink('@Member/' + member.account));
+                }
+            }, {
+                label: this.lang.chat.sendMessage,
+                click: () => {
+                    this.create(member);
+                }
+            });
+        }
+        menu.push({
+            label: this.lang.user.viewProfile,
+            click: () => {
+                this.$app.openProfile({member, inModal: true});
+            }
+        });
+
+        if(chat.hasWhitelist && chat.isAdmin(this.user)) {
+            let isCommitter = chat.isCommitter(member);
+            menu.push({
+                type: 'separator'
+            }, {
+                label: isCommitter ? this.lang.chat.removeFromWhitelist : this.lang.chat.addToWhitelist,
+                click: () => {
+                    if(isCommitter) {
+                        chat.removeFromWhitelist(member);
+                    } else {
+                        chat.addToWhitelist(member);
+                    }
+                    this.setCommitters(chat, chat.whitelist);
                 }
             });
         }
@@ -389,7 +457,7 @@ class ChatApp extends AppCore {
             <p>{this.lang.chat.renameTheChat.format(chat.name)}</p>
             <TextField
               ref={(e) => setTimeout(() => {
-                  e.focus();
+                  if(e) e.focus();
               }, 400)}
               hintText={this.lang.chat.inputChatNewName}
               onChange={e => {newName = e.target.value}}
@@ -409,6 +477,38 @@ class ChatApp extends AppCore {
                 }
             }
         });
+    }
+
+    /**
+     * Open a dialog for user to set chat committers
+     */
+    openCommittersDialog(chat) {
+        let setCommittersView = null;
+        Modal.show({
+            modal: true,
+            header: this.lang.chat.setChatCommitters.format(chat.getDisplayName(this.$app)),
+            content: <SetCommitters ref={e => {setCommittersView = e;}} chat={chat}/>,
+            width: 800,
+            actions: [{type: 'cancel'}, {type: 'submit', label: this.lang.common.confirm}],
+            onSubmit: () => {
+                if(setCommittersView) {
+                    this.setCommitters(chat, setCommittersView.getCommitters());
+                }
+            }
+        });
+    }
+
+    setCommitters(chat, committers) {
+        if(committers instanceof Set) {
+            committers = Array.from(committers);
+        }
+        if(Array.isArray(committers)) {
+            committers = committers.join(',');
+        }
+        this.socket.send(this.socket.createSocketMessage({
+            'method': 'setCommitters',
+            'params': [chat.gid, committers]
+        }));
     }
 
     /**
@@ -466,12 +566,35 @@ class ChatApp extends AppCore {
     }
 
     /**
+     * Delete local message
+     */
+    deleteLocalMessage(message, chat) {
+        if(!chat) chat = this.dao.getChat(message.cgid);
+        chat.removeMessage(message);
+        return new Promise((resolve, reject) => {
+            this.dao.$dao.delete(message).then(x => {
+                this.$dao._emit(R.event.data_change, {messages: [message], chats: [chat]});
+                this.$dao._emit(R.event.data_delete, {messages: [message]});
+                resolve();
+            }).catch(reject);
+        });
+    }
+
+    /**
      * Send chat messages
      * @param  {[ChatMessage]} messages
      * @param  {Chat} chat
      * @return {void}
      */
     sendChatMessage(messages, chat) {
+        if(chat && chat.isReadonly(this.user)) {
+            this.$app.emit(R.event.ui_messager, {
+                content: Lang.chat.blockedCommitterTip,
+                color: Theme.color.negative
+            });
+            if(DEBUG) console.warn('The user try send messages in a readonly chat.', {chat, messages});
+            return false;
+        }
         if(!Array.isArray(messages)) messages = [messages];
 
         if(chat) chat.addMessage(...messages);
@@ -489,7 +612,16 @@ class ChatApp extends AppCore {
      * @param  {ChatMessage} message
      * @return {void}
      */
-    sendMessage(message) {
+    sendMessage(message, chat) {
+        if(!chat) chat = this.dao.getChat(message.cgid);
+        if(chat && chat.isReadonly(this.user)) {
+            this.$app.emit(R.event.ui_messager, {
+                content: Lang.chat.blockedCommitterTip,
+                color: Theme.color.negative
+            });
+            if(DEBUG) console.warn('The user try send message in a readonly chat.', {chat, message});
+            return false;
+        }
         let command = message.getCommand();
         if(command) {
             if(command.action === 'rename') {
@@ -500,7 +632,7 @@ class ChatApp extends AppCore {
                 message.content = '```\n$$version = "' + `v${PKG.version}${PKG.distributeTime ? (' (' + Moment(PKG.distributeTime).format('YYYYMMDDHHmm') + ')') : null} ${DEBUG ? '[debug]' : ''}` + '";\n```';
             }
         }
-        this.sendChatMessage(message);
+        this.sendChatMessage(message, chat);
     }
 
     /**
@@ -510,7 +642,7 @@ class ChatApp extends AppCore {
      * @return {void}
      */
     rename(chat, newName) {
-        if(chat && chat.canRename) {
+        if(chat && chat.canRename(this.user)) {
             return this.socket.send(this.socket.createSocketMessage({
                 'method': 'changeName',
                 'params': [chat.gid, newName]
@@ -662,7 +794,7 @@ class ChatApp extends AppCore {
      * @return {void}
      */
     inviteMembers(chat, members) {
-        if(chat.canInvite) {
+        if(chat.canInvite(this.user)) {
             if(!chat.isOne2One) {
                 this.inviteMembersToChat(chat, members);
             } else {

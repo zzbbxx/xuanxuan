@@ -36,7 +36,7 @@ import IconMenu            from 'material-ui/IconMenu';
 import MenuItem            from 'material-ui/MenuItem';
 import MoreVertIcon        from 'material-ui/svg-icons/navigation/more-vert';
 import Divider             from 'material-ui/Divider';
-
+import LockIcon            from 'material-ui/svg-icons/action/lock-outline';
 
 // display app component
 const ChatPage = React.createClass({
@@ -51,11 +51,23 @@ const ChatPage = React.createClass({
     },
 
     componentDidMount() {
-        setTimeout(() => {
-            let chat = App.chat.dao.getChat(this.props.chatId);
-            this.setState({chat});
-        }, 300);
-
+        let chat = App.chat.dao.getChat(this.props.chatId);
+        this.setState({chat}, () => {
+            let chatMessageBox = this.chatMessageBox;
+            if(this.messageSendbox) {
+                let messageSendboxHeight = Math.ceil(100 * App.user.config.ui.chat.sendbox.height / chatMessageBox.clientHeight);
+                SplitJS([ReactDOM.findDOMNode(this.messageList), ReactDOM.findDOMNode(this.messageSendbox)], {
+                    direction: 'vertical',
+                    gutterSize: 4,
+                    sizes: [100 - messageSendboxHeight, messageSendboxHeight],
+                    minSize: 90,
+                    onDragEnd: () => {
+                        this.messageList.scrollToBottom();
+                    }
+                });
+            }
+            this.messageList.scrollToBottom(1500);
+        });
         this._handleDataChangeEvent = App.on(R.event.data_change, data => {
             let chat = null;
             if(data.chats) {
@@ -64,34 +76,21 @@ const ChatPage = React.createClass({
             if(chat && chat.gid === this.props.chatId) this.setState({chat});
         });
 
-        this._handleCaptureScreenEvent = App.on(R.event.capture_screen, (image, chat) => {
-            if(image && chat && chat.gid === this.props.chatId) {
-                this.refs.messageSendbox.appendImages(image);
-            }
-        });
-
-        this._handleUILinkEvent = App.on(R.event.ui_link, actionLink => {
-            if(actionLink.action === '@Member') {
-                let editbox = this.refs.messageSendbox.editbox;
-                editbox.appendContent('@' + actionLink.target + '&nbsp;');
-                editbox.focus(false);
-            }
-        });
-
-        setTimeout(() => {
-            let chatMessageBox = ReactDOM.findDOMNode(this.refs.chatMessageBox);
-            let messageSendboxHeight = Math.ceil(100 * App.user.config.ui.chat.sendbox.height / chatMessageBox.clientHeight);
-            SplitJS([ReactDOM.findDOMNode(this.refs.messageList), ReactDOM.findDOMNode(this.refs.messageSendbox)], {
-                direction: 'vertical',
-                gutterSize: 4,
-                sizes: [100 - messageSendboxHeight, messageSendboxHeight],
-                minSize: 90,
-                onDragEnd: () => {
-                    this.refs.messageList.scrollToBottom();
+        if(chat.isCommitter(App.user)) {
+            this._handleCaptureScreenEvent = App.on(R.event.capture_screen, (image, chat) => {
+                if(image && chat && chat.gid === this.props.chatId) {
+                    this.messageSendbox.appendImages(image);
                 }
             });
-            this.refs.messageList.scrollToBottom();
-        }, 500);
+
+            this._handleUILinkEvent = App.on(R.event.ui_link, actionLink => {
+                if(App.chat.activeChatWindow === this.props.chatId && actionLink.action === '@Member') {
+                    let editbox = this.messageSendbox.editbox;
+                    editbox.appendContent('@' + actionLink.target + '&nbsp;');
+                    editbox.focus(false);
+                }
+            });
+        }
     },
 
     componentWillUnmount() {
@@ -137,7 +136,7 @@ const ChatPage = React.createClass({
         }
         
         this.setState({chat});
-        this.refs.messageList.scrollToBottom();
+        this.messageList.scrollToBottom();
     },
 
     _handleStarButtonClick() {
@@ -158,6 +157,10 @@ const ChatPage = React.createClass({
 
     _handleChangeFontSizeMenuItemClick() {
         App.chat.changeChatFontSize();
+    },
+
+    _handleSetCommittersMenuItemClick() {
+        App.chat.openCommittersDialog(this.state.chat);
     },
 
     onWindowResize(windowWidth) {
@@ -230,7 +233,7 @@ const ChatPage = React.createClass({
         let file = e.dataTransfer.files[0];
         if(file) {
             if(file.type.startsWith('image/')) {
-                this.refs.messageSendbox.appendImages(file);
+                this.messageSendbox.appendImages(file);
             } else {
                 this._handleSelectFile(file);
             }
@@ -306,9 +309,7 @@ const ChatPage = React.createClass({
 
         if(!chat) {
             return <div {...other} style={style}><Spinner/></div>
-        }// else {
-        //    console.log('RENDER CHAT', chat);
-        // }
+        }
 
         let messageListStyle = Object.assign({}, STYLE.messageList);
 
@@ -325,6 +326,8 @@ const ChatPage = React.createClass({
         let chatTitle = theOtherOne ? <div><UserStatus status={theOtherOne ? theOtherOne.status : null} />{chat.getDisplayName(App)}</div> : chat.getDisplayName(App);
 
         let canMakePublic = chat.canMakePublic(App.user);
+        let canSetCommitters = chat.canSetCommitters(App.user);
+        let canRename = chat.canRename(App.user);
         let chatMenu = <IconMenu
             desktop={true}
             iconButtonElement={<IconButton className="hint--bottom" data-hint={Lang.common.more}><MoreVertIcon color={Theme.color.icon} hoverColor={Theme.color.primary1} style={STYLE.icon} /></IconButton>}
@@ -333,11 +336,28 @@ const ChatPage = React.createClass({
             listStyle={{paddingTop: 8, paddingBottom: 8}}
             >
             {canMakePublic ? <MenuItem onClick={this._handleMakePublicMenuItemClick} style={STYLE.menuItem} primaryText={chat.public ? Lang.chat.cancelSetPublic : Lang.chat.setPublic} /> : null}
-            {chat.canRename ? <MenuItem onClick={this._handleRenameChatMenuItemClick} style={STYLE.menuItem} primaryText={Lang.common.rename} />: null}
+            {canRename ? <MenuItem onClick={this._handleRenameChatMenuItemClick} style={STYLE.menuItem} primaryText={Lang.common.rename} />: null}
+            {canSetCommitters ? <MenuItem onClick={this._handleSetCommittersMenuItemClick} style={STYLE.menuItem} primaryText={Lang.chat.setCommitters} /> : null}
             {chat.canExit ? <MenuItem onClick={this._handleExitChatMenuItemClick} style={STYLE.menuItem} primaryText={Lang.chat.exitChat} /> : null}
-            {canMakePublic || chat.canRename || chat.canExit ? <Divider /> : null}
+            {canSetCommitters || canMakePublic || canRename || chat.canExit ? <Divider /> : null}
             <MenuItem onClick={this._handleChangeFontSizeMenuItemClick} style={STYLE.menuItem} primaryText={Lang.chat.changeFontSize} />
         </IconMenu>;
+
+        let messagesView = [];
+        if(chat.isCommitter(App.user)) {
+            messagesView.push(<MessageList key="messae-list" ref={e => {this.messageList = e;}} messages={chat.messages} chatId={chat.gid} className='user-selectable messages-list split split-vertical scroll-y'/>);
+            messagesView.push(<MessageSendbox key="message-sendbox" ref={e => {this.messageSendbox = e;}} className='split split-vertical' onSelectFile={this._handleSelectFile} onSendButtonClick={this._handSendMessage} forNewChat={chat.isNewChat && chat.canRename} chatId={chat.gid}/>);
+            messagesView.push(<div key="chat-dnd-box" className="drag-n-drop-message center-block" onDragEnter={this._handleDndEnter} onDrop={this._handleDndDrop} onDragLeave={this._handleDndLeave}>
+                <div className="text-center">
+                <div className="dnd-over" dangerouslySetInnerHTML={{__html: Emojione.toImage(':hatching_chick:')}}></div>
+                <div className="dnd-hover" dangerouslySetInnerHTML={{__html: Emojione.toImage(':hatched_chick:')}}></div>
+                <h1>{Lang.chat.drapNDropFileMessage}</h1>
+                </div>
+            </div>);
+        } else {
+            messagesView.push(<MessageList key="messae-list" ref={e => {this.messageList = e;}} messages={chat.messages} chatId={chat.gid} className='user-selectable messages-list dock-full' style={{paddingBottom: 40}}/>);
+            messagesView.push(<div className="dock-bottom" key="blockedCommitterTip" style={{lineHeight: '24px', padding: '8px 10px 8px 40px', backgroundColor: 'rgba(0,0,0,.1)', color: Theme.color.icon}}><LockIcon color={Theme.color.icon} style={{position: 'absolute', top: 7, left: 8}} /> {Lang.chat.blockedCommitterTip}</div>);
+        }
 
         return <div {...other} style={style}>
           <div className='dock-full table-row'>
@@ -346,23 +366,13 @@ const ChatPage = React.createClass({
                 <div>{chatIcon}<span style={STYLE.headerTitle}>{chatTitle}</span>{chat.public ? <small className="hint--bottom" data-hint={Lang.chat.publicGroupTip} style={STYLE.publicGroup}>{Lang.chat.publicGroup}</small> : null}</div>
                 <div className='dock-right' style={STYLE.headerActions}>
                   <IconButton className="hint--bottom" data-hint={chat.star ? Lang.chat.removeStar : Lang.chat.star} onClick={this._handleStarButtonClick}><ChatStarIcon color={chat.star ? Theme.color.accent1 : Theme.color.icon} hoverColor={chat.star ? Theme.color.accent1 : Theme.color.primary1}/></IconButton>
-                  {chat.canInvite ? <div ref={(e) => this.inviteBtnWrapper = e} style={{display: 'inline-block'}}><IconButton className="hint--bottom" onClick={this._handleOnInviteBtnClick} data-hint={Lang.chat.inviteMember}><PersonAddIcon color={Theme.color.icon} hoverColor={Theme.color.primary1} style={STYLE.icon}/></IconButton></div> : null}
+                  {chat.canInvite(App.user) ? <div ref={(e) => this.inviteBtnWrapper = e} style={{display: 'inline-block'}}><IconButton className="hint--bottom" onClick={this._handleOnInviteBtnClick} data-hint={Lang.chat.inviteMember}><PersonAddIcon color={Theme.color.icon} hoverColor={Theme.color.primary1} style={STYLE.icon}/></IconButton></div> : null}
                   {<IconButton className="hint--bottom" onClick={this._handleHistoryBtnClick} data-hint={Lang.chat.history}><HistoryIcon color={Theme.color.icon} hoverColor={Theme.color.primary1} style={STYLE.icon}/></IconButton>}
                   {sidebarIconButton}
                   {chatMenu}
                 </div>
               </header>
-              <div className='dock-full' style={messageListStyle} ref='chatMessageBox'>
-                <MessageList ref='messageList' messages={chat.messages} chatId={chat.gid} className='user-selectable messages-list split split-vertical scroll-y'/>
-                <MessageSendbox ref='messageSendbox' className='split split-vertical' onSelectFile={this._handleSelectFile} onSendButtonClick={this._handSendMessage} forNewChat={chat.isNewChat && chat.canRename} chatId={chat.gid}/>
-                <div className="drag-n-drop-message center-block" onDragEnter={this._handleDndEnter} onDrop={this._handleDndDrop} onDragLeave={this._handleDndLeave}>
-                  <div className="text-center">
-                    <div className="dnd-over" dangerouslySetInnerHTML={{__html: Emojione.toImage(':hatching_chick:')}}></div>
-                    <div className="dnd-hover" dangerouslySetInnerHTML={{__html: Emojione.toImage(':hatched_chick:')}}></div>
-                    <h1>{Lang.chat.drapNDropFileMessage}</h1>
-                  </div>
-                </div>
-              </div>
+              <div className='dock-full' style={messageListStyle} ref={e => {this.chatMessageBox = e;}}>{messagesView}</div>
             </div>
             <div className='table-col relative' style={sidebarStyle}>
               {this.state.sidebar ? <Sidebar chat={chat} className='dock-full' onCloseButtonClick={() => this.setState({sidebar: false})}/> : null}

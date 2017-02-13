@@ -13,6 +13,7 @@ const event = {
     data_delete: 'data.delete',
     data_get_public_list: 'data.getPublicList',
     chats_notice: 'chats.notice',
+    chats_notice_change: 'chats.notice.change',
     chats_history: 'chats.history',
     database_rebuild: 'database.rebuild',
 
@@ -46,7 +47,8 @@ const event = {
     app_check_ready: 'app.check.ready',
     app_remote: 'app.remote',
     app_socket_change: 'app.socket.change',
-    app_remote_send: 'app.remote.send'
+    app_remote_send: 'app.remote.send',
+    app_main_window_close: 'app.main_window.close'
 };
 
 const ui = {

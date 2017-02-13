@@ -57,6 +57,14 @@ const MessageListItem = React.createClass({
         this.forceUpdate();
     },
 
+    _handleDeleteBtnClick() {
+        App.chat.deleteLocalMessage(this.props.message);
+    },
+
+    _handleMemberItemContextMenu(e) {
+        App.popupContextMenu(App.chat.createChatMemberContextMenu(this.props.message), e);
+    },
+
     render() {
         let {
             message,
@@ -107,14 +115,14 @@ const MessageListItem = React.createClass({
             leftTime: {
                 position: 'absolute',
                 left: -3,
-                top: Math.floor((Math.floor(Math.max(20, fontSize.size * fontSize.lineHeight)) - 17)/2) - 1,
+                top: Math.floor((Math.floor(Math.max(16, fontSize.size * fontSize.lineHeight)) - 17)/2),
                 width: 36,
                 textAlign: 'center'
             },
             dot: {
                 position: 'absolute',
                 left: 11,
-                top: Math.floor((Math.floor(Math.max(20, fontSize.size * fontSize.lineHeight)) - 8)/2),
+                top: Math.floor((Math.floor(Math.max(16, fontSize.size * fontSize.lineHeight)) - 8)/2),
                 width: 8,
                 height: 8,
                 borderRadius: 4,
@@ -190,8 +198,8 @@ const MessageListItem = React.createClass({
         } else {
             if(!message.sender) message.findSender(App.dao);
             let target = message.sender ? 'Member/' + message.sender.id : '#';
-            avatarElement = <UserAvatar size={30} className='link-app message-avatar' data-target={target} user={message.sender} style={STYLE.avatar}/>;
-            headerElement = <div style={STYLE.title}><strong title={'@' + message.sender.account} style={{color: Theme.color.primary1}} className='link-app message-title' data-target={message.sender ? '@Member/' + message.sender.account : '#'}>{message.sender ? message.sender.displayName : ('用户<' + message.user + '>')}</strong> &nbsp; <small style={STYLE.time} title={dateStr}>{timeStr}</small></div>;
+            avatarElement = <UserAvatar onContextMenu={this._handleMemberItemContextMenu.bind(this)} size={30} className='link-app message-avatar' data-target={target} user={message.sender} style={STYLE.avatar}/>;
+            headerElement = <div style={STYLE.title}><strong onContextMenu={this._handleMemberItemContextMenu.bind(this)} title={message.sender ? ('@' + message.sender.account) : ''} style={{color: Theme.color.primary1}} className='link-app message-title' data-target={message.sender ? '@Member/' + message.sender.account : '#'}>{message.sender ? message.sender.displayName : ('用户<' + message.user + '>')}</strong> &nbsp; <small style={STYLE.time} title={dateStr}>{timeStr}</small></div>;
         }
 
         let messageContent = null;
@@ -207,7 +215,7 @@ const MessageListItem = React.createClass({
 
         let resendButton = null;
         if(message.needResend) {
-            resendButton = <a style={STYLE.resendButton} className='negative' onClick={this._handleResendBtnClick}>{Lang.chat.resend}</a>
+            resendButton = <div><a style={STYLE.resendButton} className='negative' onClick={this._handleResendBtnClick}>{Lang.chat.resend}</a> &nbsp; <a style={STYLE.resendButton} className='negative' onClick={this._handleDeleteBtnClick}>{Lang.common.delete}</a></div>
         }
 
         return <div {...other} style={style}>
