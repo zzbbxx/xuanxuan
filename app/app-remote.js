@@ -289,7 +289,7 @@ class AppRemote extends ReadyNotifier {
     }
 
     dockBadgeLabel(label) {
-        if(ElectronApp.dock.setBadge) {
+        if(Helper.isOSX) {
             ElectronApp.dock.setBadge(label);
             if(label) {
                 this.trayTooltip = (Lang.title + ' （' + Lang.chat.someNewMessages.format(label) + ')');
