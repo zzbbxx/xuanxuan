@@ -1,7 +1,7 @@
 import './style/less/app.less';
 import './utils/debug';
 import './utils/helper';
-import './utils/input-context-menu';
+// import './utils/input-context-menu';
 import React                  from 'react';
 import ReactDOM               from 'react-dom';
 import R                      from './resource';

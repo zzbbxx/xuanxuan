@@ -21,6 +21,23 @@ if(DEBUG && process.type === 'renderer') {
     console.error('App must run in main process.');
 }
 
+const SELECT_MENU = Menu.buildFromTemplate([
+    {role: 'copy', label: Lang.menu.copy},
+    {type: 'separator'},
+    {role: 'selectall', label: Lang.menu.selectAll}
+]);
+
+const INPUT_MENU = Menu.buildFromTemplate([
+    {role: 'undo', label: Lang.menu.undo},
+    {role: 'redo', label: Lang.menu.redo},
+    {type: 'separator'},
+    {role: 'cut', label: Lang.menu.cut},
+    {role: 'copy', label: Lang.menu.copy},
+    {role: 'paste', label: Lang.menu.paste},
+    {type: 'separator'},
+    {role: 'selectall', label: Lang.menu.selectAll}
+]);
+
 /**
  * App
  * 
@@ -246,6 +263,14 @@ class AppRemote extends ReadyNotifier {
                 e.preventDefault();
                 return false;
             });
+            mainWindow.webContents.on('context-menu', (e, props) => {
+                const {selectionText, isEditable} = props;
+                if (isEditable) {
+                    INPUT_MENU.popup(mainWindow);
+                } else if (selectionText && selectionText.trim() !== '') {
+                    SELECT_MENU.popup(mainWindow);
+                }
+            })
         }
     }
 
