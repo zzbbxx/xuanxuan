@@ -41,6 +41,21 @@ class EventCenter extends EventEmitter {
     }
 
     /**
+     * Bind once event
+     * @param  {String} event
+     * @param  {Function} listener
+     * @return {Symbol}
+     */
+    once(event, listener) {
+        super.once(event, listener);
+        let name = Symbol(event);
+        if(!this._eventsMap) this._eventsMap = {};
+        this._eventsMap[name] = {listener, name: event};
+         if(DEBUG) console.log('%c ON EVENT ' + event, 'color: orange');
+        return name;
+    }
+
+    /**
      * Unbind event
      * @param  {...[Symbol]} names
      * @return {Void}

@@ -331,7 +331,9 @@ class App extends ReadyNotifier {
         this.isUserLogining = true;
         this.emit(EVENT.user_login_begin, user);
 
-        this.event.once(EVENT.user_login_message, (serverUser, error) => {
+        this.off(this._handleUserLoginFinishEvent);
+        this._handleUserLoginFinishEvent = this.once(EVENT.user_login_message, (serverUser, error) => {
+            this._handleUserLoginFinishEvent = false;
             this._handleUserLoginFinish(user, serverUser, error);
         });
 
