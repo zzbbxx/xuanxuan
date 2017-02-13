@@ -289,9 +289,11 @@ class AppRemote extends ReadyNotifier {
     }
 
     dockBadgeLabel(label) {
-        ElectronApp.dock.setBadge(label);
-        if(label) {
-            this.trayTooltip = (Lang.title + ' （' + Lang.chat.someNewMessages.format(label) + ')');
+        if(ElectronApp.dock.setBadge) {
+            ElectronApp.dock.setBadge(label);
+            if(label) {
+                this.trayTooltip = (Lang.title + ' （' + Lang.chat.someNewMessages.format(label) + ')');
+            }
         }
     }
 
