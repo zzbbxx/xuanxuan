@@ -2,6 +2,7 @@ import React         from 'react';
 import Theme         from '../theme';
 import Avatar        from 'material-ui/Avatar';
 import PersonIcon    from 'material-ui/svg-icons/social/person';
+import Helper        from 'Helper';
 
 function getCodeFromString(str) {
     return str.split('')
@@ -14,6 +15,33 @@ function getColorFromCode(code) {
 }
 
 const UserAvatar = React.createClass({
+
+    getInitialState() {
+        return {
+            src: ''
+        }
+    },
+
+    componentWillMount() {
+        let {user, src} = this.props;
+        if(user.avatar && !src) {
+            let localPath = user.getLocalAvatar(App.user.imagesPath);
+            if(Helper.isFileExist(localPath)) {
+                this.setState({src: localPath});
+            } else {
+                App.downloadFile({
+                    path: localPath,
+                    url: user.avatar
+                }).then(() => {
+                    setTimeout(() => {
+                        this.setState({src: localPath});
+                        console.info('>>> Avatar file download success', localPath);
+                    }, 500);
+                });
+            }
+        }
+    },
+
     render() {
         let {
             user,
@@ -27,7 +55,7 @@ const UserAvatar = React.createClass({
         let iconText = null;
 
         if(user) {
-            if(user.avatar) other.src = user.avatar;
+            if(this.state.src) other.src = this.state.src;
             if(other.src) {
                 return <Avatar className='user-avatar' size={size} {...other} style={style}/>;
             } else {

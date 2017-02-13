@@ -1,4 +1,5 @@
 import Entity from './entity';
+import Path   from 'path';
 
 /**
  * Define status names
@@ -157,6 +158,13 @@ class Member extends Entity {
         let isMyselfVal = this.isMyself ? 1 : 0;
         let statusVal = USER_STATUS.getValue(this.status);
         return isMyselfVal * 10 + statusVal;
+    }
+
+    getLocalAvatar(imagePath) {
+        if(this.avatar) {
+            return Path.join(imagePath, Path.basename(this.avatar));
+        }
+        return null;
     }
 }
 

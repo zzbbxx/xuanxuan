@@ -367,6 +367,9 @@ function uploadFile(files, user, data = {}) {
  * @return {Promise}
  */
 function downloadFile(file, user, onProgress) {
+    onProgress = onProgress || (state => {
+        if(DEBUG) console.log('DOWNLOAD FILE PROGRESS', {file,state});
+    });
     return new Promise((resolve, reject) => {
         let jar = Request.jar();
         let cookie = Request.cookie('sid=' + user.sid);
