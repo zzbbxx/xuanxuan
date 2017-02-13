@@ -821,6 +821,7 @@ class App extends ReadyNotifier {
         if(!Array.isArray(screenSources)) {
             screenSources = [screenSources];
         }
+        hideCurrentWindow = hideCurrentWindow && this.browserWindow.isVisible();
         return new Promise((resolve, reject) => {
             let captureScreenWindows = [];
             Event.ipc.once(EVENT.capture_screen, (e, image) => {
@@ -828,6 +829,10 @@ class App extends ReadyNotifier {
                     captureScreenWindows.forEach(captureWindow => {
                         captureWindow.close();
                     });
+                }
+                if(hideCurrentWindow) {
+                    this.browserWindow.show();
+                    this.browserWindow.focus();
                 }
                 if(image) {
                     let filePath = this.user.makeFilePath(UUID.v4() + '.png');
@@ -845,15 +850,10 @@ class App extends ReadyNotifier {
                     });
                 }));
             };
-            hideCurrentWindow = hideCurrentWindow && this.browserWindow.isVisible();
             if(hideCurrentWindow) {
                 this.browserWindow.hide();
                 setTimeout(() => {
-                    takeScreenshots().then(results => {
-                        if(hideCurrentWindow) {
-                            this.browserWindow.show();
-                        }
-                    });
+                    takeScreenshots();
                 }, Helper.isWindowsOS ? 600 : 0);
             } else {
                 takeScreenshots();
