@@ -25,18 +25,22 @@ const UserAvatar = React.createClass({
     componentWillMount() {
         let {user, src} = this.props;
         if(user.avatar && !src) {
-            let localPath = user.getLocalAvatar(App.user.imagesPath);
-            if(Helper.isFileExist(localPath)) {
-                this.setState({src: localPath});
+            if(Helper.isWindowsOS) {
+                this.setState({src: user.avatar});
             } else {
-                App.downloadFile({
-                    path: localPath,
-                    url: user.avatar
-                }).then(() => {
-                    setTimeout(() => {
-                        this.setState({src: localPath});
-                    }, 500);
-                });
+                let localPath = user.getLocalAvatar(App.user.imagesPath);
+                if(Helper.isFileExist(localPath)) {
+                    this.setState({src: localPath});
+                } else {
+                    App.downloadFile({
+                        path: localPath,
+                        url: user.avatar
+                    }).then(() => {
+                        setTimeout(() => {
+                            this.setState({src: localPath});
+                        }, 500);
+                    });
+                }
             }
         }
     },
@@ -54,8 +58,9 @@ const UserAvatar = React.createClass({
         let iconText = null;
 
         if(user) {
-            if(this.state.src) other.src = this.state.src + '?v=' + Helper.guid;
+            if(this.state.src) other.src = this.state.src;
             if(other.src) {
+                if(Helper.isOSX) other.src += '?v=' + Helper.guid;
                 return <Avatar className='user-avatar' size={size} {...other} style={style}/>;
             } else {
                 let displayName = user.displayName || user.account || user.realname;
