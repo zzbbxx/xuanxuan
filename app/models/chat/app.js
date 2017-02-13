@@ -12,6 +12,7 @@ import ChangeFontSize                    from 'Views/chat/change-font-size';
 import SetCommitters                     from 'Views/chat/set-committers';
 import Theme                             from 'Theme';
 import Lang                              from 'Lang';
+import AppActionLink                     from 'Utils/app-link';
 
 const Helper = global.Helper;
 
@@ -370,9 +371,18 @@ class ChatApp extends AppCore {
      * @return object
      */
     createChatMemberContextMenu(chat, member) {
+        if(chat instanceof ChatMessage) {
+            if(!member) member = chat.sender;
+            chat = this.dao.getChat(chat.cgid);
+        }
         let menu = [];
         if(!chat.isOne2One && member.id !== this.user.id) {
             menu.push({
+                label: this.lang.chat.atHim,
+                click: () => {
+                    this.$app.emit(R.event.ui_link, new AppActionLink('@Member/' + member.account));
+                }
+            }, {
                 label: this.lang.chat.sendMessage,
                 click: () => {
                     this.create(member);
