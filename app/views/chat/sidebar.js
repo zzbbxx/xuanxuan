@@ -114,12 +114,11 @@ const ChatSidebar = React.createClass({
 
     _memberItemCreator(member) {
         let primaryText = <div>
-          <UserStatus status={member.status} />
           {member.displayName}
           {this.props.chat.isCommitter(member) ? null : <div data-hint={Lang.chat.blockedCommitter} className="hint--left pull-right"><LockIcon style={STYLE.blockIcon} /></div>}
           {this.props.chat.isAdmin(member) ? <span style={STYLE.adminBadge}>{Lang.chat.admin}</span> : null}
         </div>;
-        return <ListItem onContextMenu={this._handleMemberItemContextMenu.bind(this, member)} onClick={this._handleMemberClick.bind(this, member)} key={member._id} primaryText={primaryText} leftAvatar={<UserAvatar size={20} user={member} style={STYLE.avatar}/>} />;
+        return <ListItem onContextMenu={this._handleMemberItemContextMenu.bind(this, member)} onClick={this._handleMemberClick.bind(this, member)} key={member._id} primaryText={primaryText} leftAvatar={<UserAvatar className={member.isOffline ? 'grayscale' : ''} size={20} user={member} style={STYLE.avatar}/>} />;
     },
 
     renderCacheContent(contentId, cacheName) {
@@ -136,7 +135,7 @@ const ChatSidebar = React.createClass({
             this.tabsNameAlias[contentId] = members.length;
 
             return <div>
-              <MembersList onItemClick={this._handleMemberClick} members={members} style={STYLE.tabContent} listStyle={STYLE.tabList} itemCreator={this._memberItemCreator}/>
+              <MembersList showStatus="color" onItemClick={this._handleMemberClick} members={members} style={STYLE.tabContent} listStyle={STYLE.tabList} itemCreator={this._memberItemCreator}/>
               {exitChatButtonView}
             </div>
         } else if(contentId === 'files') {
