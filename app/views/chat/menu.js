@@ -78,22 +78,22 @@ const ChatMenu = React.createClass({
 
         let data;
         if(type === 'recent') {
-            let favs = [], recent = [], hiddens = [];
+            let favs = [], recent = [];
             chats.forEach(chat => {
-                if(chat.hide && !chat.noticeCount) hiddens.push(chat);
-                else if(chat.star) favs.push(chat);
+                if(chat.star) favs.push(chat);
                 else recent.push(chat);
             });
 
             Chat.sort(favs, App, -1, true);
             Chat.sort(recent, App, -1, true);
-            Chat.sort(hiddens, App, -1, true);
 
-            data = [
-                {name: 'fav', title: Lang.chat.favList, items: favs},
-                {name: 'recent', title: Lang.chat.recentList, items: recent},
-                {name: 'hiddens', title: Lang.chat.hiddensList, items: hiddens}
-            ];
+            data = [];
+            if(favs.length) {
+                data.push({name: 'fav', title: Lang.chat.favList, items: favs});
+            }
+            if(recent.length) {
+                data.push({name: 'recent', title: Lang.chat.recentList, items: recent});
+            }
         } else {
             const groupedOrder = {
                 fav: 0,
