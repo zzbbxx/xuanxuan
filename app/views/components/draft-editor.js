@@ -1,6 +1,5 @@
 import React, {Component}            from 'react';
 import ReactDOM                      from 'react-dom';
-import Cheerio                       from 'cheerio';
 import {
     Editor,
     EditorState,
