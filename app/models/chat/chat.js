@@ -510,11 +510,14 @@ class Chat extends Entity {
 
         if(hasNewMessage) {
             this.$.messages.sort((x, y) => {
-                if(x.date === y.date) {
-                    return (x.remoteId || 0) - (y.remoteId || 0);
-                } else {
-                    return x.date - y.date;
+                let orderResult = x.date - y.date;
+                if(orderResult === 0) {
+                    orderResult = (x.remoteId || Number.MAX_SAFE_INTEGER) - (y.remoteId || Number.MAX_SAFE_INTEGER);
                 }
+                if(orderResult === 0) {
+                    orderResult = x.order - y.order;
+                }
+                return orderResult;
             });
             size = this.$.messages.length;
             if(size > MAX_MESSAGE_COUNT) {

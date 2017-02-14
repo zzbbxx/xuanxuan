@@ -27,6 +27,7 @@ class Message extends Entity {
         this.content; // text,image, file or action saved as json data
 
         if(this.unread === undefined) this.unread = true;
+        if(this.order === undefined) this.order = Helper.guid;
     }
 
     /**
