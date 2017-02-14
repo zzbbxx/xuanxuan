@@ -6,7 +6,7 @@ import MessageListItem     from './message-list-item';
 import MessageListDivider  from './message-list-divider';
 import MessageTip          from './message-tip';
 import EmoticonIcon        from 'material-ui/svg-icons/editor/insert-emoticon';
-import SendIcon            from 'material-ui/svg-icons/content/send';
+import SendIcon            from 'material-ui/svg-icons/hardware/keyboard-return';
 import CutIcon             from 'material-ui/svg-icons/content/content-cut';
 import HelpIcon            from 'material-ui/svg-icons/communication/live-help';
 import IconButton          from 'material-ui/IconButton';
