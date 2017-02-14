@@ -239,9 +239,6 @@ const MessageSendbox = React.createClass({
                 height: 48,
                 backgroundColor: Theme.color.pale2
             },
-            toolbarRight: {
-                right: 10
-            },
             icon: {
                 pointerEvents: 'none'
             },
@@ -309,7 +306,7 @@ const MessageSendbox = React.createClass({
                     <HelpIcon color={Theme.color.icon} hoverColor={Theme.color.primary1}/>
                 </IconButton>
               </div>
-              <div className="dock-right" style={STYLE.toolbarRight}>
+              <div className="dock-right">
                 <IconButton disabled={this.state.sendButtonDisabled} className="hint--top-left" onClick={this._handleSendButtonClick} data-hint={Lang.chat.sendMessageTooltip}>
                   <SendIcon color={this.state.sendButtonDisabled ? Theme.color.disabled : Theme.color.primary1} hoverColor={this.state.sendButtonDisabled ? Theme.color.disabled : ColorManipulator.fade(Theme.color.primary1, 0.9)}/>
                 </IconButton>

@@ -270,7 +270,8 @@ class AppRemote extends ReadyNotifier {
                 } else if (selectionText && selectionText.trim() !== '') {
                     SELECT_MENU.popup(mainWindow);
                 }
-            })
+            });
+            
         }
     }
 
