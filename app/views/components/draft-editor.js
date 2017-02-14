@@ -73,7 +73,7 @@ class DraftEditor extends Component {
                 if(thisTextContent.length) {
                     thisTextContent += '\n';
                 }
-                thisTextContent += block.text.trim();
+                thisTextContent += block.text;
             }
         });
         if(thisTextContent.length) {
