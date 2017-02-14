@@ -86,7 +86,7 @@ const ChatPage = React.createClass({
             this._handleUILinkEvent = App.on(R.event.ui_link, actionLink => {
                 if(App.chat.activeChatWindow === this.props.chatId && actionLink.action === '@Member') {
                     let editbox = this.messageSendbox.editbox;
-                    editbox.appendContent('@' + actionLink.target + '&nbsp;');
+                    editbox.appendContent('@' + actionLink.target + ' ');
                     editbox.focus(false);
                 }
             });

@@ -15,11 +15,11 @@ import Checkbox            from 'material-ui/checkbox';
 import FileIcon            from '../icons/file-outline';
 import ImageIcon           from '../icons/message-image';
 import Moment              from 'moment';
-import Hotkey              from '../mixins/hotkey';
 import Popover             from '../components/popover';
 import Modal               from '../components/modal';
 import EmoticonList        from '../components/emoticon-list';
 import EditBox             from '../components/editbox';
+import DraftEditor         from '../components/draft-editor';
 import UUID                from 'uuid';
 import Helper              from 'Helper';
 import R                   from 'Resource';
@@ -29,8 +29,6 @@ import ShortcutField       from '../components/shortcut-field';
  * React component: MessageSendbox
  */
 const MessageSendbox = React.createClass({
-    mixins: [Hotkey],
-
     getInitialState() {
         return {
             expand: true,
@@ -38,10 +36,8 @@ const MessageSendbox = React.createClass({
         };
     },
 
-    _handleOnChange(value) {
-        if(!value) value = this.editbox.getContent();
-        let sendButtonDisabled = Helper.isEmptyString(value) || value.trim() === '';
-        if(this.state.sendButtonDisabled !== sendButtonDisabled) this.setState({sendButtonDisabled});
+    _handleOnChange(contentState) {
+        this.setState({sendButtonDisabled: !contentState.hasText()});
     },
 
     clearContent() {
@@ -66,7 +62,6 @@ const MessageSendbox = React.createClass({
             return this.props.onSendButtonClick && this.props.onSendButtonClick(this, shortname);
         } else {
             this.editbox.appendContent(shortname + ' ');
-            this._handleOnChange();
             this.editbox.focus();
         }
     },
@@ -88,18 +83,15 @@ const MessageSendbox = React.createClass({
         });
     },
 
-    onHotkeyPress(e) {
-        if(!e || App.chat.activeChatWindow !== this.props.chatId) return;
-        if(e.keyCode === 13) {
-            if(e.shiftKey || e.altKey) {
-                this.editbox.appendContent('\n');
-                this._handleOnChange();
-                this.editbox.focus();
-            } else {
-                if(!this.state.sendButtonDisabled) this._handleSendButtonClick();
-                e.preventDefault();
-                return false;
+    _handleOnReturnKeyDown(e) {
+        if(!e.shiftKey && !e.metaKey && !e.ctrlKey && !e.altKey) {
+            if(!this.state.sendButtonDisabled) {
+                setTimeout(() => {
+                    this._handleSendButtonClick();
+                }, 10);
             }
+            e.preventDefault();
+            return false;
         }
     },
 
@@ -232,16 +224,13 @@ const MessageSendbox = React.createClass({
                 height: App.user.config.ui.chat.sendbox.height,
                 zIndex: 10
             },
-            editboxWrapper: {
-                bottom: 48
-            },
             editbox: {
-                outline: 'none',
+                padding: 10,
                 display: 'block',
-                border: 'none',
-                resize: 'none',
                 boxSizing: 'border-box',
-                position: 'absolute'
+                position: 'absolute',
+                bottom: 48,
+                overflowY: 'auto'
             },
             editStyle: {
                 padding: 10,
@@ -284,17 +273,14 @@ const MessageSendbox = React.createClass({
         style = Object.assign({}, STYLE.main, style);
     
         return <div {...other} style={style}>
-            <div className="dock-full" style={STYLE.editboxWrapper}>
-              <EditBox onChange={this._handleOnChange} className="dock-full"
-                editStyle={STYLE.editStyle}
-                placeholderStyle={STYLE.editStyle}
-                style={STYLE.editbox} 
-                ref={(e) => this.editbox = e}
-                onPaste={this._handleOnPaste}
-                placeholder={forNewChat ? Lang.chat.sendboxPlaceholderForNewChat : Lang.chat.sendboxPlaceholder}
-                defaultValue={content}/>
-            </div>
-
+            <DraftEditor className="dock-full"
+              ref={e => {this.editbox = e;}}
+              placeholder={forNewChat ? Lang.chat.sendboxPlaceholderForNewChat : Lang.chat.sendboxPlaceholder}
+              style={STYLE.editbox}
+              onPaste={this._handleOnPaste}
+              onChange={this._handleOnChange}
+              onReturnKeyDown={this._handleOnReturnKeyDown}
+            />
             <div className="dock-bottom" style={STYLE.toolbar}>
               <div style={STYLE.fileButtonWrapper} ref={(e) => this.emotionBtn = e}>
                 <IconButton className="hint--top" onClick={this._handleEmoticonClick} data-hint={Lang.chat.sendEmoticon}>
