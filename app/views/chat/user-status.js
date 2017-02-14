@@ -33,7 +33,7 @@ const Page = React.createClass({
             disconnect: {backgroundColor: Colors.grey400},
             unverified: {backgroundColor: Colors.grey400},
             busy:       {backgroundColor: Colors.yellowA700},
-            away:       {backgroundColor: Colors.redA400},
+            away:       {backgroundColor: Colors.orangeA400},
             text:       {fontSize: '12px'}
         };
 
