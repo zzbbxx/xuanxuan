@@ -183,6 +183,12 @@ class App extends ReadyNotifier {
         });
 
         this.browserWindow.on('restore', () => {
+            this.browserWindow.setSkipTaskbar(false);
+            this.emit(R.event.ui_show_main_window);
+        });
+
+        this.browserWindow.on('minimize', () => {
+            this.browserWindow.setSkipTaskbar(true);
             this.emit(R.event.ui_show_main_window);
         });
 
