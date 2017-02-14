@@ -325,11 +325,6 @@ class ChatApp extends AppCore {
             click: () => {
                 this.toggleStar(chat);
             }
-        }, {
-            label: chat.hide ? this.lang.chat.pinnedInList : this.lang.chat.removeFromList,
-            click: () => {
-                this.toggleShow(chat);
-            }
         });
 
         if(chat.canRename(this.user)) {
@@ -629,7 +624,7 @@ class ChatApp extends AppCore {
                     this.rename(this.dao.getChat(message.cgid), command.name);
                 }, 500);
             } else if(command.action === 'version') {
-                message.content = '```\n$$version = "' + `v${PKG.version}${PKG.distributeTime ? (' (' + Moment(PKG.distributeTime).format('YYYYMMDDHHmm') + ')') : null} ${DEBUG ? '[debug]' : ''}` + '";\n```';
+                message.content = '```\n$$version = "' + `v${PKG.version}${PKG.distributeTime ? (' (' + Moment(PKG.distributeTime).format('YYYYMMDDHHmm') + ')') : ''} ${DEBUG ? '[debug]' : ''}` + '";\n```';
             }
         }
         this.sendChatMessage(message, chat);
