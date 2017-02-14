@@ -16,32 +16,20 @@ function getColorFromCode(code) {
 
 const UserAvatar = React.createClass({
 
-    getInitialState() {
-        return {
-            src: ''
-        }
-    },
-
-    componentWillMount() {
-        let {user, src} = this.props;
-        if(user.avatar && !src) {
-            if(Helper.isWindowsOS) {
-                this.setState({src: user.avatar});
-            } else {
-                let localPath = user.getLocalAvatar(App.user.imagesPath);
-                if(Helper.isFileExist(localPath)) {
+    downloadLocalPath() {
+        let {user} = this.props;
+        let localPath = user.getLocalAvatar(App.user.imagesPath);
+        if(Helper.isFileExist(localPath)) {
+            this.setState({src: localPath});
+        } else {
+            App.downloadFile({
+                path: localPath,
+                url: user.avatar
+            }).then(() => {
+                setTimeout(() => {
                     this.setState({src: localPath});
-                } else {
-                    App.downloadFile({
-                        path: localPath,
-                        url: user.avatar
-                    }).then(() => {
-                        setTimeout(() => {
-                            this.setState({src: localPath});
-                        }, 500);
-                    });
-                }
-            }
+                }, 500);
+            });
         }
     },
 
@@ -50,6 +38,7 @@ const UserAvatar = React.createClass({
             user,
             style,
             size,
+            src,
             ...other,
         } = this.props;
 
@@ -58,10 +47,22 @@ const UserAvatar = React.createClass({
         let iconText = null;
 
         if(user) {
-            if(this.state.src) other.src = this.state.src;
-            if(other.src) {
-                if(Helper.isOSX) other.src += '?v=' + Helper.guid;
-                return <Avatar className='user-avatar' size={size} {...other} style={style}/>;
+            if(user.avatar && !src) {
+                if(Helper.isOSX) {
+                    if(this.state && this.state.src) {
+                        src = this.state.src;
+                    } else {
+                        setTimeout(() => {
+                            this.downloadLocalPath();
+                        }, 50);
+                    }
+                } else {
+                    src = user.avatar;
+                }
+            }
+            if(src) {
+                if(Helper.isOSX) src += '?v=' + Helper.guid;
+                return <Avatar className='user-avatar' size={size} src={src} {...other} style={style}/>;
             } else {
                 let displayName = user.displayName || user.account || user.realname;
                 if(displayName) {
