@@ -198,7 +198,7 @@ const MessageSendbox = React.createClass({
             placement: 'top',
             style: {
                 width: 350,
-                height: 150
+                height: 165
             },
             float: 'center'
         });
