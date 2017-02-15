@@ -103,6 +103,8 @@
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-dev-expression": "^0.2.1",
     "babel-plugin-tcomb": "^0.3.24",
+    "babel-plugin-transform-class-properties": "^6.22.0",
+    "babel-plugin-transform-es2015-classes": "^6.23.0",
     "babel-plugin-webpack-loaders": "^0.8.0",
     "babel-polyfill": "^6.20.0",
     "babel-preset-env": "^1.1.4",
@@ -163,7 +165,6 @@
     "webpack-validator": "^2.3.0"
   },
   "dependencies": {
-    "babel-plugin-transform-class-properties": "^6.22.0",
     "draft-js": "^0.10.0",
     "electron-debug": "^1.1.0",
     "emojione": "^2.2.7",
