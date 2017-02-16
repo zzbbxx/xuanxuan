@@ -18,7 +18,6 @@ import Moment              from 'moment';
 import Popover             from '../components/popover';
 import Modal               from '../components/modal';
 import EmoticonList        from '../components/emoticon-list';
-import EditBox             from '../components/editbox';
 import DraftEditor         from '../components/draft-editor';
 import UUID                from 'uuid';
 import Helper              from 'Helper';
