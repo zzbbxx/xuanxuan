@@ -19,20 +19,38 @@
 
 受益于 Electron 的跨平台特性，喧喧客户端提供了 Windows 和 MacOS 版本。理论上也支持 Linux，不过暂时没有测试及支持。
 
+下载地址：
+
+ * Windows 7+：[安装包（xuanxuan-setup-1.0.0.exe）](https://github.com/easysoft/xuanxuan/releases/download/v1.0.0/xuanxuan-setup-1.0.0.exe)、[zip 压缩包（xuanxuan-1.0.0.zip）](https://github.com/easysoft/xuanxuan/releases/download/v1.0.0/xuanxuan-1.0.0.zip)
+ * MacOS：[xuanxuan-1.0.0.dmg](https://github.com/easysoft/xuanxuan/releases/download/v1.0.0/xuanxuan-1.0.0.dmg)
+
+更多帮助参见 [使用手册](https://github.com/easysoft/xuanxuan/tree/master/doc/README.md)。
+
 ### 服务器端
 
 当前已提供的服务器端（在 `/server` 目录下）是基于 [然之协同](https://github.com/easysoft/rangerteam) 使用 [php socket](http://php.net/manual/en/book.sockets.php) 方案实现。
 
+下载地址：
+
+* 然之协同喧喧服务器端：[xuanxuan-server-rangerteam-1.0.0.zip](https://github.com/easysoft/xuanxuan/releases/download/v1.0.0/xuanxuan-server-rangerteam-1.0.0.zip)
+
 这里有一个公开的测试服务器供使用：
+
 ```
 地址：http://pro.demo.ranzhi.org
 用户：demo
 密码：123456
 ```
 
-然之服务器端部署参见：[]()。
+然之协同服务器端部署基本步骤：
+
+1. 下载 [xuanxuan-server-rangerteam-1.0.0.zip](https://github.com/easysoft/xuanxuan/releases/download/v1.0.0/xuanxuan-server-rangerteam-1.0.0.zip) 并解压缩至 `server` 目录；
+2. 合并 `server` 目录到然之协同服务目录；
+3. 在然之服务目录执行 `sudo -u username ./app/xuanxuan/server.php`，其中 `username` 为然之协同 Apache 服务运行用户。
 
 服务器端 API 同样是开放的，你可以使用自己熟悉的技术（例如 node.js）实现自己的服务器端。
+
+服务器端 API 参见：[API 文档](https://github.com/easysoft/xuanxuan/tree/master/doc/server-api.md)。
 
 ## 开发
 
