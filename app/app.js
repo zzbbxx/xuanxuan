@@ -713,10 +713,10 @@ class App extends ReadyNotifier {
      * @param  {string} format
      * @return {string}
      */
-    linkMembersInText(text, format = '<a class="link-app" href="#Member/{id}">@{displayName!escape}</a>') {
+    linkMembersInText(text, format = '<a class="link-app" href="#Member/{id}">@{displayName}</a>') {
         if(text.indexOf('@') > -1) {
             this.dao.getMembers().forEach(m => {
-                text = text.replace(new RegExp('@(' + m.account + '|' + m.realname + ')', 'g'), format.format(m));
+                text = text.replace(new RegExp('@(' + m.account + '|' + m.realname + ')', 'g'), format.format({displayName: m.displayName, id: m.id, account: m.account}));
             });
         }
         return text;
