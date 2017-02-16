@@ -67,10 +67,12 @@ class SetCommitters extends Component {
                 width: 'auto',
                 marginRight: 12,
                 marginTop: -8,
-                whiteSpace: 'nowrap'
+                marginBottom: 4,
+                whiteSpace: 'nowrap',
+                minWidth: 80
             },
             checkboxIconStyle: {
-                marginRight: 4
+                marginRight: 8
             },
             checkboxesList: {
                 marginLeft: 40
