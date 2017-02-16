@@ -71,7 +71,7 @@ class ChatApp extends AppCore {
                                 }
 
                                 chat.assign(msg.data);
-                                chat.updateMembersSet(this.dao$);
+                                chat.updateMembersSet(this);
                                 this.dao.updateChats(chat);
                             } else {
                                 chat = new Chat(msg.data);
@@ -186,7 +186,7 @@ class ChatApp extends AppCore {
                         if(msg.isSuccess) {
                             chats = msg.data.map(x => {
                                 let chat = new Chat(x);
-                                chat.updateMembersSet(this.$dao);
+                                chat.updateMembersSet(this);
                                 return chat;
                             });
                         } else {
