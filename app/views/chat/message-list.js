@@ -78,6 +78,7 @@ const MessageList = React.createClass({
                         timeText = Lang.time.yestoday + ' ' + timeText;
                     }
                     list.push(<MessageListDivider key={message.id + '-date'} text={timeText} />);
+                    lastMessage = null;
                 }
 
                 list.push(<MessageListItem className={'message message-t-' + message.type} key={message.gid} lastMessage={lastMessage} message={message} hideAvatar={lastMessage && !lastMessage.isBroadcast && isSameUser && !isDiffDate} hideTime={isSameUser && isAMomentTime} fontSize={this.state.fontSize} />);
