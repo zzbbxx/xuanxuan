@@ -28,19 +28,17 @@
   "build": {
     "productName": "喧喧",
     "appId": "com.cnezsoft.xuanxuan",
-    "category": "public.app-category.tools",
+    "category": "public.productivity.tools",
     "dmg": {
       "contents": [
         {
+          "x": 130,
+          "y": 220
+        }, {
           "x": 410,
-          "y": 150,
+          "y": 220,
           "type": "link",
           "path": "/Applications"
-        },
-        {
-          "x": 130,
-          "y": 150,
-          "type": "file"
         }
       ]
     },
