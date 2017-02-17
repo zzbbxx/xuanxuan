@@ -92,7 +92,7 @@
     "webpack",
     "react-hot"
   ],
-  "homepage": "https://github.com/cnezsoft/xuanxuan#readme",
+  "homepage": "http://xuanxuan.chat",
   "devDependencies": {
     "asar": "^0.13.0",
     "babel-core": "^6.22.1",
