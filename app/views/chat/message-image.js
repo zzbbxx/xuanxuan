@@ -188,8 +188,8 @@ const ImageMessage = React.createClass({
                 };
                 let iconStyle = {
                     position: 'absolute',
-                    left: 33,
-                    top: 33,
+                    left: 18,
+                    top: 18,
                 };
                 return <div style={wrapperStyle}>
                   <CircularProgress color={Theme.color.icon} mode='indeterminate' style={progressStyle}/>
