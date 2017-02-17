@@ -1,8 +1,8 @@
 # 喧喧
 
-安全方便的企业即时通信解决方案。
-
 http://xuanxuan.chat
+
+由[然之协同](http://ranzhico.com)提供的面向企业即时通信解决方案。
 
 ![喧喧](https://raw.githubusercontent.com/easysoft/xuanxuan/master/doc/img/preview.png)
 
