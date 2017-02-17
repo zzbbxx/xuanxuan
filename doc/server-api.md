@@ -42,91 +42,91 @@ MySql 数据库参见 https://github.com/easysoft/xuanxuan/blob/master/server/db
     </tr>
   </thead>
   <tr>
-    <td>`id`</td>
+    <td><code>id</code></td>
     <td>number</td>
     <td>必须</td>
     <td>存储在远程数据库的id,客户端根据此id值是否设置来判定是否为远程保存的对象</td>
   </tr>
   <tr>
-    <td>`gid`</td>
+    <td><code>gid</code></td>
     <td>string</td>
     <td>必须</td>
     <td>当客户端向系统提交新的会话时,会创建全局唯一的id</td> 
   </tr>
   <tr>
-    <td>`name`</td>
+    <td><code>name</code></td>
     <td>string</td>
     <td>可选</td>
     <td>会话名称,当为空时,客户端会自动生成会话名称</td>
   </tr>
   <tr>
-    <td>`type`</td>
+    <td><code>type</code></td>
     <td>string</td>
     <td>可选</td>
     <td>表明会话类型：system(系统), one2one(一对一), gourp（多人讨论组）, project, product等</td>
   </tr>
   <tr>
-    <td>`admins`</td>
+    <td><code>admins</code></td>
     <td>string</td>
     <td>可选</td>
     <td>会话管理员用户列表</td>
   </tr>
   <tr>
-    <td>`committers`</td>
+    <td><code>committers</code></td>
     <td>string</td>
     <td>可选</td>
     <td>会话允许发言用户清单</td>
   </tr>
   <tr>
-    <td>`subject`</td>
+    <td><code>subject</code></td>
     <td>int</td>
     <td>可选</td>
     <td>主题会话关联的主题(product, project等)ID</td>
   </tr>
   <tr>
-    <td>`public`</td>
+    <td><code>public</code></td>
     <td>bool</td>
     <td>可选</td>
     <td>是否公共会话</td>
   </tr>
   <tr>
-    <td>`createdBy`</td>
+    <td><code>createdBy</code></td>
     <td>string</td>
     <td>必须</td>
     <td>创建者的账号</td>
   </tr>
   <tr>
-    <td>`createdDate`</td>
+    <td><code>createdDate</code></td>
     <td>datetime</td>
     <td>必须</td>
     <td>创建会话时服务器的时间戳</td>
   </tr>
   <tr>
-    <td>`editedBy`</td>
+    <td><code>editedBy</code></td>
     <td>string</td>
     <td>可选</td>
     <td>编辑者的账号</td>
   </tr>
   <tr>
-    <td>`editedDate`</td>
+    <td><code>editedDate</code></td>
     <td>datetime</td>
     <td>可选</td>
     <td>编辑会话时服务器的时间戳</td>
   </tr>
   <tr>
-    <td>`lastActiveTime`</td>
+    <td><code>lastActiveTime</code></td>
     <td>datetime</td>
     <td>可选</td>
     <td>会话最后一次发送消息时服务器的时间戳</td>
   </tr>
   <tr>
-    <td>`[users]`</td>
+    <td><code>[users]</code></td>
     <td>关联数据集</td>
     <td>必须</td>
     <td>包含此会话的所有成员,和每个成员加入此会话的时间</td>
   </tr>
   <tr>
-    <td>`[messages]`</td>
+    <td><code>[messages]</code></td>
     <td>关联数据集</td>
     <td>必须</td>
     <td>包含此会话的所有消息</td>
@@ -147,49 +147,49 @@ MySql 数据库参见 https://github.com/easysoft/xuanxuan/blob/master/server/db
     </tr>
   </thead>
   <tr>
-    <td>`id`</td>
+    <td><code>id</code></td>
     <td>number</td>
     <td>必须</td>
     <td>存储在远程数据库的id,客户端根据此id值是否设置来判定是否为远程保存的对象</td>
   </tr>
   <tr>
-    <td>`gid`</td>
+    <td><code>gid</code></td>
     <td>string</td>
     <td>必须</td>
     <td>当客户端向系统提交新的消息时,会创建全局唯一的id</td> 
   </tr>
   <tr>
-    <td>`cgid`</td>
+    <td><code>cgid</code></td>
     <td>string</td>
     <td>必须</td>
     <td>此消息所属于的会话的gid属性,会话根据此值来查询包含的消息</td>
   </tr>
   <tr>
-    <td>`user`</td>
+    <td><code>user</code></td>
     <td>string</td>
     <td>可选</td>
     <td>此消息发送者的用户名,广播类的消息没有此值</td>
   </tr>
   <tr>
-    <td>`date`</td>
+    <td><code>date</code></td>
     <td>number</td>
     <td>必须</td>
     <td>消息发送的时间戳</td>
   </tr>
   <tr>
-    <td>`type`</td>
+    <td><code>type</code></td>
     <td>string</td>
     <td>可选</td>
     <td>消息的类型,为'normal'（默认）, 'broadcast'</td>
   </tr>
   <tr>
-    <td>`content`</td>
+    <td><code>content</code></td>
     <td>string</td>
     <td>必须</td>
     <td>消息的内容,如果消息内容类型不是文本,则已此值为json格式的对象</td>
   </tr>
   <tr>
-    <td>`contentType`</td>
+    <td><code>contentType</code></td>
     <td>string</td>
     <td>必须</td>
     <td>消息内容的类型,为'text'(默认), 'emoticon', 'image', 'file'</td>
@@ -210,55 +210,55 @@ MySql 数据库参见 https://github.com/easysoft/xuanxuan/blob/master/server/db
     </tr>
   </thead>
   <tr>
-    <td>`id`</td>
+    <td><code>id</code></td>
     <td>number</td>
     <td>必须</td>
     <td>存储在远程数据库的id</td>
   </tr>
   <tr>
-    <td>`cgid`</td>
+    <td><code>cgid</code></td>
     <td>string</td>
     <td>必须</td>
     <td>会话的gid属性</td>
   </tr>
   <tr>
-    <td>`user`</td>
+    <td><code>user</code></td>
     <td>number</td>
     <td>必须</td>
     <td>用户id,对应用户表的id</td>
   </tr>
   <tr>
-    <td>`order`</td>
+    <td><code>order</code></td>
     <td>number</td>
     <td>可选</td>
     <td>会话显示顺序</td>
   </tr>
   <tr>
-    <td>`star`</td>
+    <td><code>star</code></td>
     <td>bool</td>
     <td>可选</td>
     <td>用户是否收藏会话</td>
   </tr>
   <tr>
-    <td>`hide`</td>
+    <td><code>hide</code></td>
     <td>bool</td>
     <td>可选</td>
     <td>用户是否隐藏会话</td>
   </tr>
   <tr>
-    <td>`mute`</td>
+    <td><code>mute</code></td>
     <td>bool</td>
     <td>可选</td>
     <td>用户是否开启免打扰</td>
   </tr>
   <tr>
-    <td>`quit`</td>
+    <td><code>quit</code></td>
     <td>datetime</td>
     <td>可选</td>
     <td>用户退出会话时服务器的时间戳</td>
   </tr>
   <tr>
-    <td>`join`</td>
+    <td><code>join</code></td>
     <td>datetime</td>
     <td>必须</td>
     <td>用户加入会话时服务器的时间戳</td>
@@ -279,37 +279,37 @@ MySql 数据库参见 https://github.com/easysoft/xuanxuan/blob/master/server/db
     </tr>
   </thead>
   <tr>
-    <td>`id`</td>
+    <td><code>id</code></td>
     <td>number</td>
     <td>必须</td>
     <td>存储在远程数据库的id,离线消息的标识符,服务器根据客户端返回的此id删除已发送过的离线消息。</td>
   </tr>
   <tr>
-    <td>`level`</td>
+    <td><code>level</code></td>
     <td>number</td>
     <td>必须</td>
     <td>离线消息级别,默认为3。数字越低级别越高,优先发送级别高的离线消息,用户登录时会生成级别为0和1的消息各一条。</td>
   </tr>
   <tr>
-    <td>`user`</td>
+    <td><code>user</code></td>
     <td>number</td>
     <td>必须</td>
     <td>离线消息的目标用户id,对应用户表的id</td>
   </tr>
   <tr>
-    <td>`module`</td>
+    <td><code>module</code></td>
     <td>string</td>
     <td>必须</td>
     <td>产生离线消息的模块名称</td>
   </tr>
   <tr>
-    <td>`method`</td>
+    <td><code>method</code></td>
     <td>string</td>
     <td>必须</td>
     <td>产生离线消息的方法名称</td>
   </tr>
   <tr>
-    <td>`data`</td>
+    <td><code>data</code></td>
     <td>string</td>
     <td>必须</td>
     <td>离线消息的内容,经过json编码的数据</td>
@@ -330,25 +330,25 @@ MySql 数据库参见 https://github.com/easysoft/xuanxuan/blob/master/server/db
     </tr>
   </thead>
   <tr>
-    <td>`id`</td>
+    <td><code>id</code></td>
     <td>number</td>
     <td>必须</td>
     <td>文件在服务器上的 ID</td>
   </tr>
   <tr>
-    <td>`gid`</td>
+    <td><code>gid</code></td>
     <td>string</td>
     <td>必须</td>
     <td>会话的 GID</td>
   </tr>
   <tr>
-    <td>`file`</td>
+    <td><code>file</code></td>
     <td>number</td>
     <td>必须</td>
     <td>文件ID</td>
   </tr>
   <tr>
-    <td>`title`</td>
+    <td><code>title</code></td>
     <td>string</td>
     <td>可选</td>
     <td>文件名</td>
