@@ -40,9 +40,9 @@
   },
 
   "errors": {
-    "UNSUPPORT_VERSION": "此禅道版本不受支持，需要禅道专业版4.5及以上。",
-    "WRONG_CONNECT": "无法连接到禅道服务器，请检查网络连接是否通畅。",
-    "LOGIN_FAILED": "暂时无法登录到禅道服务器。",
+    "UNSUPPORT_VERSION": "此服务器版本不受支持。",
+    "WRONG_CONNECT": "无法连接到服务器，请检查网络连接是否通畅。",
+    "LOGIN_FAILED": "暂时无法登录到服务器。",
     "WRONG_ACCOUNT": "账号或密码错误。",
     "WRONG_DATA": "服务器返回的数据不正确。",
     "WRONG_STATUS": "服务器操作失败。",

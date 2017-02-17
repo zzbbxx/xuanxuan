@@ -215,7 +215,7 @@ function login(user) {
                     'method': 'login'
                 }, user));
             } else {
-                let error = new Error('The zentao version is not support now.');
+                let error = new Error('The server version is not support now.');
                 error.code = 'UNSUPPORT_VERSION';
                 reject(error);
             }
