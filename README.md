@@ -70,7 +70,7 @@ http://xuanxuan.chat
 
 ## 许可证
 
-喧喧使用 [MIT](https://github.com/easysoft/xuanxuan/blob/master/LICENSE) 开源许可证，另外还使用了如下开源项目：
+喧喧使用 [ZPL](https://github.com/easysoft/xuanxuan/blob/master/LICENSE) 开源许可证，另外还使用了如下开源项目：
 
 * [Electron](http://electron.atom.io/)、[React](https://facebook.github.io/react/)、[Webpack](https://webpack.github.io)：跨平台客户端开发支持；
 * [electron-react-boilerplate](https://github.com/chentsulin/electron-react-boilerplate)：提供项目模板；
