@@ -292,8 +292,7 @@ function uploadFile(files, user, data = {}) {
         }, user);
         const fileReader = new window.FileReader();
         fileReader.onload = function(e) {
-            const filename = files.filename;
-
+            const filename = files.filename || files.name;
             let jar = Request.jar();
             let cookie = Request.cookie('sid=' + user.sid);
             jar.setCookie(cookie, url);
@@ -307,7 +306,7 @@ function uploadFile(files, user, data = {}) {
                     chunked: false,
                     data: [
                         {
-                            'Content-Disposition': 'form-data; name="files"; filename="' + filename + '"',
+                            'Content-Disposition': 'form-data; name="files[]"; filename="' + filename + '"',
                             body: e.target.result
                         }, {
                             'Content-Disposition': 'form-data; name="gid"',
