@@ -39,9 +39,9 @@ http://xuanxuan.chat
 这里有一个公开的测试服务器供使用：
 
 ```
-地址：http://pro.demo.ranzhi.org
+地址：http://demo.ranzhi.org
 用户：demo
-密码：123456
+密码：demo
 ```
 
 然之协同服务器端部署基本步骤：
