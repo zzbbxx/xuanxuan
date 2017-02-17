@@ -195,6 +195,7 @@ const ChatPage = React.createClass({
             id: 'ChatInviteMemberPopover',
             trigger: this.inviteBtnWrapper,
             placement: 'bottom',
+            removeAfterHide: true,
             style: {
                 width: 500,
                 height: 400
