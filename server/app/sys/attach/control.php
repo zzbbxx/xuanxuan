@@ -77,6 +77,6 @@ class attach extends control
      */
     public function download($fileID, $mouse = '')
     {
-        $this->locate($this->createLink('file', 'download', "fileID=$fileID&mouse=$mouse"));
+        die($this->fetch('file', 'download', "fileID=$fileID&module=$mouse"));
     }
 }

@@ -6,11 +6,12 @@ error_reporting(E_ALL);
 define('RUN_MODE', 'server');
 
 /* Load the framework. */
-include '../../framework/router.class.php';
-include '../../framework/control.class.php';
-include '../../framework/model.class.php';
-include '../../framework/helper.class.php';
-include 'daemon.class.php';
+$serverRoot = dirname(__FILE__);
+include $serverRoot . '/../../framework/router.class.php';
+include $serverRoot . '/../../framework/control.class.php';
+include $serverRoot . '/../../framework/model.class.php';
+include $serverRoot . '/../../framework/helper.class.php';
+include $serverRoot . '/daemon.class.php';
 
 $_COOKIE['lang'] = 'zh-cn';
 /* Instance the daemon and run it. */
