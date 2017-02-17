@@ -24,7 +24,7 @@ http://xuanxuan.chat
 
 下载地址：
 
- * Windows 7+：[安装包（xuanxuan-setup-1.0.0.exe）](https://github.com/easysoft/xuanxuan/releases/download/v1.0.0/xuanxuan-setup-1.0.0.exe)、[zip 压缩包（xuanxuan-1.0.0.zip）](https://github.com/easysoft/xuanxuan/releases/download/v1.0.0/xuanxuan-1.0.0.zip)
+ * Windows 7+：[安装包（xuanxuan-setup-1.0.0.exe）](https://github.com/easysoft/xuanxuan/releases/download/v1.0.0/xuanxuan-setup-1.0.0.exe.zip)、[zip 压缩包（xuanxuan-1.0.0.zip）](https://github.com/easysoft/xuanxuan/releases/download/v1.0.0/xuanxuan-1.0.0.zip)
  * MacOS：[xuanxuan-1.0.0.dmg](https://github.com/easysoft/xuanxuan/releases/download/v1.0.0/xuanxuan-1.0.0.dmg)
 
 更多帮助参见 [使用手册](https://github.com/easysoft/xuanxuan/tree/master/doc/README.md)。
