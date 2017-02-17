@@ -8,7 +8,7 @@ import Colors           from 'Utils/material-colors';
 
 /**
  * Theme config
- * @type {Object}
+ * @type object
  */
 let config = {
     spacing    : Spacing,
