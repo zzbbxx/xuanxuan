@@ -41,7 +41,7 @@ http://xuanxuan.chat
 ```
 地址：http://demo.ranzhi.org
 用户：demo
-密码：123456
+密码：demo
 ```
 
 然之协同服务器端部署基本步骤：
